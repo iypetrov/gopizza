@@ -1,0 +1,6 @@
+FROM golang:1.22 AS build-stage
+WORKDIR /app
+ADD . .
+RUN go install github.com/air-verse/air@latest
+RUN make build
+CMD ["make", "local"]
