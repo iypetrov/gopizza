@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/iypetrov/gopizza/pkg/config/app"
+	"github.com/iypetrov/gopizza/pkg/app"
 	"log"
 	"os"
 	"os/signal"

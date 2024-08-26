@@ -1,9 +1,9 @@
 package app
 
 import (
-	"github.com/iypetrov/gopizza/pkg/config"
-	"github.com/iypetrov/gopizza/pkg/config/logger"
-	"github.com/iypetrov/gopizza/pkg/config/server"
+	"github.com/iypetrov/gopizza/pkg/app/config"
+	"github.com/iypetrov/gopizza/pkg/app/logger"
+	"github.com/iypetrov/gopizza/pkg/app/server"
 	"net/http"
 )
 
