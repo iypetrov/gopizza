@@ -11,21 +11,24 @@ import (
 )
 
 func New(cfg *config.Config) *http.Server {
-	return &http.Server{
+	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.App.Port),
-		Handler:      registerRoutes(),
+		Handler:      registerRoutes(cfg),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
+
+	return server
 }
 
-func registerRoutes() *chi.Mux {
+func registerRoutes(cfg *config.Config) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

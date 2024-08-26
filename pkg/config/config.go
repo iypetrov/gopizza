@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+var (
+	DevEnv = "dev"
+)
+
 type Config struct {
 	App struct {
 		Environment string
@@ -18,14 +22,14 @@ type Config struct {
 func New() *Config {
 	var cfg Config
 
-	if os.Getenv("APP_ENV") == "dev" {
+	if os.Getenv("APP_ENV") == DevEnv {
 		err := godotenv.Load()
 		if err != nil {
 			return &cfg
 		}
 	}
 
-	cfg.App.Environment = getEnv("APP_ENV", "dev")
+	cfg.App.Environment = getEnv("APP_ENV", DevEnv)
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
 	cfg.App.Port = getEnv("APP_PORT", "8080")

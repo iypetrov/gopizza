@@ -3,51 +3,26 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/iypetrov/gopizza/pkg/config"
-	"github.com/iypetrov/gopizza/pkg/config/logger"
-	"github.com/iypetrov/gopizza/pkg/config/server"
+	"github.com/iypetrov/gopizza/pkg/config/app"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-type App struct {
-	ctx    context.Context
-	cfg    *config.Config
-	logger *logger.Logger
-	server *http.Server
-}
-
-var (
-	app *App
-)
-
 func init() {
-	app = &App{}
-	app.ctx = context.Background()
-	app.cfg = config.New()
-	app.logger = logger.New()
-	app.server = server.New(app.cfg)
+	app.Init()
 }
 
 func main() {
-	if err := Run(app.ctx); err != nil {
-		return
-	}
-}
+	_, cancel := context.WithCancel(context.Background())
 
-func Run(ctx context.Context) error {
-	ctx, cancel := context.WithCancel(ctx)
-
-	fmt.Printf("server started on %s\n", app.cfg.App.Port)
-	if err := app.server.ListenAndServe(); err != nil {
+	app.Log.Info("server started on %s\n", app.Cfg.App.Port)
+	if err := app.Server.ListenAndServe(); err != nil {
 		panic(fmt.Sprintf("cannot start server: %s", err))
 	}
 
 	<-setupGracefulShutdown(cancel)
-	return nil
 }
 
 func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan struct{}) {
