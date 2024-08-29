@@ -17,6 +17,15 @@ type Config struct {
 		Addr        string
 		Port        string
 	}
+
+	Database struct {
+		Name     string
+		Username string
+		Password string
+		Host     string
+		Port     string
+		SSL      string
+	}
 }
 
 func New() *Config {
@@ -33,6 +42,12 @@ func New() *Config {
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
 	cfg.App.Port = getEnv("APP_PORT", "8080")
+	cfg.Database.Name = getEnv("APP_DB_NAME", "goshop")
+	cfg.Database.Username = getEnv("APP_DB_USERNAME", "user")
+	cfg.Database.Password = getEnv("APP_DB_PASSWORD", "pass")
+	cfg.Database.Host = getEnv("APP_DB_HOST", "localhost")
+	cfg.Database.Port = getEnv("APP_DB_PORT", "5432")
+	cfg.Database.SSL = getEnv("APP_DB_SSL", "disable")
 
 	return &cfg
 }
