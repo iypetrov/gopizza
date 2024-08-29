@@ -2,5 +2,6 @@ FROM golang:1.23 AS build-stage
 WORKDIR /app
 ADD . .
 RUN go install github.com/air-verse/air@latest
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 RUN make build
-CMD ["make", "local"]
+CMD ["make", "run"]

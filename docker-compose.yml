@@ -7,3 +7,18 @@ services:
       - "8080:8080"
     volumes:
       - ./:/app
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gopizza
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - gopizza_data:/var/lib/postgresql/data
+
+volumes:
+  gopizza_data:
+    driver: local
