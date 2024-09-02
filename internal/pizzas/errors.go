@@ -10,4 +10,5 @@ var (
 	ErrPriceShouldBePositiveNumber = fmt.Errorf("price should be positive number")
 	ErrPizzasAlreadyExists         = fmt.Errorf("pizza with this name already exists")
 	ErrCreatingPizza               = fmt.Errorf("internal server error, failed to create a pizza")
+	ErrPizzaNotFound               = fmt.Errorf("pizza not found")
 )

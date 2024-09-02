@@ -3,6 +3,7 @@ package pizzas
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/config"
 	"github.com/iypetrov/gopizza/internal/utils"
 	"github.com/lib/pq"
@@ -10,6 +11,7 @@ import (
 
 type PizzaService interface {
 	CreatePizzaModel(ctx context.Context, model PizzaModel) (PizzaModel, error)
+	GetPizzaModelByID(ctx context.Context, id string) (PizzaModel, error)
 }
 
 type Service struct {
@@ -42,6 +44,19 @@ func (srv *Service) CreatePizzaModel(ctx context.Context, model PizzaModel) (Piz
 			}
 		}
 		return PizzaModel{}, utils.InternalServerError(ErrCreatingPizza)
+	}
+	return entity.ToModel(), nil
+}
+
+func (srv *Service) GetPizzaModelByID(ctx context.Context, id string) (PizzaModel, error) {
+	uuidID, err := uuid.Parse(id)
+	if err != nil {
+		return PizzaModel{}, utils.InvalidUUID()
+	}
+
+	entity, err := srv.repository.GetPizzaEntityByID(ctx, uuidID)
+	if err != nil {
+		return PizzaModel{}, utils.NotFound(ErrPizzaNotFound)
 	}
 	return entity.ToModel(), nil
 }

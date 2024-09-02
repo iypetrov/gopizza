@@ -29,6 +29,13 @@ func BadRequest(err error) APIError {
 	}
 }
 
+func NotFound(err error) APIError {
+	return APIError{
+		StatusCode: http.StatusNotFound,
+		Message:    err.Error(),
+	}
+}
+
 func InternalServerError(err error) APIError {
 	return APIError{
 		StatusCode: http.StatusInternalServerError,
@@ -40,6 +47,13 @@ func InvalidJSON() APIError {
 	return APIError{
 		StatusCode: http.StatusBadRequest,
 		Message:    fmt.Sprint("Invalid JSON request data"),
+	}
+}
+
+func InvalidUUID() APIError {
+	return APIError{
+		StatusCode: http.StatusBadRequest,
+		Message:    fmt.Sprint("Invalid UUID"),
 	}
 }
 

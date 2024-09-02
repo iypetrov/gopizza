@@ -2,11 +2,13 @@ package pizzas
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/database"
 )
 
 type PizzaRepository interface {
 	CreatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error)
+	GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error)
 }
 
 type Repository struct {
@@ -45,5 +47,11 @@ func (rep *Repository) CreatePizzaEntity(ctx context.Context, model PizzaModel) 
 		Price:      model.Price,
 		UpdatedAt:  model.UpdatedAt,
 	})
+	return entity.FromSqlC(pizza), err
+}
+
+func (rep *Repository) GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error) {
+	var entity PizzaEntity
+	pizza, err := rep.db.GetPizzaByID(ctx, id)
 	return entity.FromSqlC(pizza), err
 }

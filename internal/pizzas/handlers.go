@@ -1,6 +1,7 @@
 package pizzas
 
 import (
+	"github.com/go-chi/chi/v5"
 	"github.com/iypetrov/gopizza/internal/utils"
 	"net/http"
 )
@@ -27,4 +28,14 @@ func (hnd *PizzaHandler) createPizza(w http.ResponseWriter, r *http.Request) err
 	}
 
 	return utils.WriteJSON(w, http.StatusCreated, model.ToDto())
+}
+
+func (hnd *PizzaHandler) getPizzaByID(w http.ResponseWriter, r *http.Request) error {
+	id := chi.URLParam(r, "id")
+	model, err := hnd.service.GetPizzaModelByID(r.Context(), id)
+	if err != nil {
+		return err
+	}
+
+	return utils.WriteJSON(w, http.StatusOK, model.ToDto())
 }
