@@ -23,7 +23,7 @@ var (
 	log    *config.Logger
 	db     *database.Queries
 
-	pizzasHandler *pizzas.PizzaHandler
+	pizzasHnd *pizzas.PizzaHandler
 )
 
 func init() {
@@ -49,7 +49,8 @@ func main() {
 	pizzasSrv := pizzas.NewService(ctx, log, pizzasRep)
 
 	// handlers
-	pizzasHandler = pizzas.NewHandler(pizzasSrv)
+	pizzasHnd = pizzas.NewHandler(pizzasSrv)
+
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.App.Port),
 		Handler:      registerRoutes(),
@@ -89,7 +90,7 @@ func registerRoutes() *chi.Mux {
 		r.Use(apiVersionCtx(cfg.App.Version))
 		// Public Routes
 		r.Group(func(r chi.Router) {
-			r.Mount("/pizzas", pizzas.Router(pizzasHandler))
+			r.Mount("/pizzas", pizzas.Router(pizzasHnd))
 		})
 	})
 
