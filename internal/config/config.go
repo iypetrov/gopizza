@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/iypetrov/gopizza/internal/log"
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
@@ -55,7 +55,7 @@ func New() *Config {
 func getEnv(key string, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
-		log.Printf(
+		log.Warn(
 			"%s environment variable is not defined, so default value %s is used",
 			key,
 			defaultValue,

@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/iypetrov/gopizza/internal/config"
 	"github.com/iypetrov/gopizza/internal/database"
+	"github.com/iypetrov/gopizza/internal/log"
 	"github.com/iypetrov/gopizza/internal/pizzas"
 	"net/http"
 	"os"
@@ -20,7 +21,6 @@ var (
 	ctx    context.Context
 	cancel context.CancelFunc
 	cfg    *config.Config
-	log    *config.Logger
 	db     *database.Queries
 
 	pizzasHnd *pizzas.PizzaHandler
@@ -32,7 +32,6 @@ func init() {
 
 func main() {
 	cfg = config.New()
-	log = config.NewLogger()
 	conn, err := config.CreateDatabaseConnection(cfg)
 	if err != nil {
 		log.Error("cannot connect to database %s", err.Error())
@@ -46,7 +45,7 @@ func main() {
 	pizzasRep := pizzas.NewRepository(db)
 
 	// services
-	pizzasSrv := pizzas.NewService(ctx, log, pizzasRep)
+	pizzasSrv := pizzas.NewService(ctx, pizzasRep)
 
 	// handlers
 	pizzasHnd = pizzas.NewHandler(pizzasSrv)
@@ -61,7 +60,7 @@ func main() {
 
 	log.Info("server started on %s\n", cfg.App.Port)
 	if err := server.ListenAndServe(); err != nil {
-		panic(fmt.Sprintf("cannot start server: %s", err))
+		log.Error("cannot start server: %s", err.Error())
 	}
 
 	<-setupGracefulShutdown(cancel)
@@ -71,7 +70,6 @@ func registerRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.Recoverer)
 	if cfg.App.Environment == config.DevEnv {
 		r.Use(middleware.Logger)

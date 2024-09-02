@@ -5,28 +5,25 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/config"
 	"github.com/iypetrov/gopizza/internal/utils"
 	"github.com/lib/pq"
 )
 
 type PizzaService interface {
 	CreatePizzaModel(ctx context.Context, model PizzaModel) (PizzaModel, error)
-	GetPizzaModelByID(ctx context.Context, id string) (PizzaModel, error)
-	UpdatePizzaModel(ctx context.Context, id string, model PizzaModel) (PizzaModel, error)
-	DeletePizzaModelByID(ctx context.Context, id string) (PizzaModel, error)
+	GetPizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error)
+	UpdatePizzaModel(ctx context.Context, id uuid.UUID, model PizzaModel) (PizzaModel, error)
+	DeletePizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error)
 }
 
 type Service struct {
 	ctx        context.Context
-	log        *config.Logger
 	repository PizzaRepository
 }
 
-func NewService(ctx context.Context, log *config.Logger, repository PizzaRepository) *Service {
+func NewService(ctx context.Context, repository PizzaRepository) *Service {
 	return &Service{
 		ctx:        ctx,
-		log:        log,
 		repository: repository,
 	}
 }
@@ -51,28 +48,18 @@ func (srv *Service) CreatePizzaModel(ctx context.Context, model PizzaModel) (Piz
 	return entity.ToModel(), nil
 }
 
-func (srv *Service) GetPizzaModelByID(ctx context.Context, id string) (PizzaModel, error) {
-	uuidID, err := uuid.Parse(id)
-	if err != nil {
-		return PizzaModel{}, utils.InvalidUUID()
-	}
-
-	entity, err := srv.repository.GetPizzaEntityByID(ctx, uuidID)
+func (srv *Service) GetPizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error) {
+	entity, err := srv.repository.GetPizzaEntityByID(ctx, id)
 	if err != nil {
 		return PizzaModel{}, utils.NotFound(ErrPizzaNotFound)
 	}
 	return entity.ToModel(), nil
 }
 
-func (srv *Service) UpdatePizzaModel(ctx context.Context, id string, model PizzaModel) (PizzaModel, error) {
-	uuidID, err := uuid.Parse(id)
-	if err != nil {
-		return PizzaModel{}, utils.InvalidUUID()
-	}
+func (srv *Service) UpdatePizzaModel(ctx context.Context, id uuid.UUID, model PizzaModel) (PizzaModel, error) {
+	model.ID = id
 
-	model.ID = uuidID
-
-	err = model.Validate()
+	err := model.Validate()
 	if err != nil {
 		return PizzaModel{}, err
 	}
@@ -91,13 +78,8 @@ func (srv *Service) UpdatePizzaModel(ctx context.Context, id string, model Pizza
 	return entity.ToModel(), nil
 }
 
-func (srv *Service) DeletePizzaModelByID(ctx context.Context, id string) (PizzaModel, error) {
-	uuidID, err := uuid.Parse(id)
-	if err != nil {
-		return PizzaModel{}, utils.InvalidUUID()
-	}
-
-	entity, err := srv.repository.DeletePizzaEntityByID(ctx, uuidID)
+func (srv *Service) DeletePizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error) {
+	entity, err := srv.repository.DeletePizzaEntityByID(ctx, id)
 	if err != nil {
 		var pgErr *pq.Error
 		ok := errors.As(err, &pgErr)
