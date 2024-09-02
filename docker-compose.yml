@@ -3,19 +3,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.local
-    ports:
-      - "8080:8080"
+    network_mode: "host"
     volumes:
       - ./:/app
 
   db:
     image: postgres:15
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: gopizza
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    network_mode: "host"
     volumes:
       - gopizza_data:/var/lib/postgresql/data
 

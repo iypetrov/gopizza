@@ -1,23 +1,10 @@
-package common
+package utils
 
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
-
-type GeneralError struct {
-	Message any `json:"message"`
-}
-
-func (e GeneralError) Error() string {
-	return fmt.Sprintf("General error: %d", e.Message)
-}
-
-func FailedValidation(errors error) GeneralError {
-	return GeneralError{
-		Message: errors.Error(),
-	}
-}
 
 type APIError struct {
 	StatusCode int `json:"statusCode"`
@@ -28,10 +15,24 @@ func (e APIError) Error() string {
 	return fmt.Sprintf("API error: %d", e.StatusCode)
 }
 
-func InvalidRequestData(errors error) APIError {
+func InvalidRequestData(errors []error) APIError {
 	return APIError{
 		StatusCode: http.StatusUnprocessableEntity,
-		Message:    errors.Error(),
+		Message:    strings.Join(errorsToStrings(errors), ", "),
+	}
+}
+
+func BadRequest(err error) APIError {
+	return APIError{
+		StatusCode: http.StatusBadRequest,
+		Message:    err.Error(),
+	}
+}
+
+func InternalServerError(err error) APIError {
+	return APIError{
+		StatusCode: http.StatusInternalServerError,
+		Message:    err.Error(),
 	}
 }
 
@@ -47,4 +48,12 @@ func FailedReadRequestBody() APIError {
 		StatusCode: http.StatusInternalServerError,
 		Message:    fmt.Sprint("Failed to read a request body"),
 	}
+}
+
+func errorsToStrings(errors []error) []string {
+	errs := make([]string, len(errors))
+	for i, err := range errors {
+		errs[i] = err.Error()
+	}
+	return errs
 }
