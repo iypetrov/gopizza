@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type CreatePizzaRequestDto struct {
+type UpsertPizzaRequestDto struct {
 	Name       string  `json:"name"`
 	Tomatoes   bool    `json:"tomatoes"`
 	Garlic     bool    `json:"garlic"`
@@ -30,7 +30,7 @@ type CreatePizzaRequestDto struct {
 	Price      float64 `json:"price"`
 }
 
-func (d *CreatePizzaRequestDto) ToModel() PizzaModel {
+func (d *UpsertPizzaRequestDto) ToModel() PizzaModel {
 	return PizzaModel{
 		ID:         uuid.New(),
 		Name:       d.Name,

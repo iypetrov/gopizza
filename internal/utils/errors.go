@@ -59,7 +59,7 @@ func InvalidUUID() APIError {
 
 func FailedReadRequestBody() APIError {
 	return APIError{
-		StatusCode: http.StatusInternalServerError,
+		StatusCode: http.StatusBadRequest,
 		Message:    fmt.Sprint("Failed to read a request body"),
 	}
 }

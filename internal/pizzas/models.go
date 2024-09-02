@@ -33,7 +33,6 @@ type PizzaModel struct {
 	UpdatedAt  time.Time
 }
 
-// TODO: Add localizations for the error messages
 func (m *PizzaModel) Validate() error {
 	var errors []error
 	if len(m.Name) == 0 {

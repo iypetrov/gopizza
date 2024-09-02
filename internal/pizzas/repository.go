@@ -9,6 +9,8 @@ import (
 type PizzaRepository interface {
 	CreatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error)
 	GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error)
+	UpdatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error)
+	DeletePizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error)
 }
 
 type Repository struct {
@@ -53,5 +55,42 @@ func (rep *Repository) CreatePizzaEntity(ctx context.Context, model PizzaModel) 
 func (rep *Repository) GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error) {
 	var entity PizzaEntity
 	pizza, err := rep.db.GetPizzaByID(ctx, id)
+	return entity.FromSqlC(pizza), err
+}
+
+func (rep *Repository) UpdatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error) {
+	var entity PizzaEntity
+	pizza, err := rep.db.UpdatePizza(ctx, database.UpdatePizzaParams{
+		ID:         model.ID,
+		Name:       model.Name,
+		Tomatoes:   model.Tomatoes,
+		Garlic:     model.Garlic,
+		Onion:      model.Onion,
+		Parmesan:   model.Parmesan,
+		Cheddar:    model.Cheddar,
+		Pepperoni:  model.Pepperoni,
+		Sausage:    model.Sausage,
+		Ham:        model.Ham,
+		Bacon:      model.Bacon,
+		Chicken:    model.Chicken,
+		Salami:     model.Salami,
+		GroundBeef: model.GroundBeef,
+		Mushrooms:  model.Mushrooms,
+		Olives:     model.Olives,
+		Spinach:    model.Spinach,
+		Pineapple:  model.Pineapple,
+		Arugula:    model.Arugula,
+		Anchovies:  model.Anchovies,
+		Capers:     model.Capers,
+		ImageUrl:   model.ImageUrl,
+		Price:      model.Price,
+		UpdatedAt:  model.UpdatedAt,
+	})
+	return entity.FromSqlC(pizza), err
+}
+
+func (rep *Repository) DeletePizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error) {
+	var entity PizzaEntity
+	pizza, err := rep.db.DeletePizzaByID(ctx, id)
 	return entity.FromSqlC(pizza), err
 }

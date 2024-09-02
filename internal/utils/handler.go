@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log/slog"
 	"net/http"
 )
 
@@ -15,9 +14,11 @@ func MakeHandler(f APIFunc) http.HandlerFunc {
 		if err := f(w, r); err != nil {
 			var apiErr APIError
 			if errors.As(err, &apiErr) {
-				WriteJSON(w, apiErr.StatusCode, apiErr)
+				err := WriteJSON(w, apiErr.StatusCode, apiErr)
+				if err != nil {
+					return
+				}
 			}
-			slog.Error(err.Error())
 		}
 	}
 }
@@ -40,6 +41,9 @@ func ReadRequestBody(r *http.Request, request interface{}) (func(), error) {
 	}
 
 	return func() {
-		r.Body.Close()
+		err := r.Body.Close()
+		if err != nil {
+			return
+		}
 	}, nil
 }
