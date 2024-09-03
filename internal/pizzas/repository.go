@@ -9,6 +9,7 @@ import (
 type PizzaRepository interface {
 	CreatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error)
 	GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error)
+	GetAllPizzaEntities(ctx context.Context, id uuid.UUID, price float64, pageSize int32) ([]PizzaEntity, error)
 	UpdatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error)
 	DeletePizzaEntityByID(ctx context.Context, id uuid.UUID) (PizzaEntity, error)
 }
@@ -56,6 +57,20 @@ func (rep *Repository) GetPizzaEntityByID(ctx context.Context, id uuid.UUID) (Pi
 	var entity PizzaEntity
 	pizza, err := rep.db.GetPizzaByID(ctx, id)
 	return entity.FromSqlC(pizza), err
+}
+
+func (rep *Repository) GetAllPizzaEntities(ctx context.Context, id uuid.UUID, price float64, pageSize int32) ([]PizzaEntity, error) {
+	var entities []PizzaEntity
+	pizzas, err := rep.db.GetAllPizzas(ctx, database.GetAllPizzasParams{
+		ID:       id,
+		Price:    price,
+		PageSize: pageSize,
+	})
+	for _, pizza := range pizzas {
+		var entity PizzaEntity
+		entities = append(entities, entity.FromSqlC(pizza))
+	}
+	return entities, err
 }
 
 func (rep *Repository) UpdatePizzaEntity(ctx context.Context, model PizzaModel) (PizzaEntity, error) {

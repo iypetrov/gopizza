@@ -12,6 +12,7 @@ import (
 type PizzaService interface {
 	CreatePizzaModel(ctx context.Context, model PizzaModel) (PizzaModel, error)
 	GetPizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error)
+	GetAllPizzaModels(ctx context.Context, id uuid.UUID, price float64, pageSize int32) ([]PizzaModel, error)
 	UpdatePizzaModel(ctx context.Context, id uuid.UUID, model PizzaModel) (PizzaModel, error)
 	DeletePizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaModel, error)
 }
@@ -43,8 +44,10 @@ func (srv *Service) CreatePizzaModel(ctx context.Context, model PizzaModel) (Piz
 				return PizzaModel{}, utils.BadRequest(ErrPizzasAlreadyExists)
 			}
 		}
-		return PizzaModel{}, utils.InternalServerError(ErrCreatingPizza)
+
+		return PizzaModel{}, utils.InternalServerError(ErrPizzaCreation)
 	}
+
 	return entity.ToModel(), nil
 }
 
@@ -53,7 +56,22 @@ func (srv *Service) GetPizzaModelByID(ctx context.Context, id uuid.UUID) (PizzaM
 	if err != nil {
 		return PizzaModel{}, utils.NotFound(ErrPizzaNotFound)
 	}
+
 	return entity.ToModel(), nil
+}
+
+func (srv *Service) GetAllPizzaModels(ctx context.Context, id uuid.UUID, price float64, pageSize int32) ([]PizzaModel, error) {
+	entities, err := srv.repository.GetAllPizzaEntities(ctx, id, price, pageSize)
+	if err != nil {
+		return nil, utils.InternalServerError(ErrPizzaFailedToLoad)
+	}
+
+	var models []PizzaModel
+	for _, entity := range entities {
+		models = append(models, entity.ToModel())
+	}
+
+	return models, nil
 }
 
 func (srv *Service) UpdatePizzaModel(ctx context.Context, id uuid.UUID, model PizzaModel) (PizzaModel, error) {
@@ -73,8 +91,9 @@ func (srv *Service) UpdatePizzaModel(ctx context.Context, id uuid.UUID, model Pi
 				return PizzaModel{}, utils.BadRequest(ErrPizzasAlreadyExists)
 			}
 		}
-		return PizzaModel{}, utils.InternalServerError(ErrUpdatingPizza)
+		return PizzaModel{}, utils.InternalServerError(ErrPizzaUpdating)
 	}
+
 	return entity.ToModel(), nil
 }
 
@@ -89,7 +108,7 @@ func (srv *Service) DeletePizzaModelByID(ctx context.Context, id uuid.UUID) (Piz
 				return PizzaModel{}, utils.BadRequest(ErrPizzaNotFound)
 			}
 		}
-		return PizzaModel{}, utils.InternalServerError(ErrDeletingPizza)
+		return PizzaModel{}, utils.InternalServerError(ErrPizzaDeletion)
 	}
 
 	return entity.ToModel(), nil

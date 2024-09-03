@@ -8,6 +8,13 @@ SELECT id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage,
 FROM pizzas
 WHERE id = $1;
 
+-- name: GetAllPizzas :many
+SELECT id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at
+FROM pizzas
+WHERE (price, id) >= (@price::double precision, @id::uuid)
+ORDER BY price ASC, id ASC
+LIMIT @page_size::int;
+
 -- name: UpdatePizza :one
 UPDATE pizzas
 SET

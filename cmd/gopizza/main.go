@@ -86,6 +86,7 @@ func registerRoutes() *chi.Mux {
 
 	r.Route(fmt.Sprintf("/api/v%s", cfg.App.Version), func(r chi.Router) {
 		r.Use(apiVersionCtx(cfg.App.Version))
+
 		// Public Routes
 		r.Group(func(r chi.Router) {
 			r.Mount("/pizzas", pizzas.Router(pizzasHnd))
@@ -104,9 +105,10 @@ func registerRoutes() *chi.Mux {
 }
 
 func apiVersionCtx(version string) func(next http.Handler) http.Handler {
+	versionKey := "API_VERSION"
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			r = r.WithContext(context.WithValue(r.Context(), "api.version", version))
+			r = r.WithContext(context.WithValue(r.Context(), versionKey, version))
 			next.ServeHTTP(w, r)
 		})
 	}

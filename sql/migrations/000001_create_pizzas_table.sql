@@ -27,6 +27,10 @@ CREATE TABLE IF NOT EXISTS pizzas (
     updated_at TIMESTAMP NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS idx_pizzas_price ON pizzas (price);
+
 -- +goose Down
+
+DROP INDEX IF EXISTS idx_pizzas_price;
 
 DROP TABLE pizzas;
