@@ -33,4 +33,5 @@ bin/
 tmp/
 
 # Generated files
-/internal
+/internal/database
+/vendor

@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/iypetrov/gopizza/internal/log"
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
@@ -42,7 +42,7 @@ func New() *Config {
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
 	cfg.App.Port = getEnv("APP_PORT", "8080")
-	cfg.Database.Name = getEnv("APP_DB_NAME", "goshop")
+	cfg.Database.Name = getEnv("APP_DB_NAME", "gopizza")
 	cfg.Database.Username = getEnv("APP_DB_USERNAME", "user")
 	cfg.Database.Password = getEnv("APP_DB_PASSWORD", "pass")
 	cfg.Database.Host = getEnv("APP_DB_HOST", "localhost")
@@ -55,7 +55,7 @@ func New() *Config {
 func getEnv(key string, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
-		log.Printf(
+		log.Warn(
 			"%s environment variable is not defined, so default value %s is used",
 			key,
 			defaultValue,
