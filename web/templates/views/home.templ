@@ -1,0 +1,13 @@
+package views
+
+import  (
+    "github.com/iypetrov/gopizza/web/templates"
+    "github.com/iypetrov/gopizza/web/templates/components"
+)
+
+templ Home(apiPrefix string) {
+   @templates.Base() {
+        <h1>This is the home page of gopizza</h1>
+         @components.PizzaCard(apiPrefix)
+   }
+}

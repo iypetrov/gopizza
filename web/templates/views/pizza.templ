@@ -1,0 +1,19 @@
+package views
+
+import (
+	"github.com/google/uuid"
+    "github.com/iypetrov/gopizza/web/templates"
+)
+
+templ Pizza(apiPrefix string, id uuid.UUID) {
+   @templates.Base() {
+   <div>
+        <h1>pizza view 1</h1>
+        <div
+            hx-get={ apiPrefix + "/pizzas/" + id.String()}
+            hx-trigger="load"
+            hx-swap="outerHTML"
+        ></div>
+   </div>
+   }
+}

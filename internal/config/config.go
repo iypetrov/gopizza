@@ -1,13 +1,14 @@
 package config
 
 import (
+	"fmt"
 	"github.com/iypetrov/gopizza/internal/log"
-	"github.com/joho/godotenv"
 	"os"
 )
 
 var (
 	DevEnv = "dev"
+	cfg    *Config
 )
 
 type Config struct {
@@ -28,16 +29,8 @@ type Config struct {
 	}
 }
 
-func New() *Config {
-	var cfg Config
-
-	if os.Getenv("APP_ENV") == DevEnv {
-		err := godotenv.Load()
-		if err != nil {
-			return &cfg
-		}
-	}
-
+func New() {
+	cfg = &Config{}
 	cfg.App.Environment = getEnv("APP_ENV", DevEnv)
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
@@ -48,8 +41,10 @@ func New() *Config {
 	cfg.Database.Host = getEnv("APP_DB_HOST", "localhost")
 	cfg.Database.Port = getEnv("APP_DB_PORT", "5432")
 	cfg.Database.SSL = getEnv("APP_DB_SSL", "disable")
+}
 
-	return &cfg
+func Get() *Config {
+	return cfg
 }
 
 func getEnv(key string, defaultValue string) string {
@@ -63,4 +58,20 @@ func getEnv(key string, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+func (c *Config) GetBaseWebUrl() string {
+	protocol := "https://"
+	basePath := fmt.Sprintf("%s", c.App.Addr)
+
+	if c.App.Environment == DevEnv {
+		protocol = "http://"
+		basePath = fmt.Sprintf("%s:%s", c.App.Addr, c.App.Port)
+	}
+
+	return fmt.Sprintf("%s%s", protocol, basePath)
+}
+
+func (c *Config) GetAPIPrefix() string {
+	return fmt.Sprintf("/api/v%s", c.App.Version)
 }
