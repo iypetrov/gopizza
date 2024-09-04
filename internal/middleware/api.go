@@ -16,23 +16,21 @@ var (
 )
 
 func UUIDFormat(next http.Handler) http.Handler {
-	var val uuid.UUID
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 
 		if len(id) != 0 {
 			i, err := uuid.Parse(id)
 			if err != nil {
-				err = writeAPIError(w, utils.InvalidUUID())
-				if err != nil {
-					return
-				}
+				writeAPIError(w, utils.InvalidUUID())
+				return
 			}
-			val = i
+
+			ctx := context.WithValue(r.Context(), UUIDKey, i)
+			r = r.WithContext(ctx)
 		}
 
-		ctx := context.WithValue(r.Context(), UUIDKey, val)
-		next.ServeHTTP(w, r.WithContext(ctx))
+		next.ServeHTTP(w, r)
 	})
 }
 
@@ -40,10 +38,8 @@ func BodyFormat(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			err = writeAPIError(w, utils.FailedReadRequestBody())
-			if err != nil {
-				return
-			}
+			writeAPIError(w, utils.FailedReadRequestBody())
+			return
 		}
 		defer r.Body.Close()
 
@@ -52,7 +48,7 @@ func BodyFormat(next http.Handler) http.Handler {
 	})
 }
 
-func writeAPIError(w http.ResponseWriter, apiErr utils.APIError) error {
+func writeAPIError(w http.ResponseWriter, apiErr utils.APIError) {
 	w.WriteHeader(apiErr.StatusCode)
-	return json.NewEncoder(w).Encode(apiErr)
+	json.NewEncoder(w).Encode(apiErr)
 }

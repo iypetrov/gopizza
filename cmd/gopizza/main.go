@@ -10,6 +10,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/log"
 	"github.com/iypetrov/gopizza/internal/pizzas"
+	"github.com/iypetrov/gopizza/web"
 	"net/http"
 	"os"
 	"os/signal"
@@ -20,7 +21,6 @@ import (
 var (
 	ctx    context.Context
 	cancel context.CancelFunc
-	cfg    *config.Config
 	db     *database.Queries
 
 	pizzasHnd *pizzas.PizzaHandler
@@ -28,11 +28,11 @@ var (
 
 func init() {
 	ctx, cancel = context.WithCancel(context.Background())
+	config.New()
 }
 
 func main() {
-	cfg = config.New()
-	conn, err := config.CreateDatabaseConnection(cfg)
+	conn, err := config.CreateDatabaseConnection(config.Get())
 	if err != nil {
 		log.Error("cannot connect to database %s", err.Error())
 	}
@@ -51,14 +51,14 @@ func main() {
 	pizzasHnd = pizzas.NewHandler(pizzasSrv)
 
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%s", cfg.App.Port),
+		Addr:         fmt.Sprintf(":%s", config.Get().App.Port),
 		Handler:      registerRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
-	log.Info("server started on %s\n", cfg.App.Port)
+	log.Info("server started on %s\n", config.Get().App.Port)
 	if err := server.ListenAndServe(); err != nil {
 		log.Error("cannot start server: %s", err.Error())
 	}
@@ -71,7 +71,7 @@ func registerRoutes() *chi.Mux {
 
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
-	if cfg.App.Environment == config.DevEnv {
+	if config.Get().App.Environment == config.DevEnv {
 		r.Use(middleware.Logger)
 	}
 
@@ -80,12 +80,13 @@ func registerRoutes() *chi.Mux {
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: cfg.App.Environment != config.DevEnv,
+		AllowCredentials: config.Get().App.Environment != config.DevEnv,
 		MaxAge:           300,
 	}))
 
-	r.Route(fmt.Sprintf("/api/v%s", cfg.App.Version), func(r chi.Router) {
-		r.Use(apiVersionCtx(cfg.App.Version))
+	r.Mount("/", web.Router())
+	r.Route(config.Get().GetAPIPrefix(), func(r chi.Router) {
+		r.Use(apiVersionCtx(config.Get().App.Version))
 
 		// Public Routes
 		r.Group(func(r chi.Router) {
