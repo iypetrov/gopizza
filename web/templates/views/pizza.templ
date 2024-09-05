@@ -10,10 +10,18 @@ templ Pizza(apiPrefix string, id uuid.UUID) {
    <div>
         <h1>pizza view 1</h1>
         <div
-            hx-get={ apiPrefix + "/pizzas/" + id.String()}
+            hx-get={ apiPrefix + "/pizzas/" + id.String() }
             hx-trigger="load"
             hx-swap="outerHTML"
-        ></div>
+        >
+        </div>
+
+        <div
+            hx-get={ apiPrefix + "/pizzas/err" }
+            hx-trigger="load"
+            hx-target-4*="#serious-errors"
+        >
+        </div>
    </div>
    }
 }
