@@ -1,5 +1,4 @@
 -- +goose Up
-
 CREATE TABLE IF NOT EXISTS pizzas (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -30,7 +29,6 @@ CREATE TABLE IF NOT EXISTS pizzas (
 CREATE INDEX IF NOT EXISTS idx_pizzas_price ON pizzas (price);
 
 -- +goose Down
-
 DROP INDEX IF EXISTS idx_pizzas_price;
 
 DROP TABLE pizzas;

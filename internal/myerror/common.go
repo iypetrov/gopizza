@@ -1,9 +1,16 @@
-package utils
+package myerror
 
 import (
 	"fmt"
 	"net/http"
 	"strings"
+)
+
+var (
+	ErrNameIsRequired              = fmt.Errorf("name is required")
+	ErrImageUrlIsRequired          = fmt.Errorf("image url is required")
+	ErrPriceShouldBePositiveNumber = fmt.Errorf("price should be positive number")
+	ErrNotValidQueryParams         = fmt.Errorf("not valid query params")
 )
 
 type APIError struct {

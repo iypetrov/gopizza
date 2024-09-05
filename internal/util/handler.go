@@ -1,17 +1,18 @@
-package utils
+package util
 
 import (
 	"encoding/json"
 	"errors"
+	"github.com/iypetrov/gopizza/internal/myerror"
 	"net/http"
 )
 
 type APIFunc func(w http.ResponseWriter, r *http.Request) error
 
-func MakeHandler(f APIFunc) http.HandlerFunc {
+func Make(f APIFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
-			var apiErr APIError
+			var apiErr myerror.APIError
 			if errors.As(err, &apiErr) {
 				err := WriteJson(w, apiErr.StatusCode, apiErr)
 				if err != nil {

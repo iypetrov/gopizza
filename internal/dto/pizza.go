@@ -1,11 +1,11 @@
-package pizzas
+package dto
 
 import (
 	"github.com/google/uuid"
 	"time"
 )
 
-type UpsertPizzaRequestDto struct {
+type PizzaRequest struct {
 	Name       string  `json:"name"`
 	Tomatoes   bool    `json:"tomatoes"`
 	Garlic     bool    `json:"garlic"`
@@ -30,36 +30,7 @@ type UpsertPizzaRequestDto struct {
 	Price      float64 `json:"price"`
 }
 
-func (d *UpsertPizzaRequestDto) ToModel() PizzaModel {
-	return PizzaModel{
-		ID:         uuid.New(),
-		Name:       d.Name,
-		Tomatoes:   d.Tomatoes,
-		Garlic:     d.Garlic,
-		Onion:      d.Onion,
-		Parmesan:   d.Parmesan,
-		Cheddar:    d.Cheddar,
-		Pepperoni:  d.Pepperoni,
-		Sausage:    d.Sausage,
-		Ham:        d.Ham,
-		Bacon:      d.Bacon,
-		Chicken:    d.Chicken,
-		Salami:     d.Salami,
-		GroundBeef: d.GroundBeef,
-		Mushrooms:  d.Mushrooms,
-		Olives:     d.Olives,
-		Spinach:    d.Spinach,
-		Pineapple:  d.Pineapple,
-		Arugula:    d.Arugula,
-		Anchovies:  d.Anchovies,
-		Capers:     d.Capers,
-		ImageUrl:   d.ImageUrl,
-		Price:      d.Price,
-		UpdatedAt:  time.Now(),
-	}
-}
-
-type PizzaResponseDto struct {
+type PizzaResponse struct {
 	ID         uuid.UUID `json:"id"`
 	Name       string    `json:"name"`
 	Tomatoes   bool      `json:"tomatoes"`

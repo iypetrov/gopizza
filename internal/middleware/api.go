@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/utils"
+	"github.com/iypetrov/gopizza/internal/myerror"
 	"io"
 	"net/http"
 )
@@ -22,7 +22,7 @@ func UUIDFormat(next http.Handler) http.Handler {
 		if len(id) != 0 {
 			i, err := uuid.Parse(id)
 			if err != nil {
-				writeAPIError(w, utils.InvalidUUID())
+				writeAPIError(w, myerror.InvalidUUID())
 				return
 			}
 
@@ -38,7 +38,7 @@ func BodyFormat(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			writeAPIError(w, utils.FailedReadRequestBody())
+			writeAPIError(w, myerror.FailedReadRequestBody())
 			return
 		}
 		defer r.Body.Close()
@@ -48,7 +48,7 @@ func BodyFormat(next http.Handler) http.Handler {
 	})
 }
 
-func writeAPIError(w http.ResponseWriter, apiErr utils.APIError) {
+func writeAPIError(w http.ResponseWriter, apiErr myerror.APIError) {
 	w.WriteHeader(apiErr.StatusCode)
 	json.NewEncoder(w).Encode(apiErr)
 }

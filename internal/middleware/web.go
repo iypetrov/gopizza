@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/utils"
+	"github.com/iypetrov/gopizza/internal/util"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ func UUIDOrNotFound(next http.Handler) http.Handler {
 			i, err := uuid.Parse(id)
 			if err != nil {
 				fmt.Println("error parsing uuid: ", err)
-				utils.RedirectNotFoundView(w, r)
+				util.RedirectNotFoundView(w, r)
 				return
 			}
 
