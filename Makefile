@@ -16,7 +16,7 @@ queries:
 	@sqlc generate
 
 frontend:
-	@npx tailwindcss build -i static/css/style.css -o static/css/tailwind.css -m
+	@npx tailwindcss build -i static/css/input.css -o static/css/output.css
 	@templ generate
 
 dev:

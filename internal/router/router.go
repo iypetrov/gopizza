@@ -11,7 +11,6 @@ import (
 	mid "github.com/iypetrov/gopizza/internal/middleware"
 	"github.com/iypetrov/gopizza/internal/repository"
 	"github.com/iypetrov/gopizza/internal/service"
-	"github.com/iypetrov/gopizza/internal/toast"
 	"github.com/iypetrov/gopizza/internal/util"
 	"net/http"
 )
@@ -71,10 +70,6 @@ func New(ctx context.Context, db *database.Queries) *chi.Mux {
 			return
 		}
 	})
-
-	r.Get("/err", util.Make(func(w http.ResponseWriter, r *http.Request) error {
-		return toast.ErrorInternalServerError(toast.ErrPizzasAlreadyExists)
-	}))
 
 	return r
 }
