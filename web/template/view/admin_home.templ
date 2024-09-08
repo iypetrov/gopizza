@@ -1,0 +1,23 @@
+package view
+
+import  (
+    "github.com/iypetrov/gopizza/internal/config"
+    "github.com/iypetrov/gopizza/web/template"
+)
+
+templ AdminHome() {
+   @template.Base() {
+        <h1 class="text-3xl bg-red-500">Admin Home</h1>
+        <div
+            hx-get={ config.Get().GetAPIPrefix() + "/pizzas" }
+            hx-trigger="load"
+        >
+        </div>
+        <div
+            hx-get={ "/err" }
+            hx-trigger="load"
+            hx-target-5*="#toast"
+        >
+        </div>
+   }
+}

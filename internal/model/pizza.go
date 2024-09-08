@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/myerror"
+	"github.com/iypetrov/gopizza/internal/toast"
 	"time"
 )
 
@@ -33,20 +33,20 @@ type Pizza struct {
 	UpdatedAt  time.Time
 }
 
-func (m *Pizza) Validate() error {
+func (m *Pizza) Validate() []error {
 	var errs []error
 	if len(m.Name) == 0 {
-		errs = append(errs, myerror.ErrNameIsRequired)
+		errs = append(errs, toast.ErrNameIsRequired)
 	}
 	if len(m.ImageUrl) == 0 {
-		errs = append(errs, myerror.ErrImageUrlIsRequired)
+		errs = append(errs, toast.ErrImageUrlIsRequired)
 	}
 	if m.Price <= 0 {
-		errs = append(errs, myerror.ErrPriceShouldBePositiveNumber)
+		errs = append(errs, toast.ErrPriceShouldBePositiveNumber)
 	}
 
 	if len(errs) > 0 {
-		return myerror.InvalidRequestData(errs)
+		return errs
 	}
 
 	return nil

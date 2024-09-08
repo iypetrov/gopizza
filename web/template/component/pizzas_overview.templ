@@ -1,0 +1,11 @@
+package component
+
+import (
+    "github.com/iypetrov/gopizza/internal/dto"
+)
+
+templ PizzasOverview(resps []dto.PizzaResponse) {
+    for _, pizza := range resps {
+        @PizzaCard(pizza)
+    }
+}

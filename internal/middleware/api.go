@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/myerror"
+	"github.com/iypetrov/gopizza/internal/toast"
+	"github.com/iypetrov/gopizza/internal/util"
 	"io"
 	"net/http"
 )
@@ -22,7 +22,7 @@ func UUIDFormat(next http.Handler) http.Handler {
 		if len(id) != 0 {
 			i, err := uuid.Parse(id)
 			if err != nil {
-				writeAPIError(w, myerror.InvalidUUID())
+				util.RenderError(w, r, toast.ErrorInvalidUUID())
 				return
 			}
 
@@ -38,7 +38,7 @@ func BodyFormat(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			writeAPIError(w, myerror.FailedReadRequestBody())
+			util.RenderError(w, r, toast.ErrorFailedReadRequestBody())
 			return
 		}
 		defer r.Body.Close()
@@ -46,9 +46,4 @@ func BodyFormat(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), BodyKey, body)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func writeAPIError(w http.ResponseWriter, apiErr myerror.APIError) {
-	w.WriteHeader(apiErr.StatusCode)
-	json.NewEncoder(w).Encode(apiErr)
 }

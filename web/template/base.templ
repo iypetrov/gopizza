@@ -1,4 +1,4 @@
-package templates
+package template
 
 templ Base() {
 	<!DOCTYPE html>
@@ -12,11 +12,12 @@ templ Base() {
 			<script src="../../static/js/htmx.2.0.2.js"></script>
 			<script src="../../static/js/htmx-ext-response-targets.2.0.0.js"></script>
 		</head>
-		<body hx-ext="response-targets">
-			<main>
-				{ children... }
-			</main>
-            <div id="serious-errors"></div>
+		<body
+		    class="w-full bg-red-500"
+		    hx-ext="response-targets"
+		>
+			{ children... }
+            <div id="toast"></div>
 		</body>
 	</html>
 }

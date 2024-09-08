@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/mapper"
 	"github.com/iypetrov/gopizza/internal/model"
-	"github.com/iypetrov/gopizza/internal/myerror"
 	"github.com/iypetrov/gopizza/internal/repository"
+	"github.com/iypetrov/gopizza/internal/toast"
 	"github.com/lib/pq"
 )
 
@@ -32,10 +32,10 @@ func NewPizza(ctx context.Context, repository repository.Pizza) *PizzaImpl {
 }
 
 func (srv *PizzaImpl) CreatePizza(ctx context.Context, m model.Pizza) (model.Pizza, error) {
-	err := m.Validate()
-	if err != nil {
-		return model.Pizza{}, err
-	}
+	//err := m.Validate()
+	//if err != nil {
+	//	return model.Pizza{}, err
+	//}
 
 	e, err := srv.rep.CreatePizza(ctx, m)
 	if err != nil {
@@ -44,11 +44,11 @@ func (srv *PizzaImpl) CreatePizza(ctx context.Context, m model.Pizza) (model.Piz
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23505" {
-				return model.Pizza{}, myerror.BadRequest(myerror.ErrPizzasAlreadyExists)
+				return model.Pizza{}, toast.ErrPizzasAlreadyExists
 			}
 		}
 
-		return model.Pizza{}, myerror.InternalServerError(myerror.ErrPizzaCreation)
+		return model.Pizza{}, toast.ErrPizzaCreation
 	}
 
 	return mapper.PizzaEntityToModel(e), nil
@@ -57,7 +57,7 @@ func (srv *PizzaImpl) CreatePizza(ctx context.Context, m model.Pizza) (model.Piz
 func (srv *PizzaImpl) GetPizzaByID(ctx context.Context, id uuid.UUID) (model.Pizza, error) {
 	e, err := srv.rep.GetPizzaByID(ctx, id)
 	if err != nil {
-		return model.Pizza{}, myerror.NotFound(myerror.ErrPizzaNotFound)
+		return model.Pizza{}, toast.ErrPizzaNotFound
 	}
 
 	return mapper.PizzaEntityToModel(e), nil
@@ -66,7 +66,7 @@ func (srv *PizzaImpl) GetPizzaByID(ctx context.Context, id uuid.UUID) (model.Piz
 func (srv *PizzaImpl) GetAllPizzas(ctx context.Context, lastID uuid.UUID, lastPrice float64, pageSize int32) ([]model.Pizza, error) {
 	es, err := srv.rep.GetAllPizzas(ctx, lastID, lastPrice, pageSize)
 	if err != nil {
-		return nil, myerror.InternalServerError(myerror.ErrPizzaFailedToLoad)
+		return nil, toast.ErrPizzaFailedToLoad
 	}
 
 	var ms []model.Pizza
@@ -80,10 +80,10 @@ func (srv *PizzaImpl) GetAllPizzas(ctx context.Context, lastID uuid.UUID, lastPr
 func (srv *PizzaImpl) UpdateModel(ctx context.Context, id uuid.UUID, m model.Pizza) (model.Pizza, error) {
 	m.ID = id
 
-	err := m.Validate()
-	if err != nil {
-		return model.Pizza{}, err
-	}
+	//err := m.Validate()
+	//if err != nil {
+	//	return model.Pizza{}, err
+	//}
 
 	e, err := srv.rep.UpdatePizza(ctx, m)
 	if err != nil {
@@ -92,11 +92,11 @@ func (srv *PizzaImpl) UpdateModel(ctx context.Context, id uuid.UUID, m model.Piz
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23505" {
-				return model.Pizza{}, myerror.BadRequest(myerror.ErrPizzasAlreadyExists)
+				return model.Pizza{}, toast.ErrPizzasAlreadyExists
 			}
 		}
 
-		return model.Pizza{}, myerror.InternalServerError(myerror.ErrPizzaUpdating)
+		return model.Pizza{}, toast.ErrPizzaUpdating
 	}
 
 	return mapper.PizzaEntityToModel(e), nil
@@ -110,11 +110,11 @@ func (srv *PizzaImpl) DeletePizzaByID(ctx context.Context, id uuid.UUID) (model.
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23503" {
-				return model.Pizza{}, myerror.BadRequest(myerror.ErrPizzaNotFound)
+				return model.Pizza{}, toast.ErrPizzaNotFound
 			}
 		}
 
-		return model.Pizza{}, myerror.InternalServerError(myerror.ErrPizzaDeletion)
+		return model.Pizza{}, toast.ErrPizzaDeletion
 	}
 
 	return mapper.PizzaEntityToModel(e), nil

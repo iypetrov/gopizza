@@ -1,30 +1,41 @@
 package util
 
 import (
-	"encoding/json"
 	"errors"
-	"github.com/iypetrov/gopizza/internal/myerror"
+	"github.com/a-h/templ"
+	"github.com/iypetrov/gopizza/internal/toast"
+	"github.com/iypetrov/gopizza/web/template/component"
 	"net/http"
 )
 
-type APIFunc func(w http.ResponseWriter, r *http.Request) error
+type HandlerFunc func(w http.ResponseWriter, r *http.Request) error
 
-func Make(f APIFunc) http.HandlerFunc {
+func Make(f HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
-			var apiErr myerror.APIError
-			if errors.As(err, &apiErr) {
-				err := WriteJson(w, apiErr.StatusCode, apiErr)
-				if err != nil {
-					return
-				}
+			var terr toast.CustomError
+			if errors.As(err, &terr) {
+				RenderError(w, r, terr)
 			}
 		}
 	}
 }
 
-func WriteJson(w http.ResponseWriter, status int, v any) error {
-	w.WriteHeader(status)
-	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(v)
+func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
+	return c.Render(r.Context(), w)
+}
+
+func RenderSuccess(w http.ResponseWriter, r *http.Request, suc toast.CustomSuccess) error {
+	w.WriteHeader(suc.StatusCode)
+	return Render(w, r, component.ToastSuccess(suc))
+}
+
+func RenderError(w http.ResponseWriter, r *http.Request, err toast.CustomError) error {
+	w.WriteHeader(err.StatusCode)
+	return Render(w, r, component.ToastError(err))
+}
+
+func RenderWarning(w http.ResponseWriter, r *http.Request, warn toast.CustomWarning) error {
+	w.WriteHeader(warn.StatusCode)
+	return Render(w, r, component.ToastWarning(warn))
 }

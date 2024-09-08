@@ -75,3 +75,7 @@ func (c *Config) GetBaseWebUrl() string {
 func (c *Config) GetAPIPrefix() string {
 	return fmt.Sprintf("/api/v%s", c.App.Version)
 }
+
+func (c *Config) GetAdminPrefix() string {
+	return "/admin"
+}
