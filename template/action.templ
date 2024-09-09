@@ -1,0 +1,16 @@
+package template
+
+templ Action(status string) {
+	<div id="action">
+		<button hx-post="/" hx-target="#action" hx-swap="outerHTML">Send request to backend</button>
+		<p>
+			Status: 
+			if status == "sent" {
+				Sent
+			}
+			if status == "unsent" {
+				Unsent
+			}
+		</p>
+	</div>
+}

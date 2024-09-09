@@ -33,8 +33,8 @@ bin/
 tmp/
 
 # Generated files
-/vendor
-/internal/database
+vendor/
+internal/database/
 node_modules/
 *_templ.go
-tailwind.css
+output.css

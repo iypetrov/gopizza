@@ -1,1 +1,1 @@
-# gopizza
+go-htmx-toast-notifications

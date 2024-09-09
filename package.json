@@ -1,5 +1,16 @@
 {
+  "name": "go-htmx-toast-notifications",
+  "version": "1.0.0",
+  "description": "go-htmx-toast-notifications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tw": "tailwindcss -i app.css -o ./static/app.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.7"
   }
 }
