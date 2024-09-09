@@ -35,6 +35,5 @@ tmp/
 # Generated files
 vendor/
 internal/database/
-node_modules/
 *_templ.go
 output.css
