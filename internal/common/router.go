@@ -23,7 +23,7 @@ func NewRouter(ctx context.Context) *chi.Mux {
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			t := Toast{
-				Message:    "Successfully triggered from backend.",
+				Message:    "Successfully triggered from backend asdashdgashdgasuidg aiusdgaGUgsd iaGGAS GASIUDG Ausiiusadguisadgiasudasidgasidgasgdaisudgausigd.",
 				StatusCode: http.StatusOK,
 			}
 			AddToast(w, t)

@@ -8,7 +8,7 @@ templ Toast() {
 	>
 		<template x-teleport="body">
 			<div
-				class="fixed block z-[999] bottom-0 right-0 mr-4 mb-4 space-y-2.5"
+				class="fixed block z-[999] bottom-0 left-1/4 mr-4 mb-4 space-y-2.5 w-1/2"
 				@add-toast.window="add"
 			>
 				<template x-for="toast in toasts" :key="toast.id">
@@ -23,14 +23,11 @@ templ Toast() {
 						x-transition:leave-start="opacity-100 scale-100"
 						x-transition:leave-end="opacity-0 scale-90"
 						role="alert"
-						:class="`alert ${toast.statusCode <= 399 ? 'alert-success' : 'alert-error'} relative border border-border rounded-lg shadow-sm px-5 py-7 flex items-center gap-2 min-w-[384px]`"
+						:class="`alert ${toast.statusCode <= 399 ? 'alert-success' : 'alert-error'} relative border border-border rounded-lg shadow-sm px-5 py-7 flex items-center gap-2 break-all`"
 					>
-						<button @click="dismiss(toast.id)" class="absolute top-3 right-3">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x text-close hover:text-black"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
-						</button>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6 shrink-0 stroke-current"
+                            class="h-6 w-6 shrink-0 stroke-current flex-none"
                             fill="none"
                             viewBox="0 0 24 24"
                         >
@@ -41,7 +38,25 @@ templ Toast() {
                                 :d="toast.statusCode <= 399 ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'"
                             />
                         </svg>
-						<p class="font-medium text-sm text-text" x-text="toast.message"></p>
+						<p class="font-medium text-sm text-text flex-1" x-text="toast.message"></p>
+						<br class="flex-none">
+						<button @click="dismiss(toast.id)" class="flex-none">
+							<svg
+							    xmlns="http://www.w3.org/2000/svg"
+							    width="20"
+							    height="20"
+							    viewBox="0 0 24 24"
+							    fill="none"
+							    stroke="currentColor"
+							    stroke-width="2"
+							    stroke-linecap="round"
+							    stroke-linejoin="round"
+							    class="text-close hover:text-black"
+							>
+							    <path d="M18 6 6 18"></path>
+						    	<path d="m6 6 12 12"></path>
+							</svg>
+						</button>
 					</div>
 				</template>
 			</div>
