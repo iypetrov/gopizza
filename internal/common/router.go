@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/iypetrov/gopizza/template"
+	"github.com/iypetrov/gopizza/templates"
 	"net/http"
 )
 
@@ -17,12 +17,12 @@ func NewRouter(ctx context.Context) *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			component := template.Hello("world")
+			component := templates.Hello("world")
 			component.Render(r.Context(), w)
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Hx-Trigger", `{"add-toast": {"message": "Successfully triggered from backend.", "type": "info"}}`)
-			component := template.Action("sent")
+			component := templates.Action("sent")
 			component.Render(r.Context(), w)
 		})
 	})
