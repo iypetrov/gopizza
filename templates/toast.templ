@@ -22,17 +22,25 @@ templ Toast() {
 						x-transition:leave="transition ease-in duration-300"
 						x-transition:leave-start="opacity-100 scale-100"
 						x-transition:leave-end="opacity-0 scale-90"
-						class="relative border border-border rounded-lg shadow-sm px-5 py-7 flex items-center gap-2 min-w-[384px]"
+						role="alert"
+						:class="`alert ${toast.statusCode <= 399 ? 'alert-success' : 'alert-error'} relative border border-border rounded-lg shadow-sm px-5 py-7 flex items-center gap-2 min-w-[384px]`"
 					>
 						<button @click="dismiss(toast.id)" class="absolute top-3 right-3">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x text-close hover:text-black"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
 						</button>
-						<template x-if="toast.statusCode <= 399">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info text-info"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-						</template>
-						<template x-if="toast.statusCode >= 400">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert text-warning"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
-						</template>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 shrink-0 stroke-current"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                :d="toast.statusCode <= 399 ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'"
+                            />
+                        </svg>
 						<p class="font-medium text-sm text-text" x-text="toast.message"></p>
 					</div>
 				</template>
