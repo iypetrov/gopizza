@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/webdevfuel/go-htmx-toast-notifications/template"
+	"github.com/webdevfuel/gopizza/template"
 )
 
 func main() {

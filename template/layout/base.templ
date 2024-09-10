@@ -1,6 +1,6 @@
 package layout
 
-import "github.com/webdevfuel/go-htmx-toast-notifications/template/toast"
+import "github.com/iypetrov/gopizza/template/toast"
 
 templ Base() {
 	<!DOCTYPE html>
@@ -9,9 +9,9 @@ templ Base() {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>Go HTMX Toast Notifications</title>
-			<script src="/static/htmx.min.js"></script>
-			<script defer src="/static/alpine.min.js"></script>
-			<link href="/static/app.css" rel="stylesheet"/>
+			<script src="/static/js/htmx.min.js"></script>
+			<script defer src="/static/js/alpine.min.js"></script>
+			<link href="/static/css/output.css" rel="stylesheet"/>
 		</head>
 		<body>
 			@toast.Toast()

@@ -1,4 +1,4 @@
-module github.com/webdevfuel/go-htmx-toast-notifications
+module github.com/iypetrov/gopizza
 
 go 1.22.5
 
