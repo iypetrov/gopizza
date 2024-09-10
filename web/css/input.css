@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.spinner {
+    display: none;
+}
+
+.htmx-request .spinner {
+    display: inline;
+}
+
+.htmx-request.spinner {
+    display: inline;
+}
+
+.spinner-text {
+    display: inline;
+}
+
+.htmx-request .spinner-text {
+    display: none;
+}
+
+.htmx-request.spinner-text {
+    display: none;
+}

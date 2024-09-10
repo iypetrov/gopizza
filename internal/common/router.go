@@ -18,16 +18,16 @@ func NewRouter(ctx context.Context) *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			component := views.Hello("world")
+			component := views.Hello()
 			Render(w, r, component)
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			t := Toast{
 				Message:    "Successfully triggered from backend asdashdgashdgasuidg aiusdgaGUgsd iaGGAS GASIUDG Ausiiusadguisadgiasudasidgasidgasgdaisudgausigd.",
-				StatusCode: http.StatusOK,
+				StatusCode: http.StatusInternalServerError,
 			}
 			AddToast(w, t)
-			component := components.HelloButton("sent")
+			component := components.HelloButton()
 			Render(w, r, component)
 		})
 	})

@@ -9,11 +9,14 @@ templ Base() {
 			<title>gopizza</title>
 			<script src="/web/js/htmx.min.js"></script>
 			<script defer src="/web/js/alpine.min.js"></script>
+			<link rel="icon" href="data:,">
 			<link href="/web/css/output.css" rel="stylesheet"/>
 		</head>
 		<body>
 			@Toast()
-			{ children... }
+			<div class="w-screen h-screen">
+                { children... }
+			</div>
 		</body>
 	</html>
 }

@@ -5,9 +5,10 @@ import (
     "github.com/iypetrov/gopizza/templates/components"
 )
 
-templ Hello(name string) {
+templ Hello() {
 	@templates.Base() {
-		<div class="text-2xl">Hello, { name }!</div>
-		@components.HelloButton("unsent")
+	    <div class="flex items-center justify-center h-full w-full">
+            @components.HelloButton()
+	    </div>
 	}
 }

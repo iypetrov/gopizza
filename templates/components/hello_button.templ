@@ -1,23 +1,17 @@
 package components
 
-templ HelloButton(status string) {
+import "github.com/iypetrov/gopizza/templates"
+
+templ HelloButton() {
 	<div id="action">
 		<button
 		    hx-post="/"
 		    hx-target="#action"
-		    hx-swap="outerHTML"
+		    hx-swap="innerHTML"
+		    hx-indicator="#spinner"
+		    class="btn btn-primary text-base-100 w-32"
 		>
-		Send request to backend
+            @templates.Spinner("Send")
 		</button>
-
-		<p>
-			Status: 
-			if status == "sent" {
-				Sent
-			}
-			if status == "unsent" {
-				Unsent
-			}
-		</p>
 	</div>
 }
