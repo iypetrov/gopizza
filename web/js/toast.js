@@ -6,7 +6,7 @@ document.addEventListener("alpine:init", () => {
       this.toasts.push({
         id: `toast-${Math.random().toString(16).slice(2)}`,
         message: event.detail.message,
-        type: event.detail.type,
+        statusCode: event.detail.statusCode,
         show: false,
       });
     },
@@ -44,12 +44,12 @@ document.addEventListener("alpine:init", () => {
     },
 
     globalInit() {
-      window.toast = function (message, type = "info") {
+      window.toast = function (message, statusCode = 200) {
         window.dispatchEvent(
           new CustomEvent("add-toast", {
             detail: {
               message: message,
-              type: type,
+              statusCode: statusCode,
             },
           }),
         );

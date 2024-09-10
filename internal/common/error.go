@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"net/http"
 )
 
 var (
@@ -13,6 +14,6 @@ var (
 func ErrorFailedRender() Toast {
 	return Toast{
 		Message:    fmt.Sprint("Failed to render component"),
-		StatusCode: "warning",
+		StatusCode: http.StatusInternalServerError,
 	}
 }

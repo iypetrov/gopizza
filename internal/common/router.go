@@ -24,7 +24,7 @@ func NewRouter(ctx context.Context) *chi.Mux {
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			t := Toast{
 				Message:    "Successfully triggered from backend.",
-				StatusCode: "warning",
+				StatusCode: http.StatusOK,
 			}
 			AddToast(w, t)
 			component := components.HelloButton("sent")

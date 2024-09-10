@@ -8,7 +8,7 @@ import (
 
 type Toast struct {
 	Message    string `json:"message"`
-	StatusCode string `json:"type"`
+	StatusCode int    `json:"statusCode"`
 }
 
 func (t Toast) Error() string {
