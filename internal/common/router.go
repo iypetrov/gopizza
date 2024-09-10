@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/iypetrov/gopizza/templates"
+	"github.com/iypetrov/gopizza/templates/views"
 	"net/http"
 )
 
@@ -17,7 +18,7 @@ func NewRouter(ctx context.Context) *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			component := templates.Hello("world")
+			component := views.Hello("world")
 			component.Render(r.Context(), w)
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {

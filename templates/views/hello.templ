@@ -1,0 +1,10 @@
+package views
+
+import "github.com/iypetrov/gopizza/templates"
+
+templ Hello(name string) {
+	@templates.Base() {
+		<div class="text-2xl">Hello, { name }!</div>
+		@templates.Action("unsent")
+	}
+}

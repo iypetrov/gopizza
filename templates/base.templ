@@ -1,6 +1,4 @@
-package layout
-
-import "github.com/iypetrov/gopizza/templates/toast"
+package templates
 
 templ Base() {
 	<!DOCTYPE html>
@@ -14,7 +12,7 @@ templ Base() {
 			<link href="/web/css/output.css" rel="stylesheet"/>
 		</head>
 		<body>
-			@toast.Toast()
+			@Toast()
 			{ children... }
 		</body>
 	</html>
