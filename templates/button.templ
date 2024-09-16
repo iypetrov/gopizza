@@ -1,0 +1,47 @@
+package templates
+
+type ButtonProps struct {
+	ID      string
+	Text    string
+	Target  string
+	Swap    string
+	Url     string
+	Color   string
+}
+
+templ Button(props ButtonProps) {
+    switch props.Color {
+        case "primary":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-primary hover:bg-primary/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "secondary":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-secondary hover:bg-secondary/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "accent":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-accent hover:bg-accent/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "info":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-info hover:bg-info/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "success":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-success hover:bg-success/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "warning":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-warning hover:bg-warning/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        case "error":
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-error hover:bg-error/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+        default:
+            <button id={ props.ID } type="submit" hx-disabled-elt="this" hx-post={ props.Url } hx-target={ props.Target } hx-swap={ props.Swap } class="text-base-100 bg-neutral hover:bg-neutral/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm">
+                @Spinner(props.Text)
+            </button>
+    }
+}

@@ -1,0 +1,31 @@
+package templates
+
+import (
+    "fmt"
+	"strings"
+)
+
+type CheckboxProps struct {
+	Name    string
+	Value   bool
+}
+
+templ Checkbox(props CheckboxProps) {
+    if (props.Value) {
+        <label class="flex items-center space-x-2" x-data="{ checked: true }">
+            <span class="w-24">
+                { fmt.Sprintf("%s%s", strings.ToUpper(string(props.Name[0])), props.Name[1:]) }
+            </span>
+            <input name={ props.Name } type="hidden" :value="checked"/>
+            <input id={ props.Name } type="checkbox" @change="checked = $event.target.checked" :value="checked" class="checkbox checkbox-sm"/>
+        </label>
+    } else {
+        <label class="flex items-center space-x-2" x-data="{ checked: false }">
+            <span class="w-24">
+                { fmt.Sprintf("%s%s", strings.ToUpper(string(props.Name[0])), props.Name[1:]) }
+            </span>
+            <input name={ props.Name } type="hidden" :value="checked"/>
+            <input id={ props.Name } type="checkbox" @change="checked = $event.target.checked" :value="checked" class="checkbox checkbox-sm"/>
+        </label>
+    }
+}

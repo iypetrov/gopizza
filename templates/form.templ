@@ -1,0 +1,16 @@
+package templates
+
+import "fmt"
+
+type FormProps struct {
+	ID          string
+	Url         string
+	ButtonColor string
+}
+
+templ Form(props FormProps) {
+    <form id={ props.ID } autocomplete="off" class="flex flex-col items-center">
+        { children... }
+        @Button(ButtonProps{ ID: fmt.Sprintf("%sButton", props.ID), Text: "Submit", Target: fmt.Sprintf("#%s", props.ID), Swap: "outerHTML", Url: props.Url, Color: props.ButtonColor })
+    </form>
+}
