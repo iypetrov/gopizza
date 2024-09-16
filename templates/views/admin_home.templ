@@ -1,0 +1,15 @@
+package views
+
+import (
+	"github.com/iypetrov/gopizza/templates"
+	"github.com/iypetrov/gopizza/templates/components"
+	"github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ AdminHome() {
+	@templates.Base() {
+	    <div class="flex items-center justify-center h-full w-full">
+            @components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
+	    </div>
+	}
+}

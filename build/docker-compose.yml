@@ -1,0 +1,22 @@
+services:
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.dev
+#    network_mode: "host"
+#    volumes:
+#      - ./:/app
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: gopizza
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    network_mode: "host"
+    volumes:
+      - gopizza_data:/var/lib/postgresql/data
+
+volumes:
+  gopizza_data:
+    driver: local

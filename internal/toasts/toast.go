@@ -1,4 +1,4 @@
-package common
+package toasts
 
 import (
 	"encoding/json"
@@ -26,5 +26,5 @@ func AddToast(w http.ResponseWriter, t Toast) {
 
 	res, _ := json.Marshal(a)
 
-	w.Header().Set("Hx-Trigger", string(res))
+	w.Header().Set("HX-Trigger", string(res))
 }

@@ -2,13 +2,12 @@ package views
 
 import (
 	"github.com/iypetrov/gopizza/templates"
-    "github.com/iypetrov/gopizza/templates/components"
 )
 
-templ Hello() {
+templ Home() {
 	@templates.Base() {
 	    <div class="flex items-center justify-center h-full w-full">
-            @components.HelloButton()
+            // @PizzasOverview(resps)
 	    </div>
 	}
 }

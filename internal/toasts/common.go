@@ -1,4 +1,4 @@
-package common
+package toasts
 
 import (
 	"fmt"
@@ -14,6 +14,13 @@ var (
 func ErrorFailedRender() Toast {
 	return Toast{
 		Message:    fmt.Sprint("Failed to render component"),
+		StatusCode: http.StatusInternalServerError,
+	}
+}
+
+func ErrorInternalServerError(err error) Toast {
+	return Toast{
+		Message:    err.Error(),
 		StatusCode: http.StatusInternalServerError,
 	}
 }

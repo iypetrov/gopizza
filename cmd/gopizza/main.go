@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/iypetrov/gopizza/configs"
-	"github.com/iypetrov/gopizza/internal/common"
+	"github.com/iypetrov/gopizza/internal/router"
 	"log"
 	"net/http"
 	"os"
@@ -16,10 +16,18 @@ import (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	configs.Init()
+	conn, err := configs.CreateDatabaseConnection()
+	if err != nil {
+		log.Fatalf("cannot connect to database %s", err.Error())
+	}
+	db := configs.NewDatabase(conn)
+	if err := configs.RunSchemaMigration(conn); err != nil {
+		log.Fatalf("cannot run schema migration %s", err.Error())
+	}
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),
-		Handler:      common.NewRouter(ctx),
+		Handler:      router.NewRouter(ctx, db),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

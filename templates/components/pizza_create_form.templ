@@ -1,0 +1,144 @@
+package components
+
+import (
+    "fmt"
+    "github.com/iypetrov/gopizza/configs"
+    "github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
+    <form id="pizzaCreateForm" autocomplete="off" hx-post={ fmt.Sprintf("%s%s", configs.Get().GetAPIPrefix(), "/pizzas") } hx-select="#pizzaCreateForm" hx-swap="outerHTML" class="flex flex-col items-center">
+        <div class="flex flex-col w-full">
+            <label for="name" class="label primary-content font-bold text-lg">Name</label>
+            <input id="name" type="text" name="name" value={ req.Name } placeholder="Enter name" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"/>
+            if errs["name"] != "" {
+                <p class="text-error mt-1">{ errs["name"] }</p>
+            }
+        </div>
+        <div class="divider"></div>
+        <div class="flex flex-col w-full">
+            <label for="price" class="label primary-content font-bold text-lg">Price</label>
+            if (req.Price == 0) {
+                <input id="price" type="text" name="price" value="" placeholder="Enter price" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"/>
+            } else {
+                <input id="price" type="text" name="price" value={ fmt.Sprintf("%.2f", req.Price) } placeholder="Enter price" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"/>
+            }
+
+            if errs["price"] != "" {
+                <p class="text-error mt-1">{ errs["price"] }</p>
+            }
+        </div>
+        <div class="divider"></div>
+        <div class="flex flex-col w-full">
+            <label for="imageUrl" class="label primary-content font-bold text-lg">Image Url</label>
+            <input id="imageUrl" type="text" name="imageUrl" value={ req.ImageUrl } placeholder="Enter image url" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"/>
+            if errs["imageUrl"] != "" {
+                <p class="text-error mt-1">{ errs["imageUrl"] }</p>
+            }
+        </div>
+        <div class="divider"></div>
+       <div class="flex flex-col space-y-2">
+           <label class="label primary-content font-bold text-lg">Ingredients</label>
+           <div class="grid grid-cols-3 gap-x-4 gap-y-2">
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Tomatoes</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="tomatoes"/>
+                    <input id="tomatoes" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Garlic</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="garlic"/>
+                    <input id="garlic" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Onion</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="onion"/>
+                    <input id="onion" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Parmesan</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="parmesan"/>
+                    <input id="parmesan" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Cheddar</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="cheddar"/>
+                    <input id="cheddar" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Pepperoni</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="pepperoni"/>
+                    <input id="pepperoni" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Sausage</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="sausage"/>
+                    <input id="sausage" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Ham</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="ham"/>
+                    <input id="ham" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Bacon</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="bacon"/>
+                    <input id="bacon" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Chicken</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="chicken"/>
+                    <input id="chicken" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Salami</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="salami"/>
+                    <input id="salami" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Ground Beef</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="groundBeef"/>
+                    <input id="groundBeef" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Mushrooms</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="mushrooms"/>
+                    <input id="mushrooms" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Olives</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="olives"/>
+                    <input id="olives" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Spinach</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="spinach"/>
+                    <input id="spinach" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Pineapple</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="pineapple"/>
+                    <input id="pineapple" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Arugula</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="arugula"/>
+                    <input id="arugula" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Anchovies</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="anchovies"/>
+                    <input id="anchovies" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+                <label class="flex items-center space-x-2" x-data="{ checked: false }">
+                    <span class="w-24">Capers</span>
+                    <input type="hidden" :value="checked ? 'true' : 'false'" name="capers"/>
+                    <input id="capers" type="checkbox" @change="checked = $event.target.checked" class="checkbox checkbox-sm"/>
+                </label>
+           </div>
+       </div>
+        <button type="submit" class="text-base-100 bg-secondary hover:bg-secondary/80 w-1/2 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm tracking-wide transition-colors duration-200 rounded-md focus:ring focus:shadow-outline focus:outline-none">
+            Submit
+        </button>
+    </form>
+}

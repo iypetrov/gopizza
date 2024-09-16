@@ -36,4 +36,5 @@ tmp/
 vendor/
 internal/database/
 *_templ.go
+*_templ.txt
 output.css

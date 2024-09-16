@@ -1,0 +1,15 @@
+package views
+
+import (
+	"github.com/iypetrov/gopizza/templates"
+    "github.com/iypetrov/gopizza/templates/components"
+    "github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ PizzasOverview(resps []dtos.PizzaResponse) {
+    @templates.Page() {
+        for _, pizza := range resps {
+            @components.PizzaCard(pizza)
+        }
+    }
+}

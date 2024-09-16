@@ -1,0 +1,11 @@
+package components
+
+import (
+    "github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ PizzaCard(resp dtos.PizzaResponse) {
+    <div class="font-bold">
+        <h1>{ resp.Name }</h1>
+    </div>
+}
