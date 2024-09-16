@@ -9,8 +9,10 @@ type FormProps struct {
 }
 
 templ Form(props FormProps) {
-    <form id={ props.ID } autocomplete="off" class="flex flex-col items-center">
+    <form id={ props.ID } autocomplete="off" class="flex flex-col w-full h-full items-center bg-base-100">
         { children... }
-        @Button(ButtonProps{ ID: fmt.Sprintf("%sButton", props.ID), Text: "Submit", Target: fmt.Sprintf("#%s", props.ID), Swap: "outerHTML", Url: props.Url, Color: props.ButtonColor })
+        <div class="w-full flex flex-col items-center mt-3">
+            @Button(ButtonProps{ID: fmt.Sprintf("%sButton", props.ID), Text: "Submit", Target: fmt.Sprintf("#%s", props.ID), Swap: "outerHTML", Url: props.Url, Color: props.ButtonColor})
+        </div>
     </form>
 }

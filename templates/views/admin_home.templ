@@ -9,7 +9,9 @@ import (
 templ AdminHome() {
 	@templates.Base() {
 	    <div class="flex items-center justify-center h-full w-full">
-            @components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
+	        @templates.Modal(templates.ModalProps{ID: "pizzaCreateFormModal", Text: "Creae Pizza", Color: "secondary"}) {
+                @components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
+	        }
 	    </div>
 	}
 }

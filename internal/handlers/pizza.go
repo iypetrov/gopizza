@@ -55,6 +55,7 @@ func (hnd *PizzaImpl) CreatePizza(w http.ResponseWriter, r *http.Request) error 
 		Message:    "pizza created successfully",
 		StatusCode: http.StatusCreated,
 	})
+	RedirectAdminHomePage(r)
 	return Render(w, r, components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string)))
 }
 

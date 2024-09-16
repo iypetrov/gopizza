@@ -28,5 +28,3 @@ func RedirectHomePage(r *http.Request) {
 func RedirectAdminHomePage(r *http.Request) {
 	hxRedirect(r, fmt.Sprintf("%s%s", configs.Get().GetAdminPrefix(), "/home"))
 }
-
-
