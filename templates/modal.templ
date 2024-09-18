@@ -1,9 +1,16 @@
 package templates
 
 templ Modal() {
-	<div @keydown.escape.window="modalOpen = false" class="relative z-50 w-auto h-auto">
+	<div
+		@keydown.escape.window="modalOpen = false"
+		class="relative z-50 w-auto h-auto"
+	>
 		<template x-teleport="body">
-			<div x-show="modalOpen" class="fixed top-0 left-0 z-[99] flex items-center justify-center w-screen h-screen" x-cloak>
+			<div
+				x-cloak
+				x-show="modalOpen"
+				class="fixed top-0 left-0 z-[99] flex items-center justify-center w-screen h-screen"
+			>
 				<div
 					x-show="modalOpen"
 					x-transition:enter="ease-out duration-300"
@@ -28,7 +35,18 @@ templ Modal() {
 				>
 					<div class="w-full flex justify-end">
 						<button @click="modalOpen=false">
-							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-close hover:font-bold primary-content">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="25"
+								height="25"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="text-close hover:font-bold primary-content"
+							>
 								<path d="M18 6 6 18"></path>
 								<path d="m6 6 12 12"></path>
 							</svg>

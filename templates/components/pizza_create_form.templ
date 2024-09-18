@@ -8,7 +8,11 @@ import (
 )
 
 templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
-	<form id="pizzaCreateForm" autocomplete="off" class="flex flex-col items-center justify-center w-full bg-base-100">
+	<form
+		id="pizzaCreateForm"
+		autocomplete="off"
+		class="flex flex-col items-center justify-center w-full bg-base-100"
+	>
 		<div class="w-full h-auto">
 			<div class="flex flex-col w-full">
 				@templates.Input(templates.InputProps{Name: "name", Value: req.Name, Error: errs["name"]})
@@ -27,7 +31,9 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 			</div>
 			<div class="divider"></div>
 			<div class="flex flex-col space-y-2 w-full">
-				<label class="label primary-content font-bold text-lg">Ingredients</label>
+				<label class="label primary-content font-bold text-lg">
+					Ingredients
+				</label>
 				<div class="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-x-4 gap-y-2">
 					@templates.Checkbox(templates.CheckboxProps{Name: "tomatoes", Value: req.Tomatoes})
 					@templates.Checkbox(templates.CheckboxProps{Name: "garlic", Value: req.Garlic})
@@ -51,7 +57,16 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 				</div>
 			</div>
 			<div class="flex items-center justify-center w-full mt-3">
-				<button id="pizzaCreateFormButton" type="submit" hx-disabled-elt="this" hx-post={ fmt.Sprintf("%s/pizza", configs.Get().GetAPIPrefix()) } hx-on::after-request="modalOpen=true" class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md">
+				<button
+					id="pizzaCreateFormButton"
+					type="submit"
+					hx-disabled-elt="this"
+					hx-post={ fmt.Sprintf("%s/pizzas", configs.Get().GetAPIPrefix()) }
+					hx-target="#pizzaCreateForm"
+					hx-swap="outerHTML"
+					:hx-on::after-request="modalOpen=false"
+					class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
+				>
 					@templates.Spinner() {
 						<span>Submit</span>
 					}
