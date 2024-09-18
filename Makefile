@@ -1,24 +1,19 @@
-APP_NAME = gopizza
-
-build:
-	@make queries
-	@make frontend
-	@go build -o bin/main cmd/$(APP_NAME)/main.go
-
-fmt:
-	@gofmt -w -s .
-
-queries:
+prod:
 	@sqlc generate
-
-frontend:
-	@npx tailwindcss build -i static/css/style.css -o static/css/tailwind.css -m
+	@./tailwindcss-extra -i ./web/css/input.css -o ./web/css/output.css -m
 	@templ generate
 
 dev:
-	@npx tailwindcss -i static/css/style.css -o static/css/tailwind.css --watch \
-	 &templ generate -watch -proxy=http://localhost:8080 -open-browser=false \
-	 & air -c .air.toml
+	@sqlc generate
+	@./tailwindcss-extra -i ./web/css/input.css -o ./web/css/output.css -m
+	@templ generate
+	@air -c .air.toml
 
 compose:
 	@docker compose up -d --build
+
+fmt:	
+	@go fmt ./...
+	@templ fmt .
+	@# sudo apt install -y pgformatter 
+	@find . -name '*.sql' -exec pg_format -i {} +

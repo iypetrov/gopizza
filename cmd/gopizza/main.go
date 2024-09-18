@@ -3,14 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-	"github.com/iypetrov/gopizza/internal/config"
-	"github.com/iypetrov/gopizza/internal/database"
-	"github.com/iypetrov/gopizza/internal/log"
-	"github.com/iypetrov/gopizza/internal/pizzas"
-	"github.com/iypetrov/gopizza/web"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/router"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,101 +13,32 @@ import (
 	"time"
 )
 
-var (
-	ctx    context.Context
-	cancel context.CancelFunc
-	db     *database.Queries
-
-	pizzasHnd *pizzas.PizzaHandler
-)
-
-func init() {
-	ctx, cancel = context.WithCancel(context.Background())
-	config.New()
-}
-
 func main() {
-	conn, err := config.CreateDatabaseConnection(config.Get())
+	ctx, cancel := context.WithCancel(context.Background())
+	configs.Init()
+	conn, err := configs.CreateDatabaseConnection()
 	if err != nil {
-		log.Error("cannot connect to database %s", err.Error())
+		log.Fatalf("cannot connect to database %s", err.Error())
 	}
-	db = config.NewDatabase(conn)
-	if err := config.RunSchemaMigration(conn); err != nil {
-		log.Error("cannot run schema migration %s", err.Error())
+	db := configs.NewDatabase(conn)
+	if err := configs.RunSchemaMigration(conn); err != nil {
+		log.Fatalf("cannot run schema migration %s", err.Error())
 	}
 
-	// repositories
-	pizzasRep := pizzas.NewRepository(db)
-
-	// services
-	pizzasSrv := pizzas.NewService(ctx, pizzasRep)
-
-	// handlers
-	pizzasHnd = pizzas.NewHandler(pizzasSrv)
-
-	server := &http.Server{
-		Addr:         fmt.Sprintf(":%s", config.Get().App.Port),
-		Handler:      registerRoutes(),
+	s := &http.Server{
+		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),
+		Handler:      router.NewRouter(ctx, db),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
-	log.Info("server started on %s\n", config.Get().App.Port)
-	if err := server.ListenAndServe(); err != nil {
-		log.Error("cannot start server: %s", err.Error())
+	log.Printf("server started on %s\n", configs.Get().App.Port)
+	if err := s.ListenAndServe(); err != nil {
+		log.Fatalf("cannot start server: %s", err.Error())
 	}
 
 	<-setupGracefulShutdown(cancel)
-}
-
-func registerRoutes() *chi.Mux {
-	r := chi.NewRouter()
-
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Recoverer)
-	if config.Get().App.Environment == config.DevEnv {
-		r.Use(middleware.Logger)
-	}
-
-	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"*"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: config.Get().App.Environment != config.DevEnv,
-		MaxAge:           300,
-	}))
-
-	r.Mount("/", web.Router())
-	r.Route(config.Get().GetAPIPrefix(), func(r chi.Router) {
-		r.Use(apiVersionCtx(config.Get().App.Version))
-
-		// Public Routes
-		r.Group(func(r chi.Router) {
-			r.Mount("/pizzas", pizzas.Router(pizzasHnd))
-		})
-	})
-
-	r.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, err := w.Write([]byte{})
-		if err != nil {
-			return
-		}
-	})
-
-	return r
-}
-
-func apiVersionCtx(version string) func(next http.Handler) http.Handler {
-	versionKey := "API_VERSION"
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			r = r.WithContext(context.WithValue(r.Context(), versionKey, version))
-			next.ServeHTTP(w, r)
-		})
-	}
 }
 
 func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan struct{}) {
@@ -121,12 +47,12 @@ func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan
 
 	shutdownFunc := func() {
 		if !isFirstShutdownSignal {
-			log.Info("caught another exit signal, now hard dying")
+			log.Printf("caught another exit signal, now hard dying")
 			os.Exit(1)
 		}
 
 		isFirstShutdownSignal = false
-		log.Info("starting graceful shutdown")
+		log.Printf("starting graceful shutdown")
 
 		cancel()
 
@@ -138,7 +64,7 @@ func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan
 		signal.Notify(sigint, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 		for {
-			log.Info("caught exit signal", "signal", <-sigint)
+			log.Print("caught exit signal", "signal", <-sigint)
 			go shutdownFunc()
 		}
 	}(shutdownFunc)
