@@ -9,9 +9,14 @@ import (
 templ AdminHome() {
 	@templates.Base() {
 	    <div class="flex items-center justify-center h-full w-full">
-	        @templates.Modal(templates.ModalProps{ID: "pizzaCreateFormModal", Text: "Creae Pizza", Color: "secondary"}) {
+	        @templates.Modal() {
                 @components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
 	        }
+            <button id="pizzaCreateFormModalButton" @click="modalOpen=true" hx-swap="outerHTML" class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md">
+                @templates.Spinner() {
+                    <span>Add Pizza</span>
+                }
+            </button>
 	    </div>
 	}
 }

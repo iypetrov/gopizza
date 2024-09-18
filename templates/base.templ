@@ -13,7 +13,7 @@ templ Base() {
             <link rel="icon" type="image/x-icon" href="/web/assets/logo.svg"/>
 			<link href="/web/css/output.css" rel="stylesheet"/>
 		</head>
-		<body>
+		<body x-data="{ modalOpen: false }">
 			@Toast()
 			<div class="font-primary w-screen min-h-screen">
                 { children... }

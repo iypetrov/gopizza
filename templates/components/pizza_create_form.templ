@@ -8,8 +8,8 @@ import (
 )
 
 templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
-    @templates.Form(templates.FormProps{ ID: "pizzaCreateForm", Url: fmt.Sprintf("%s%s", configs.Get().GetAPIPrefix(), "/pizzas"), ButtonColor: "secondary" }) {
-        <div class="w-full h-full">
+    <form id="pizzaCreateForm" autocomplete="off" class="flex flex-col items-center justify-center w-full bg-base-100">
+        <div class="w-full h-auto">
             <div class="flex flex-col w-full">
                 @templates.Input(templates.InputProps{Name: "name", Value: req.Name, Error: errs["name"]})
             </div>
@@ -50,6 +50,13 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
                     @templates.Checkbox(templates.CheckboxProps{Name: "capers", Value: req.Capers})
                 </div>
             </div>
+            <div class="flex items-center justify-center w-full mt-3"> 
+                <button id="pizzaCreateFormButton" type="submit" hx-disabled-elt="this" hx-post={ fmt.Sprintf("%s/pizza", configs.Get().GetAPIPrefix()) } hx-on::after-request="modalOpen=true" class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md">
+                    @templates.Spinner() {
+                        <span>Submit</span>
+                    }
+                </button>
+            </div>
         </div>
-    }
+    </form>
 }

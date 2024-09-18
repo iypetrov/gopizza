@@ -7,6 +7,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
 	"github.com/iypetrov/gopizza/templates/components"
+
 	"net/http"
 )
 
@@ -55,7 +56,6 @@ func (hnd *PizzaImpl) CreatePizza(w http.ResponseWriter, r *http.Request) error 
 		Message:    "pizza created successfully",
 		StatusCode: http.StatusCreated,
 	})
-	RedirectAdminHomePage(r)
 	return Render(w, r, components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string)))
 }
 

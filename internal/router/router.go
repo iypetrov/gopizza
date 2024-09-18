@@ -2,13 +2,15 @@ package router
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/handlers"
 	"github.com/iypetrov/gopizza/internal/services"
-	"net/http"
 )
 
 func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
@@ -31,14 +33,14 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 		// client
 		r.Get("/home", Make(handlers.HomeView))
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-			handlers.RedirectHomePage(r)
+			handlers.RedirectHomePage(w)
 		})
 
 		// admin
 		r.Route(configs.Get().GetAdminPrefix(), func(r chi.Router) {
 			r.Get("/home", Make(handlers.AdminHomeView))
 			r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-				handlers.RedirectAdminHomePage(r)
+				handlers.RedirectAdminHomePage(w)
 			})
 		})
 

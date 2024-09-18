@@ -17,14 +17,14 @@ func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
 	return nil
 }
 
-func hxRedirect(r *http.Request, path string) {
-	r.Header.Set("HX-Redirect", fmt.Sprintf("%s%s", configs.Get().GetBaseWebUrl(), path))
+func hxRedirect(w http.ResponseWriter, path string) {
+	w.Header().Set("HX-Redirect", fmt.Sprintf("%s%s", configs.Get().GetBaseWebUrl(), path))
 }
 
-func RedirectHomePage(r *http.Request) {
-	hxRedirect(r, "/home")
+func RedirectHomePage(w http.ResponseWriter) {
+	hxRedirect(w, "/home")
 }
 
-func RedirectAdminHomePage(r *http.Request) {
-	hxRedirect(r, fmt.Sprintf("%s%s", configs.Get().GetAdminPrefix(), "/home"))
+func RedirectAdminHomePage(w http.ResponseWriter) {
+	hxRedirect(w, fmt.Sprintf("%s%s", configs.Get().GetAdminPrefix(), "/home"))
 }

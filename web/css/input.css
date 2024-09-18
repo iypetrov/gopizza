@@ -17,14 +17,14 @@
     display: inline;
 }
 
-.spinner-text {
+.spinner-content {
     display: inline;
 }
 
-.htmx-request .spinner-text {
+.htmx-request .spinner-content {
     display: none;
 }
 
-.htmx-request.spinner-text {
+.htmx-request.spinner-content {
     display: none;
 }
