@@ -1,23 +1,35 @@
 -- name: CreatePizza :one
-INSERT INTO pizzas (
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at
-)
-VALUES (
-           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
-           $19, $20, $21, $22, $23, $24
-       )
+INSERT INTO pizzas (id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
 RETURNING
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at;
+    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at;
 
 -- name: GetPizzaByID :one
 SELECT
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at
+    id,
+    name,
+    tomatoes,
+    garlic,
+    onion,
+    parmesan,
+    cheddar,
+    pepperoni,
+    sausage,
+    ham,
+    bacon,
+    chicken,
+    salami,
+    ground_beef,
+    mushrooms,
+    olives,
+    spinach,
+    pineapple,
+    arugula,
+    anchovies,
+    capers,
+    image_url,
+    price,
+    updated_at
 FROM
     pizzas
 WHERE
@@ -25,21 +37,41 @@ WHERE
 
 -- name: GetAllPizzas :many
 SELECT
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at
+    id,
+    name,
+    tomatoes,
+    garlic,
+    onion,
+    parmesan,
+    cheddar,
+    pepperoni,
+    sausage,
+    ham,
+    bacon,
+    chicken,
+    salami,
+    ground_beef,
+    mushrooms,
+    olives,
+    spinach,
+    pineapple,
+    arugula,
+    anchovies,
+    capers,
+    image_url,
+    price,
+    updated_at
 FROM
     pizzas
-WHERE
-    (
-        (@price = 0 AND @id = '00000000-0000-0000-0000-000000000000') OR
-        (price, id) >= (@price::double precision, @id::uuid)
-        )
+WHERE ((@price = 0
+        AND @id = '00000000-0000-0000-0000-000000000000')
+    OR (price,
+        id) >= (@price::double precision,
+        @id::uuid))
 ORDER BY
     price ASC,
     id ASC
-LIMIT
-    @page_size::int;
+LIMIT @page_size::int;
 
 -- name: UpdatePizza :one
 UPDATE
@@ -71,16 +103,57 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at;
+    id,
+    name,
+    tomatoes,
+    garlic,
+    onion,
+    parmesan,
+    cheddar,
+    pepperoni,
+    sausage,
+    ham,
+    bacon,
+    chicken,
+    salami,
+    ground_beef,
+    mushrooms,
+    olives,
+    spinach,
+    pineapple,
+    arugula,
+    anchovies,
+    capers,
+    image_url,
+    price,
+    updated_at;
 
 -- name: DeletePizzaByID :one
-DELETE FROM
-    pizzas
-WHERE
-    id = $1
+DELETE FROM pizzas
+WHERE id = $1
 RETURNING
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham,
-    bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple,
-    arugula, anchovies, capers, image_url, price, updated_at;
+    id,
+    name,
+    tomatoes,
+    garlic,
+    onion,
+    parmesan,
+    cheddar,
+    pepperoni,
+    sausage,
+    ham,
+    bacon,
+    chicken,
+    salami,
+    ground_beef,
+    mushrooms,
+    olives,
+    spinach,
+    pineapple,
+    arugula,
+    anchovies,
+    capers,
+    image_url,
+    price,
+    updated_at;
+
