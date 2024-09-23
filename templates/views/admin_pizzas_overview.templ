@@ -1,0 +1,25 @@
+package views
+
+import (
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
+	"github.com/iypetrov/gopizza/templates/components"
+)
+
+templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
+	@templates.Modal() {
+		@components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
+	}
+	@templates.Page() {
+		<button
+			id="pizzaCreateFormModalButton"
+			@click="modalOpen=true"
+			hx-swap="outerHTML"
+			class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
+		>
+			@templates.Spinner() {
+				<span>Add Pizza</span>
+			}
+		</button>
+	}
+}
