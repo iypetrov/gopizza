@@ -1,11 +1,11 @@
 services:
-#  app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.dev
-#    network_mode: "host"
-#    volumes:
-#      - ./:/app
+  app:
+   build:
+     context: .
+     dockerfile: Dockerfile.dev
+   network_mode: "host"
+   volumes:
+     - ./:/app
 
   db:
     image: postgres:15
