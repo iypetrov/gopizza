@@ -2,8 +2,9 @@ package router
 
 import (
 	"errors"
-	"github.com/iypetrov/gopizza/internal/toasts"
 	"net/http"
+
+	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
 type HandlerFunc func(w http.ResponseWriter, r *http.Request) error

@@ -1,10 +1,11 @@
 package dtos
 
 import (
-	"github.com/google/uuid"
-	"github.com/iypetrov/gopizza/internal/toasts"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
 type PizzaRequest struct {

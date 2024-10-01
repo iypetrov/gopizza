@@ -3,6 +3,7 @@ package configs
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/iypetrov/gopizza/internal/database"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"

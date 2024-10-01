@@ -1,9 +1,11 @@
 package views
 
 import (
+	"fmt"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/templates"
 	"github.com/iypetrov/gopizza/templates/components"
+	"strconv"
 )
 
 templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
@@ -21,5 +23,127 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 				<span>Add Pizza</span>
 			}
 		</button>
+		@templates.Table() {
+			<thread>
+				<tr>
+					@templates.Th("ID")
+					@templates.Th("Name")
+					@templates.Th("Tomatoes")
+					@templates.Th("Garlic")
+					@templates.Th("Onion")
+					@templates.Th("Parmesan")
+					@templates.Th("Cheddar")
+					@templates.Th("Pepperoni")
+					@templates.Th("Sausage")
+					@templates.Th("Ham")
+					@templates.Th("Bacon")
+					@templates.Th("Chicken")
+					@templates.Th("Salami")
+					@templates.Th("GroundBeef")
+					@templates.Th("Mushrooms")
+					@templates.Th("Olives")
+					@templates.Th("Spinach")
+					@templates.Th("Pineapple")
+					@templates.Th("Arugula")
+					@templates.Th("Anchovies")
+					@templates.Th("Capers")
+					@templates.Th("ImageUrl")
+					@templates.Th("Price")
+					@templates.Th("UpdatedAt")
+				</tr>
+			</thread>
+			<tbody>
+				for _, val := range resps {
+					<tr>
+						@templates.Td() {
+							<p>{ val.ID.String() } </p>
+						}
+						@templates.Td() {
+							<p>{ val.Name } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Tomatoes) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Garlic) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Onion) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Parmesan) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Cheddar) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Pepperoni) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Sausage) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Ham) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Bacon) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Chicken) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Salami) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.GroundBeef) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Mushrooms) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Olives) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Spinach) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Pineapple) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Arugula) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Anchovies) } </p>
+						}
+						@templates.Td() {
+							<p>{ strconv.FormatBool(val.Capers) } </p>
+						}
+						@templates.Td() {
+							<p>{ val.ImageUrl } </p>
+						}
+						@templates.Td() {
+							<p>{ fmt.Sprintf("%.2f", val.Price) } </p>
+						}
+						@templates.Td() {
+							<p>{ val.UpdatedAt.Format("2006-01-02 15:04:05") } </p>
+						}
+					</tr>
+				}
+			</tbody>
+			<tfoot>
+			<tr>
+				<div class="w-full flex-1 justify-center items-center">
+					<td class="p-4 text-center font-bold text-slate-800 border-t border-slate-300">
+						<div class="join">
+							<button class="join-item btn">1</button>
+							<button class="join-item btn btn-active">2</button>
+							<button class="join-item btn">3</button>
+							<button class="join-item btn">4</button>
+						</div>
+					</td>
+				</div>
+			</tr>
+			</tfoot>
+		}
 	}
 }

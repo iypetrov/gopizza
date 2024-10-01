@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/iypetrov/gopizza/configs"
-	"github.com/iypetrov/gopizza/internal/router"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/router"
 )
 
 func main() {

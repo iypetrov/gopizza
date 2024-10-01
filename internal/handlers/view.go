@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/iypetrov/gopizza/templates/views"
 	"net/http"
+
+	"github.com/iypetrov/gopizza/templates/views"
 )
 
 func NotFoundView(w http.ResponseWriter, r *http.Request) error {

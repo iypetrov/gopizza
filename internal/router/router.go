@@ -50,7 +50,7 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 				r.Route("/pizzas", func(r chi.Router) {
 					r.Post("/", Make(pizzaHnd.CreatePizza))
 					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))
-					r.Get("/", Make(pizzaHnd.GetAllPizzas))
+					r.Get("/admin/overview", Make(pizzaHnd.GetAllPizzasAdminOverview))
 					r.Put("/{id}", Make(pizzaHnd.UpdatePizza))
 					r.Delete("/{id}", Make(pizzaHnd.DeletePizzaByID))
 				})

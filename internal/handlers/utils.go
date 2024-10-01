@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/a-h/templ"
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/toasts"
-	"net/http"
 )
 
 func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {

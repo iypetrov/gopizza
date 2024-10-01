@@ -1,12 +1,17 @@
 package handlers
 
 import (
+	"fmt"
+	"strconv"
+
+	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/common"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
 	"github.com/iypetrov/gopizza/templates/components"
+	"github.com/iypetrov/gopizza/templates/views"
 
 	"net/http"
 )
@@ -101,6 +106,45 @@ func (hnd *PizzaImpl) GetAllPizzas(w http.ResponseWriter, r *http.Request) error
 	//
 	//return util.Render(w, r, component.PizzasOverview(resp))
 	return nil
+}
+
+func (hnd *PizzaImpl) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Request) error {
+	idParam := r.URL.Query().Get("last-id")
+	lastID, err := uuid.Parse(idParam)
+	if err != nil {
+		lastID = uuid.Nil
+	}
+
+	priceParam := r.URL.Query().Get("last-price")
+	lastPrice, err := strconv.ParseFloat(priceParam, 64)
+	if err != nil {
+		lastPrice = 0
+	}
+
+	pageSizeParam := r.URL.Query().Get("page-size")
+	pageSize, err := strconv.ParseInt(pageSizeParam, 10, 32)
+	if err != nil {
+		pageSize = 10
+	}
+
+	var p database.GetAllPizzasParams
+	p.ID = lastID
+	p.Price = lastPrice
+	p.PageSize = int32(pageSize)
+	ms, err := hnd.srv.GetAllPizzas(r.Context(), p)
+	fmt.Println(ms)
+	if err != nil {
+		return toasts.ErrPizzaFailedToLoad
+	}
+
+	var resps []dtos.PizzaResponse
+	for _, model := range ms {
+		var dto dtos.PizzaResponse
+		common.MapFields(&model, &dto)
+		resps = append(resps, dto)
+	}
+
+	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
 func (hnd *PizzaImpl) UpdatePizza(w http.ResponseWriter, r *http.Request) error {
