@@ -23,6 +23,7 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 	pizzaSrv := services.NewPizza(ctx, db)
 
 	// handlers
+	authHnd := handlers.NewAuth()
 	pizzaHnd := handlers.NewPizza(pizzaSrv)
 
 	r.Route("/", func(r chi.Router) {
@@ -32,6 +33,7 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 
 		// client
 		r.Get("/home", Make(handlers.HomeView))
+		r.Get("/login", Make(handlers.LoginView))
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			handlers.RedirectHomePage(w)
 		})
@@ -47,6 +49,7 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 		// api
 		r.Route(configs.Get().GetAPIPrefix(), func(r chi.Router) {
 			r.Group(func(r chi.Router) {
+				r.Post("/login", Make(authHnd.Login))
 				r.Route("/pizzas", func(r chi.Router) {
 					r.Post("/", Make(pizzaHnd.CreatePizza))
 					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))

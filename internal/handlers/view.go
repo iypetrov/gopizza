@@ -17,3 +17,7 @@ func HomeView(w http.ResponseWriter, r *http.Request) error {
 func AdminHomeView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.AdminHome())
 }
+
+func LoginView(w http.ResponseWriter, r *http.Request) error {
+	return Render(w, r, views.Login())
+}
