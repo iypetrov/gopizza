@@ -11,27 +11,19 @@ import (
 	"github.com/lib/pq"
 )
 
-type Pizza interface {
-	CreatePizza(ctx context.Context, p database.CreatePizzaParams) (database.Pizza, error)
-	GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error)
-	GetAllPizzas(ctx context.Context, p database.GetAllPizzasParams) ([]database.Pizza, error)
-	UpdateModel(ctx context.Context, id uuid.UUID, p database.UpdatePizzaParams) (database.Pizza, error)
-	DeletePizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error)
-}
-
-type PizzaImpl struct {
+type Pizza struct {
 	ctx context.Context
 	db  *database.Queries
 }
 
-func NewPizza(ctx context.Context, db *database.Queries) *PizzaImpl {
-	return &PizzaImpl{
+func NewPizza(ctx context.Context, db *database.Queries) Pizza {
+	return Pizza{
 		ctx: ctx,
 		db:  db,
 	}
 }
 
-func (srv *PizzaImpl) CreatePizza(ctx context.Context, p database.CreatePizzaParams) (database.Pizza, error) {
+func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams) (database.Pizza, error) {
 	p.ID = uuid.New()
 	p.UpdatedAt = time.Now()
 
@@ -52,7 +44,7 @@ func (srv *PizzaImpl) CreatePizza(ctx context.Context, p database.CreatePizzaPar
 	return m, nil
 }
 
-func (srv *PizzaImpl) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
+func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
 	m, err := srv.db.GetPizzaByID(ctx, id)
 	if err != nil {
 		return database.Pizza{}, toasts.ErrPizzaNotFound
@@ -61,7 +53,7 @@ func (srv *PizzaImpl) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.
 	return m, nil
 }
 
-func (srv *PizzaImpl) GetAllPizzas(ctx context.Context, p database.GetAllPizzasParams) ([]database.Pizza, error) {
+func (srv *Pizza) GetAllPizzas(ctx context.Context, p database.GetAllPizzasParams) ([]database.Pizza, error) {
 	ms, err := srv.db.GetAllPizzas(ctx, p)
 	if err != nil {
 		return nil, toasts.ErrPizzaFailedToLoad
@@ -70,7 +62,7 @@ func (srv *PizzaImpl) GetAllPizzas(ctx context.Context, p database.GetAllPizzasP
 	return ms, nil
 }
 
-func (srv *PizzaImpl) UpdateModel(ctx context.Context, id uuid.UUID, p database.UpdatePizzaParams) (database.Pizza, error) {
+func (srv *Pizza) UpdateModel(ctx context.Context, id uuid.UUID, p database.UpdatePizzaParams) (database.Pizza, error) {
 	p.ID = id
 
 	m, err := srv.db.UpdatePizza(ctx, p)
@@ -90,7 +82,7 @@ func (srv *PizzaImpl) UpdateModel(ctx context.Context, id uuid.UUID, p database.
 	return m, nil
 }
 
-func (srv *PizzaImpl) DeletePizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
+func (srv *Pizza) DeletePizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
 	m, err := srv.db.DeletePizzaByID(ctx, id)
 	if err != nil {
 		var pgErr *pq.Error

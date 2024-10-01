@@ -16,23 +16,15 @@ import (
 	"net/http"
 )
 
-type Pizza interface {
-	CreatePizza(w http.ResponseWriter, r *http.Request) error
-	GetPizzaByID(w http.ResponseWriter, r *http.Request) error
-	GetAllPizzas(w http.ResponseWriter, r *http.Request) error
-	UpdatePizza(w http.ResponseWriter, r *http.Request) error
-	DeletePizzaByID(w http.ResponseWriter, r *http.Request) error
-}
-
-type PizzaImpl struct {
+type Pizza struct {
 	srv services.Pizza
 }
 
-func NewPizza(srv services.Pizza) *PizzaImpl {
-	return &PizzaImpl{srv: srv}
+func NewPizza(srv services.Pizza) Pizza {
+	return Pizza{srv: srv}
 }
 
-func (hnd *PizzaImpl) CreatePizza(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) CreatePizza(w http.ResponseWriter, r *http.Request) error {
 	req, err := dtos.ParseToPizzaRequest(r)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
@@ -64,7 +56,7 @@ func (hnd *PizzaImpl) CreatePizza(w http.ResponseWriter, r *http.Request) error 
 	return Render(w, r, components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string)))
 }
 
-func (hnd *PizzaImpl) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
 	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
 	//m, err := hnd.srv.GetPizzaByID(r.Context(), id)
 	//if err != nil {
@@ -75,7 +67,7 @@ func (hnd *PizzaImpl) GetPizzaByID(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
-func (hnd *PizzaImpl) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	//idParam := r.URL.Query().Get("last-id")
 	//lastID, err := uuid.Parse(idParam)
 	//if err != nil {
@@ -108,7 +100,7 @@ func (hnd *PizzaImpl) GetAllPizzas(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
-func (hnd *PizzaImpl) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Request) error {
 	idParam := r.URL.Query().Get("last-id")
 	lastID, err := uuid.Parse(idParam)
 	if err != nil {
@@ -147,7 +139,7 @@ func (hnd *PizzaImpl) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.R
 	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
-func (hnd *PizzaImpl) UpdatePizza(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) UpdatePizza(w http.ResponseWriter, r *http.Request) error {
 	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
 	//
 	//var req dto.PizzaRequest
@@ -170,7 +162,7 @@ func (hnd *PizzaImpl) UpdatePizza(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 
-func (hnd *PizzaImpl) DeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) DeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
 	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
 	//
 	//_, err := hnd.srv.DeletePizzaByID(r.Context(), id)
