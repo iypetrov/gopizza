@@ -10,6 +10,8 @@ import (
 )
 
 func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
+	w.Header().Set("Content-Type", "text/html")
+
 	err := c.Render(r.Context(), w)
 	if err != nil {
 		return toasts.ErrorFailedRender()
@@ -20,12 +22,4 @@ func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
 
 func hxRedirect(w http.ResponseWriter, path string) {
 	w.Header().Set("HX-Redirect", fmt.Sprintf("%s%s", configs.Get().GetBaseWebUrl(), path))
-}
-
-func RedirectHomePage(w http.ResponseWriter) {
-	hxRedirect(w, "/home")
-}
-
-func RedirectAdminHomePage(w http.ResponseWriter) {
-	hxRedirect(w, fmt.Sprintf("%s%s", configs.Get().GetAdminPrefix(), "/home"))
 }

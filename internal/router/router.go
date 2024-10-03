@@ -34,16 +34,10 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 		// client
 		r.Get("/home", Make(handlers.HomeView))
 		r.Get("/login", Make(handlers.LoginView))
-		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-			handlers.RedirectHomePage(w)
-		})
 
 		// admin
 		r.Route(configs.Get().GetAdminPrefix(), func(r chi.Router) {
 			r.Get("/home", Make(handlers.AdminHomeView))
-			r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-				handlers.RedirectAdminHomePage(w)
-			})
 		})
 
 		// api

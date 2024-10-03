@@ -1,4 +1,3 @@
-
 package handlers
 
 import (
@@ -9,7 +8,7 @@ import (
 	"net/http"
 )
 
-type Auth struct {}
+type Auth struct{}
 
 func NewAuth() Auth {
 	return Auth{}

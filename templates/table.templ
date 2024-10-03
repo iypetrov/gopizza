@@ -1,29 +1,25 @@
 package templates
 
 templ Table() {
-	<div class="flex flex-col border rounded-md">
-		<div class="overflow-x-auto">
-			<div class="inline-block min-w-full">
-				<div class="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
-					<table class="w-full text-left table-auto min-w-max">
-						{ children... }
-					</table>
-				</div>
-			</div>
-		</div>
+	<div class="overflow-x-auto w-full">
+		<table class="w-full text-left table-auto border-collapse table-fixed">
+			{ children... }
+		</table>
 	</div>
 }
 
 templ Th(text string) {
-	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-		<p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+	<th class="sticky top-0 p-3 border-b border-gray-200 bg-gray-100 z-10">
+		<p class="font-sans text-sm font-semibold text-gray-800 whitespace-nowrap">
 			{ text }
 		</p>
 	</th>
 }
 
 templ Td() {
-	<td class="p-4 border-b border-blue-gray-50 font-normal leading-normal text-blue-gray-900">
-		{ children... }
+	<td class="p-3 border-b border-gray-200 font-normal text-gray-800">
+		<div class="overflow-hidden text-ellipsis">
+			{ children... }
+		</div>
 	</td>
 }

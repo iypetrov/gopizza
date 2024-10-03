@@ -1,22 +1,18 @@
 package views
 
 import (
-"github.com/iypetrov/gopizza/internal/dtos"
- "github.com/iypetrov/gopizza/templates"
- "github.com/iypetrov/gopizza/templates/components"
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
+	"github.com/iypetrov/gopizza/templates/components"
 )
 
 templ Login() {
 	@templates.Base() {
 		<div class="flex flex-col w-full h-screen">
-			<div class="flex-1">
-				@templates.Page() {
-					<div class="flex flex-col justify-center items-center w-full h-full bg-blue-300">
-						<div class="w-1/2">
-							@components.LoginForm(dtos.LoginRequest{}, make(map[string]string))
-						</div>
-					</div>
-				}
+			<div class="flex flex-col justify-center items-center w-full h-full bg-blue-300">
+				<div class="w-1/2">
+					@components.LoginForm(dtos.LoginRequest{}, make(map[string]string))
+				</div>
 			</div>
 		</div>
 	}

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -124,7 +123,6 @@ func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Reque
 	p.Price = lastPrice
 	p.PageSize = int32(pageSize)
 	ms, err := hnd.srv.GetAllPizzas(r.Context(), p)
-	fmt.Println(ms)
 	if err != nil {
 		return toasts.ErrPizzaFailedToLoad
 	}
@@ -132,7 +130,7 @@ func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Reque
 	var resps []dtos.PizzaResponse
 	for _, model := range ms {
 		var dto dtos.PizzaResponse
-		common.MapFields(&model, &dto)
+		common.MapFields(&dto, &model)
 		resps = append(resps, dto)
 	}
 
