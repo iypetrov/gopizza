@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -30,6 +32,11 @@ type Config struct {
 }
 
 func Init() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
 	cfg = &Config{}
 	cfg.App.Environment = getEnv("APP_ENV", DevEnv)
 	cfg.App.Version = getEnv("APP_VERSION", "0")

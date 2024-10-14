@@ -14,10 +14,10 @@ import (
 )
 
 func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.Logger)
+	mux := chi.NewRouter()
+	mux.Use(middleware.RequestID)
+	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Logger)
 
 	// services
 	pizzaSrv := services.NewPizza(ctx, db)
@@ -26,7 +26,7 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 	authHnd := handlers.NewAuth()
 	pizzaHnd := handlers.NewPizza(pizzaSrv)
 
-	r.Route("/", func(r chi.Router) {
+	mux.Route("/", func(r chi.Router) {
 		// common
 		r.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
 		r.Get("/404", Make(handlers.NotFoundView))
@@ -63,5 +63,5 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 		})
 	})
 
-	return r
+	return mux
 }
