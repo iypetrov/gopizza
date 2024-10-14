@@ -12,6 +12,7 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 		hx-post={ fmt.Sprintf("%s/pizzas", configs.Get().GetAPIPrefix()) }
 		hx-target="this"
 		hx-swap="outerHTML"
+		hx-encoding="multipart/form-data"
 		hx-on::after-request="modal.close()"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>
@@ -27,9 +28,9 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 			}
 		</div>
 		<div class="divider"></div>
-		// <div class="flex flex-col w-full">
-		// 	@templates.Input(templates.InputProps{Name: "imageUrl", Value: req.ImageUrl, Error: errs["imageUrl"]})
-		// </div>
+		<div class="flex flex-row w-full">
+			@templates.ImageUploader(templates.ImageUploaderProps{Name: "imageUrl", Error: errs["imageUrl"]})
+		</div>
 		<div class="divider"></div>
 		<div class="flex flex-col space-y-2 w-full">
 			<label class="label primary-content font-bold text-lg">

@@ -1,0 +1,29 @@
+package templates
+
+type ImageUploaderProps struct {
+	Name  string
+	Error string
+}
+
+templ ImageUploader(props ImageUploaderProps) {
+	<div class="mb-4 flex-1">
+		<label
+			for={ props.Name }
+			class="label primary-content font-bold text-lg"
+		>
+			Image:
+		</label>
+		<input
+			type="file"
+			id={ props.Name }
+			name={ props.Name }
+			accept="image/*"
+			class="file-input file-input-bordered file-input-primary w-full"
+		/>
+		if props.Error != "" {
+			<p class="text-error mt-1">
+				props.Error
+			</p>
+		}
+	</div>
+}

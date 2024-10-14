@@ -12,12 +12,12 @@ import (
 )
 
 type Pizza struct {
-	db       *database.Queries
+	db *database.Queries
 }
 
 func NewPizza(db *database.Queries) Pizza {
 	return Pizza{
-		db:       db,
+		db: db,
 	}
 }
 

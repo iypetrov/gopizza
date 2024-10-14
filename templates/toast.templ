@@ -9,7 +9,7 @@ templ Toast() {
 		<template x-teleport="body">
 			<div
 				@add-toast.window="add"
-				class="fixed block z-[999] bottom-0 left-1/4 mr-4 mb-4 space-y-2.5 w-1/2"
+				class="fixed block z-999 bottom-0 left-1/4 mr-4 mb-4 space-y-2.5 w-1/2 "
 			>
 				<template
 					x-for="toast in toasts"
