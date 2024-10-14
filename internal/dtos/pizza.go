@@ -1,6 +1,7 @@
 package dtos
 
 import (
+	"io"
 	"net/http"
 	"time"
 
@@ -29,7 +30,7 @@ type PizzaRequest struct {
 	Arugula    bool
 	Anchovies  bool
 	Capers     bool
-	ImageUrl   string
+	Image      io.Reader
 	Price      float64
 }
 
@@ -40,8 +41,10 @@ func (req *PizzaRequest) Validate() map[string]string {
 		errs["name"] = toasts.ErrNameIsRequired.Error()
 	}
 
-	if len(req.ImageUrl) == 0 {
-		errs["imageUrl"] = toasts.ErrImageUrlIsRequired.Error()
+	buf := make([]byte, 10*1024*1024)
+	lenImg, _ := req.Image.Read(buf)
+	if lenImg == 0 {
+		errs["image"] = toasts.ErrImageIsRequired.Error()
 	}
 
 	if req.Price == 0 {
@@ -52,7 +55,8 @@ func (req *PizzaRequest) Validate() map[string]string {
 }
 
 func ParseToPizzaRequest(r *http.Request) (PizzaRequest, error) {
-	err := r.ParseForm()
+	// 10 MB limit
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		return PizzaRequest{}, err
 	}
@@ -78,8 +82,14 @@ func ParseToPizzaRequest(r *http.Request) (PizzaRequest, error) {
 	req.Arugula = parseBool(r, "arugula")
 	req.Anchovies = parseBool(r, "anchovies")
 	req.Capers = parseBool(r, "capers")
-	req.ImageUrl = parseString(r, "imageUrl")
 	req.Price = parseFloat(r, "price")
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		return PizzaRequest{}, err
+	}
+	defer file.Close()
+
+	req.Image = file
 
 	return req, nil
 }

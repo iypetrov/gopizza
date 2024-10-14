@@ -16,11 +16,15 @@ import (
 )
 
 type Pizza struct {
-	srv services.Pizza
+	srv    services.Pizza
+	srvImg services.Image
 }
 
-func NewPizza(srv services.Pizza) Pizza {
-	return Pizza{srv: srv}
+func NewPizza(srv services.Pizza, srvImg services.Image) Pizza {
+	return Pizza{
+		srv:    srv,
+		srvImg: srvImg,
+	}
 }
 
 func (hnd *Pizza) CreatePizza(w http.ResponseWriter, r *http.Request) error {
@@ -35,12 +39,19 @@ func (hnd *Pizza) CreatePizza(w http.ResponseWriter, r *http.Request) error {
 		return Render(w, r, components.PizzaCreateForm(req, errs))
 	}
 
+	imageUrl, err := hnd.srvImg.UploadImage(r.Context(), req.Image)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return Render(w, r, components.PizzaCreateForm(req, make(map[string]string)))
+	}
+
 	var p database.CreatePizzaParams
 	err = common.MapFields(&p, &req)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return Render(w, r, components.PizzaCreateForm(req, make(map[string]string)))
 	}
+	p.ImageUrl = imageUrl
 
 	_, err = hnd.srv.CreatePizza(r.Context(), p)
 	if err != nil {

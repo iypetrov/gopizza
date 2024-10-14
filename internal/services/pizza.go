@@ -12,14 +12,12 @@ import (
 )
 
 type Pizza struct {
-	ctx context.Context
-	db  *database.Queries
+	db       *database.Queries
 }
 
-func NewPizza(ctx context.Context, db *database.Queries) Pizza {
+func NewPizza(db *database.Queries) Pizza {
 	return Pizza{
-		ctx: ctx,
-		db:  db,
+		db:       db,
 	}
 }
 

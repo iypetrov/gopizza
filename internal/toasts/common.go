@@ -7,13 +7,14 @@ import (
 
 var (
 	ErrNameIsRequired              = fmt.Errorf("name is required")
-	ErrImageUrlIsRequired          = fmt.Errorf("image url is required")
+	ErrImageIsRequired             = fmt.Errorf("image url is required")
 	ErrPriceShouldBePositiveNumber = fmt.Errorf("price should be positive number")
+	ErrNotValidUUID                = fmt.Errorf("not valid uuid")
 )
 
 func ErrorFailedRender() Toast {
 	return Toast{
-		Message:    fmt.Sprint("Failed to render component"),
+		Message:    "failed to render component",
 		StatusCode: http.StatusInternalServerError,
 	}
 }

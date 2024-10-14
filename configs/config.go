@@ -29,6 +29,13 @@ type Config struct {
 		Port     string
 		SSL      string
 	}
+
+	AWS struct {
+		Region         string
+		AccessKeyID    string
+		SecretAcessKey string
+		S3BucketName   string
+	}
 }
 
 func Init() {
@@ -48,6 +55,10 @@ func Init() {
 	cfg.Database.Host = getEnv("APP_DB_HOST", "localhost")
 	cfg.Database.Port = getEnv("APP_DB_PORT", "5432")
 	cfg.Database.SSL = getEnv("APP_DB_SSL", "disable")
+	cfg.AWS.Region = getEnv("AWS_REGION", "default")
+	cfg.AWS.AccessKeyID = getEnv("AWS_ACCESS_KEY_ID", "default")
+	cfg.AWS.SecretAcessKey = getEnv("AWS_SECRET_ACCESS_KEY", "default")
+	cfg.AWS.S3BucketName = getEnv("S3_BUCKET_NAME", "default")
 }
 
 func Get() *Config {

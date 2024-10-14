@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/router"
 )
@@ -26,9 +28,12 @@ func main() {
 		log.Fatalf("cannot run schema migration %s", err.Error())
 	}
 
+	awsCfg, err := config.LoadDefaultConfig(ctx)
+	s3Client := s3.NewFromConfig(awsCfg)
+
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),
-		Handler:      router.NewRouter(ctx, db),
+		Handler:      router.NewRouter(ctx, db, s3Client),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

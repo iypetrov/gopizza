@@ -27,9 +27,9 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 			}
 		</div>
 		<div class="divider"></div>
-		<div class="flex flex-col w-full">
-			@templates.Input(templates.InputProps{Name: "imageUrl", Value: req.ImageUrl, Error: errs["imageUrl"]})
-		</div>
+		// <div class="flex flex-col w-full">
+		// 	@templates.Input(templates.InputProps{Name: "imageUrl", Value: req.ImageUrl, Error: errs["imageUrl"]})
+		// </div>
 		<div class="divider"></div>
 		<div class="flex flex-col space-y-2 w-full">
 			<label class="label primary-content font-bold text-lg">

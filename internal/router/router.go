@@ -4,45 +4,57 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/handlers"
+	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
 )
 
-func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
+func NewRouter(ctx context.Context, db *database.Queries, s3Client *s3.Client) *chi.Mux {
 	mux := chi.NewRouter()
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.Logger)
 
 	// services
-	pizzaSrv := services.NewPizza(ctx, db)
+	imageSrv := services.NewImage(s3Client)
+	pizzaSrv := services.NewPizza(db)
 
 	// handlers
+	imageHnd := handlers.NewImage(imageSrv)
 	authHnd := handlers.NewAuth()
-	pizzaHnd := handlers.NewPizza(pizzaSrv)
+	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
 
-	mux.Route("/", func(r chi.Router) {
+	mux.Route("/", func(mux chi.Router) {
 		// common
-		r.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
-		r.Get("/404", Make(handlers.NotFoundView))
+		mux.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
+		mux.Get("/404", Make(handlers.NotFoundView))
+		mux.With(middlewares.UUIDFormat).Get("/image/{id}", imageHnd.GetImage)
+		mux.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			_, err := w.Write([]byte{})
+			if err != nil {
+				return
+			}
+		})
 
 		// client
-		r.Get("/home", Make(handlers.HomeView))
-		r.Get("/login", Make(handlers.LoginView))
+		mux.Get("/home", Make(handlers.HomeView))
+		mux.Get("/login", Make(handlers.LoginView))
 
 		// admin
-		r.Route(configs.Get().GetAdminPrefix(), func(r chi.Router) {
-			r.Get("/home", Make(handlers.AdminHomeView))
+		mux.Route(configs.Get().GetAdminPrefix(), func(mux chi.Router) {
+			mux.Get("/home", Make(handlers.AdminHomeView))
 		})
 
 		// api
-		r.Route(configs.Get().GetAPIPrefix(), func(r chi.Router) {
-			r.Group(func(r chi.Router) {
+		mux.Route(configs.Get().GetAPIPrefix(), func(mux chi.Router) {
+			mux.Group(func(r chi.Router) {
 				r.Post("/login", Make(authHnd.Login))
 				r.Route("/pizzas", func(r chi.Router) {
 					r.Post("/", Make(pizzaHnd.CreatePizza))
@@ -52,14 +64,6 @@ func NewRouter(ctx context.Context, db *database.Queries) *chi.Mux {
 					r.Delete("/{id}", Make(pizzaHnd.DeletePizzaByID))
 				})
 			})
-		})
-
-		r.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-			_, err := w.Write([]byte{})
-			if err != nil {
-				return
-			}
 		})
 	})
 

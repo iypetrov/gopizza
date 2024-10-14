@@ -31,7 +31,6 @@ go.work.sum
 # Project build
 bin/
 tmp/
-.lh/
 
 # Generated files
 vendor/
