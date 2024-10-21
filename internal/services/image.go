@@ -23,13 +23,21 @@ func NewImage(s3Client *s3.Client) Image {
 }
 
 func (srv *Image) UploadImage(ctx context.Context, file io.Reader) (string, error) {
+	// Create a buffer to store the file content
 	var buf bytes.Buffer
-	_, err := io.Copy(&buf, file)
+
+	// Copy the file content into the buffer
+	size, err := io.Copy(&buf, file)
 	if err != nil {
 		return "", err
 	}
 
+	fmt.Println(size)
+
+	// Generate a UUID for the image
 	id := uuid.New()
+
+	// Upload the image to S3 using the buffer's content
 	_, err = srv.s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(configs.Get().AWS.S3BucketName),
 		Key:    aws.String(getImageKey(id)),
@@ -39,6 +47,7 @@ func (srv *Image) UploadImage(ctx context.Context, file io.Reader) (string, erro
 		return "", err
 	}
 
+	// Return the image URL and its size
 	return fmt.Sprintf("%s/image/%s", configs.Get().GetBaseWebUrl(), getImageKey(id)), nil
 }
 
