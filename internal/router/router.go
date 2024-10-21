@@ -58,11 +58,10 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 			mux.Group(func(r chi.Router) {
 				r.Post("/login", Make(authHnd.Login))
 				r.Route("/pizzas", func(r chi.Router) {
-					r.Post("/", Make(pizzaHnd.CreatePizza))
 					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))
-					r.Get("/admin/overview", Make(pizzaHnd.GetAllPizzasAdminOverview))
-					r.Put("/{id}", Make(pizzaHnd.UpdatePizza))
-					r.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.DeletePizzaByID))
+					r.Post("/admin", Make(pizzaHnd.AdminCreatePizza))
+					r.Get("/admin", Make(pizzaHnd.AdminGetAllPizzas))
+					r.With(middlewares.UUIDFormat).Delete("/admin/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
 				})
 			})
 		})

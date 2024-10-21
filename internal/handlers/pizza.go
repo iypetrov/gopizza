@@ -28,7 +28,7 @@ func NewPizza(srv services.Pizza, srvImg services.Image) Pizza {
 	}
 }
 
-func (hnd *Pizza) CreatePizza(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) AdminCreatePizza(w http.ResponseWriter, r *http.Request) error {
 	req, err := dtos.ParseToPizzaRequest(r)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
@@ -116,7 +116,7 @@ func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) AdminGetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	models, err := hnd.srv.GetAllPizzas(r.Context())
 	if err != nil {
 		return toasts.ErrPizzaFailedToLoad
@@ -132,36 +132,13 @@ func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Reque
 	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
-func (hnd *Pizza) UpdatePizza(w http.ResponseWriter, r *http.Request) error {
-	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
-	//
-	//var req dto.PizzaRequest
-	//body, ok := r.Context().Value(middleware.BodyKey).([]byte)
-	//if !ok {
-	//	return toast.ErrorInvalidJSON()
-	//}
-	//
-	//err := json.Unmarshal(body, &req)
-	//if err != nil {
-	//	return toast.ErrorInvalidJSON()
-	//}
-	//
-	//_, err = hnd.srv.UpdateModel(r.Context(), id, mapper.PizzaRequestToModel(req, id, time.Now()))
-	//if err != nil {
-	//	return toast.ErrorInternalServerError(err)
-	//}
-	//
-	//return util.RenderSuccess(w, r, toast.SuccessPizzaUpdated())
-	return nil
-}
-
-func (hnd *Pizza) DeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
+func (hnd *Pizza) AdminDeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
 	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
 	if !ok {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
 		return toasts.ErrNotValidUUID
 	}
-	
+
 	models, err := hnd.srv.DeletePizzaByID(r.Context(), id)
 	if err != nil {
 		return toasts.ErrorInternalServerError(err)
