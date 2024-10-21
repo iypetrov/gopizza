@@ -2,7 +2,6 @@ package views
 
 import (
 	"fmt"
-	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/templates"
 	"github.com/iypetrov/gopizza/templates/components"
@@ -11,18 +10,13 @@ import (
 
 templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 	@templates.Modal() {
-		<template x-if="modalType === 'pizza-create'">
-			@components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
-		</template>
-		<template x-if="modalType === 'pizza-update'">
-			<h1>update</h1>
-		</template>
+		@components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
 	}
 	@templates.Page() {
 		<div class="flex flex-col h-full">
 			<div class="flex flex-row justify-between items-center mb-4">
 				<button
-					@click="modalType = 'pizza-create'; modal.showModal()"
+					@click="modal.showModal()"
 					class="text-base-100 bg-secondary hover:bg-secondary/80 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
 				>
 					@templates.Spinner() {
@@ -30,7 +24,7 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 					}
 				</button>
 			</div>
-			<div class="flex-grow">
+			<div class="flex-grow overflow-hidden">
 				@templates.Table() {
 					@templates.TableHead() {
 						<tr>
@@ -59,8 +53,6 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 							@templates.Th("ImageUrl")
 							@templates.Th("Price")
 							@templates.Th("UpdatedAt")
-							@templates.Th("Update")
-							@templates.Th("Delete")
 						</tr>
 					}
 					<tbody>
@@ -144,55 +136,6 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 								}
 								@templates.Td() {
 									{ val.UpdatedAt.Format("2006-01-02 15:04:05") }
-								}
-								@templates.Td() {
-									<button
-										@click="modalType = 'pizza-update'; modal.showModal()"
-										class="btn btn-square btn-info rounded-md text-base-100"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="24"
-											height="24"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											class="lucide lucide-pen"
-										>
-											<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-										</svg>
-									</button>
-								}
-								@templates.Td() {
-									<button
-										hx-delete={ fmt.Sprintf("%s/pizzas/%s", configs.Get().GetAPIPrefix(), val.ID.String()) }
-										hx-target="#adminHomeContent"
-										hx-swap="innerHTML"
-										hx-confirm="Are you sure you wish to delete your account?"
-										class="btn btn-square btn-error rounded-md text-base-100"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width=""
-											height="24"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											class="lucide lucide-trash-2"
-										>
-											<path d="M3 6h18"></path>
-											<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-											<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-											<line x1="10" x2="10" y1="11" y2="17"></line>
-											<line x1="14" x2="14" y1="11" y2="17"></line>
-										</svg>
-									</button>
 								}
 							</tr>
 						}

@@ -19,16 +19,16 @@ func CreateDatabaseConnection() (*sql.DB, error) {
 	return conn, nil
 }
 
-func NewDatabase(db *sql.DB) *database.Queries {
-	return database.New(db)
+func NewDatabase(conn *sql.DB) *database.Queries {
+	return database.New(conn)
 }
 
-func RunSchemaMigration(db *sql.DB) error {
+func RunSchemaMigration(conn *sql.DB) error {
 	if err := goose.SetDialect("postgres"); err != nil {
 		return err
 	}
 
-	if err := goose.Up(db, "sql/migrations"); err != nil {
+	if err := goose.Up(conn, "sql/migrations"); err != nil {
 		return err
 	}
 

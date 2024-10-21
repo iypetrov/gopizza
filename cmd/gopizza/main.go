@@ -19,12 +19,12 @@ import (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	configs.Init()
-	db, err := configs.CreateDatabaseConnection()
+	conn, err := configs.CreateDatabaseConnection()
 	if err != nil {
 		log.Fatalf("cannot connect to database %s", err.Error())
 	}
-	queries := configs.NewDatabase(db)
-	if err := configs.RunSchemaMigration(db); err != nil {
+	db := configs.NewDatabase(conn)
+	if err := configs.RunSchemaMigration(conn); err != nil {
 		log.Fatalf("cannot run schema migration %s", err.Error())
 	}
 
@@ -33,7 +33,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),
-		Handler:      router.NewRouter(ctx, db, queries, s3Client),
+		Handler:      router.NewRouter(ctx, db, s3Client),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
