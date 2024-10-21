@@ -1,6 +1,7 @@
 package dtos
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -41,10 +42,17 @@ func (req *PizzaRequest) Validate() map[string]string {
 		errs["name"] = toasts.ErrNameIsRequired.Error()
 	}
 
-	buf := make([]byte, 10*1024*1024)
-	lenImg, _ := req.Image.Read(buf)
-	if lenImg == 0 {
+	if req.Image == nil {
 		errs["image"] = toasts.ErrImageIsRequired.Error()
+	} else {
+		buf := make([]byte, 1) 
+		if _, err := req.Image.Read(buf); err == io.EOF {
+			errs["image"] = toasts.ErrImageIsRequired.Error()
+		} else {
+			if seeker, ok := req.Image.(io.Seeker); ok {
+				seeker.Seek(0, io.SeekStart) 
+			}
+		}
 	}
 
 	if req.Price == 0 {
@@ -88,7 +96,6 @@ func ParseToPizzaRequest(r *http.Request) (PizzaRequest, error) {
 		return PizzaRequest{}, err
 	}
 	defer file.Close()
-
 	req.Image = file
 
 	return req, nil

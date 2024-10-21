@@ -53,10 +53,11 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 					}
 				</button>
 			</div>
-			<div class="overflow-auto flex-grow">
+			<div class="overflow-auto flex-grow w-full">
 				@templates.Table() {
 					<thead class="sticky top-0 bg-base-100">
 						<tr>
+							@templates.Th("")
 							@templates.Th("ID")
 							@templates.Th("Name")
 							@templates.Th("Tomatoes")
@@ -86,6 +87,9 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 					<tbody>
 						for _, val := range resps {
 							<tr>
+								@templates.Td() {
+									<img src={ val.ImageUrl } alt="view" class="w-16 h-16">
+								}
 								@templates.Td() {
 									<p>{ val.ID.String() } </p>
 								}

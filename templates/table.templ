@@ -9,8 +9,8 @@ templ Table() {
 }
 
 templ Th(text string) {
-	<th class="sticky top-0 p-3 border-b border-gray-200 bg-gray-100 z-10">
-		<p class="font-sans text-sm font-semibold text-gray-800 whitespace-nowrap">
+	<th class="sticky top-0 border-b border-gray-200 bg-gray-100 z-10">
+		<p class="font-sans text-xs font-semibold text-gray-800">
 			{ text }
 		</p>
 	</th>
@@ -18,7 +18,7 @@ templ Th(text string) {
 
 templ Td() {
 	<td class="p-3 border-b border-gray-200 font-normal text-gray-800">
-		<div class="overflow-hidden text-ellipsis">
+		<div class="text-ellipsis">
 			{ children... }
 		</div>
 	</td>

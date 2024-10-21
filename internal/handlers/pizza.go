@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/common"
@@ -51,7 +52,12 @@ func (hnd *Pizza) CreatePizza(w http.ResponseWriter, r *http.Request) error {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return Render(w, r, components.PizzaCreateForm(req, make(map[string]string)))
 	}
-	p.ImageUrl = imageUrl
+	parts := strings.Split(imageUrl, ".")
+	if len(parts) > 0 {
+		p.ImageUrl = parts[0]
+	} else {
+		p.ImageUrl = imageUrl
+	}
 
 	_, err = hnd.srv.CreatePizza(r.Context(), p)
 	if err != nil {

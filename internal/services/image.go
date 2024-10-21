@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -22,20 +23,36 @@ func NewImage(s3Client *s3.Client) Image {
 }
 
 func (srv *Image) UploadImage(ctx context.Context, file io.Reader) (string, error) {
+	// Create a buffer to store the file content
+	var buf bytes.Buffer
+
+	// Copy the file content into the buffer
+	size, err := io.Copy(&buf, file)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println(size)
+
+	// Generate a UUID for the image
 	id := uuid.New()
-	_, err := srv.s3Client.PutObject(ctx, &s3.PutObjectInput{
+
+	// Upload the image to S3 using the buffer's content
+	_, err = srv.s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(configs.Get().AWS.S3BucketName),
 		Key:    aws.String(getImageKey(id)),
-		Body:   file,
+		Body:   &buf,
 	})
 	if err != nil {
 		return "", err
 	}
 
+	// Return the image URL and its size
 	return fmt.Sprintf("%s/image/%s", configs.Get().GetBaseWebUrl(), getImageKey(id)), nil
 }
 
-func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.Reader, error) {
+
+func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.ReadCloser, error) {
 	resp, err := srv.s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(configs.Get().AWS.S3BucketName),
 		Key:    aws.String(getImageKey(id)),
@@ -43,7 +60,13 @@ func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.Reader, error)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	if resp == nil || resp.Body == nil {
+		return nil, fmt.Errorf("image not found")
+	}
+
+	if *resp.ContentLength == 0 {
+		return nil, fmt.Errorf("image is empty")
+	}
 
 	return resp.Body, nil
 }

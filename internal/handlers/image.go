@@ -21,19 +21,22 @@ func NewImage(srv services.Image) Image {
 }
 
 func (hnd *Image) GetImage(w http.ResponseWriter, r *http.Request) {
-	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
-	if !ok {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
-	}
+    id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+    if !ok {
+        toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+        return
+    }
 
-	ior, err := hnd.srv.GetImage(r.Context(), id)
-	if err != nil {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
-	}
+    iorc, err := hnd.srv.GetImage(r.Context(), id)
+    if err != nil {
+        toasts.AddToast(w, toasts.ErrorNotFound(err))
+        return
+    }
+    defer iorc.Close()
 
-	w.Header().Set("Content-Type", "image/png")
-
-	if _, err := io.Copy(w, ior); err != nil {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
-	}
+    w.Header().Set("Content-Type", "image/png")
+    if _, err := io.Copy(w, iorc); err != nil {
+        toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+        return
+    }
 }
