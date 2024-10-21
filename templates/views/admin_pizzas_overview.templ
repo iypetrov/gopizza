@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/templates"
 	"github.com/iypetrov/gopizza/templates/components"
@@ -53,6 +54,7 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 							@templates.Th("ImageUrl")
 							@templates.Th("Price")
 							@templates.Th("UpdatedAt")
+							@templates.Th("Delete")
 						</tr>
 					}
 					<tbody>
@@ -136,6 +138,34 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 								}
 								@templates.Td() {
 									{ val.UpdatedAt.Format("2006-01-02 15:04:05") }
+								}
+								@templates.Td() {
+									<button
+										hx-delete={ fmt.Sprintf("%s/pizzas/%s", configs.Get().GetAPIPrefix(), val.ID.String()) }
+										hx-target="#adminHomeContent"
+										hx-swap="innerHTML"
+										hx-confirm="Are you sure you wish to delete your account?"
+										class="btn btn-square btn-error rounded-md text-base-100"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width=""
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											class="lucide lucide-trash-2"
+										>
+											<path d="M3 6h18"></path>
+											<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+											<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+											<line x1="10" x2="10" y1="11" y2="17"></line>
+											<line x1="14" x2="14" y1="11" y2="17"></line>
+										</svg>
+									</button>
 								}
 							</tr>
 						}

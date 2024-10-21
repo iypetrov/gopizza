@@ -62,7 +62,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))
 					r.Get("/admin/overview", Make(pizzaHnd.GetAllPizzasAdminOverview))
 					r.Put("/{id}", Make(pizzaHnd.UpdatePizza))
-					r.Delete("/{id}", Make(pizzaHnd.DeletePizzaByID))
+					r.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.DeletePizzaByID))
 				})
 			})
 		})

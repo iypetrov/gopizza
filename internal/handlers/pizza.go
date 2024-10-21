@@ -3,9 +3,11 @@ package handlers
 import (
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/common"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
 	"github.com/iypetrov/gopizza/templates/components"
@@ -154,13 +156,27 @@ func (hnd *Pizza) UpdatePizza(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (hnd *Pizza) DeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
-	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
-	//
-	//_, err := hnd.srv.DeletePizzaByID(r.Context(), id)
-	//if err != nil {
-	//	return toast.ErrorInternalServerError(err)
-	//}
-	//
-	//return util.RenderSuccess(w, r, toast.SuccessPizzaDeleted())
-	return nil
+	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrNotValidUUID
+	}
+	
+	models, err := hnd.srv.DeletePizzaByID(r.Context(), id)
+	if err != nil {
+		return toasts.ErrorInternalServerError(err)
+	}
+
+	var resps []dtos.PizzaResponse
+	for _, model := range models {
+		var dto dtos.PizzaResponse
+		common.MapFields(&dto, &model)
+		resps = append(resps, dto)
+	}
+
+	toasts.AddToast(w, toasts.Toast{
+		Message:    "pizza deleted successfully",
+		StatusCode: http.StatusNoContent,
+	})
+	return Render(w, r, views.AdminPizzasOverview(resps))
 }
