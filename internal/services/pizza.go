@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
@@ -12,12 +13,14 @@ import (
 )
 
 type Pizza struct {
-	db *database.Queries
+	db      *sql.DB
+	queries *database.Queries
 }
 
-func NewPizza(db *database.Queries) Pizza {
+func NewPizza(db *sql.DB, queries *database.Queries) Pizza {
 	return Pizza{
-		db: db,
+		db:      db,
+		queries: queries,
 	}
 }
 
@@ -25,7 +28,7 @@ func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams)
 	p.ID = uuid.New()
 	p.UpdatedAt = time.Now()
 
-	m, err := srv.db.CreatePizza(ctx, p)
+	m, err := srv.queries.CreatePizza(ctx, p)
 	if err != nil {
 		var pgErr *pq.Error
 
@@ -43,7 +46,7 @@ func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams)
 }
 
 func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
-	m, err := srv.db.GetPizzaByID(ctx, id)
+	m, err := srv.queries.GetPizzaByID(ctx, id)
 	if err != nil {
 		return database.Pizza{}, toasts.ErrPizzaNotFound
 	}
@@ -52,7 +55,7 @@ func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizz
 }
 
 func (srv *Pizza) GetAllPizzas(ctx context.Context) ([]database.Pizza, error) {
-	ms, err := srv.db.GetAllPizzas(ctx)
+	ms, err := srv.queries.GetAllPizzas(ctx)
 	if err != nil {
 		return nil, toasts.ErrPizzaFailedToLoad
 	}
@@ -63,7 +66,7 @@ func (srv *Pizza) GetAllPizzas(ctx context.Context) ([]database.Pizza, error) {
 func (srv *Pizza) UpdateModel(ctx context.Context, id uuid.UUID, p database.UpdatePizzaParams) (database.Pizza, error) {
 	p.ID = id
 
-	m, err := srv.db.UpdatePizza(ctx, p)
+	m, err := srv.queries.UpdatePizza(ctx, p)
 	if err != nil {
 		var pgErr *pq.Error
 
@@ -80,20 +83,38 @@ func (srv *Pizza) UpdateModel(ctx context.Context, id uuid.UUID, p database.Upda
 	return m, nil
 }
 
-func (srv *Pizza) DeletePizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {
-	m, err := srv.db.DeletePizzaByID(ctx, id)
+func (srv *Pizza) DeletePizzaByID(ctx context.Context, id uuid.UUID) ([]database.Pizza, error) {
+	tx, err := srv.db.Begin()
+	if err != nil {
+		return []database.Pizza{}, toasts.ErrDatabaseTransactionFailed
+	}
+	defer tx.Rollback()
+
+	qtx := srv.queries.WithTx(tx)
+
+	_, err = qtx.DeletePizzaByID(ctx, id)
 	if err != nil {
 		var pgErr *pq.Error
 
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23503" {
-				return database.Pizza{}, toasts.ErrPizzaNotFound
+				return []database.Pizza{}, toasts.ErrPizzaNotFound
 			}
 		}
 
-		return database.Pizza{}, toasts.ErrPizzaDeletion
+		return []database.Pizza{}, toasts.ErrPizzaDeletion
 	}
 
-	return m, nil
+	ms, err := qtx.GetAllPizzas(ctx)
+	if err != nil {
+		return nil, toasts.ErrPizzaFailedToLoad
+	}
+
+	err = tx.Commit() 
+	if err != nil {
+		return []database.Pizza{}, toasts.ErrDatabaseTransactionFailed
+	}
+
+	return ms, nil
 }

@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -15,7 +16,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/services"
 )
 
-func NewRouter(ctx context.Context, db *database.Queries, s3Client *s3.Client) *chi.Mux {
+func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Client *s3.Client) *chi.Mux {
 	mux := chi.NewRouter()
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.Recoverer)
@@ -23,7 +24,7 @@ func NewRouter(ctx context.Context, db *database.Queries, s3Client *s3.Client) *
 
 	// services
 	imageSrv := services.NewImage(s3Client)
-	pizzaSrv := services.NewPizza(db)
+	pizzaSrv := services.NewPizza(db, queries)
 
 	// handlers
 	imageHnd := handlers.NewImage(imageSrv)

@@ -11,6 +11,7 @@ var (
 	ErrPriceShouldBePositiveNumber = fmt.Errorf("price should be positive number")
 	ErrNotValidUUID                = fmt.Errorf("not valid uuid")
 	ErrImageNotFound               = fmt.Errorf("image not found")
+	ErrDatabaseTransactionFailed   = fmt.Errorf("database transaction failed")
 )
 
 func ErrorFailedRender() Toast {
