@@ -35,7 +35,7 @@ templ adminHomeNavBar() {
 templ adminHomeSideBar() {
  	<div
         :class="{ '-translate-x-full': !sidebarOpen }"
-        class="fixed top-0 left-0 bottom-0 w-64 bg-base-300 text-base-300-content transform transition-transform duration-200 ease-in-out z-40 overflow-auto pt-16"
+        class="fixed top-0 left-0 bottom-0 w-64 bg-base-300 text-base-300-content transform transition-transform duration-200 ease-in-out z-40 pt-16"
     >
 		<div class="h-16"></div>
 		<nav class="font-medium text-xl">
@@ -44,7 +44,8 @@ templ adminHomeSideBar() {
 					<a
 						hx-get={ fmt.Sprintf("%s/pizzas/admin/overview", configs.Get().GetAPIPrefix()) }
 						hx-target="#adminHomeContent"
-						hx-swap="outerHTML"
+						hx-swap="innerHTML"
+						@htmx:after-request="sidebarOpen = false"
 						class="flex flex-row justify-start items-center px-4 py-2 w-full tracking-wide transition-all duration-200 hover:font-bold hover:text-secondary/60 hover:bg-secondary/10 hover:backdrop-blur-sm"
 					>
 						<span class="mr-5 transition-transform duration-300 group-hover:scale-110">
