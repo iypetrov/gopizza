@@ -111,7 +111,7 @@ func (srv *Pizza) DeletePizzaByID(ctx context.Context, id uuid.UUID) ([]database
 		return nil, toasts.ErrPizzaFailedToLoad
 	}
 
-	err = tx.Commit() 
+	err = tx.Commit()
 	if err != nil {
 		return []database.Pizza{}, toasts.ErrDatabaseTransactionFailed
 	}

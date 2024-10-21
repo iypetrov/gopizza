@@ -147,3 +147,4 @@ RETURNING
     image_url,
     price,
     updated_at;
+
