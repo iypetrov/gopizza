@@ -51,8 +51,8 @@ func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizz
 	return m, nil
 }
 
-func (srv *Pizza) GetAllPizzas(ctx context.Context, p database.GetAllPizzasParams) ([]database.Pizza, error) {
-	ms, err := srv.db.GetAllPizzas(ctx, p)
+func (srv *Pizza) GetAllPizzas(ctx context.Context) ([]database.Pizza, error) {
+	ms, err := srv.db.GetAllPizzas(ctx)
 	if err != nil {
 		return nil, toasts.ErrPizzaFailedToLoad
 	}

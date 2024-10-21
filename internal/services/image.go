@@ -51,7 +51,6 @@ func (srv *Image) UploadImage(ctx context.Context, file io.Reader) (string, erro
 	return fmt.Sprintf("%s/image/%s", configs.Get().GetBaseWebUrl(), getImageKey(id)), nil
 }
 
-
 func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.ReadCloser, error) {
 	resp, err := srv.s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(configs.Get().AWS.S3BucketName),

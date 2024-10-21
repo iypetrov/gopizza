@@ -1,25 +1,27 @@
 package templates
 
 templ Table() {
-	<div class="overflow-x-auto w-full">
-		<table class="w-full text-left table-auto border-collapse table-fixed">
+	<div class="overflow-auto max-h-[calc(100vh-12rem)] w-full">
+		<table class="table table-auto min-w-full">
 			{ children... }
 		</table>
 	</div>
 }
 
 templ Th(text string) {
-	<th class="sticky top-0 border-b border-gray-200 bg-gray-100 z-10">
-		<p class="font-sans text-xs font-semibold text-gray-800">
+	<th class="sticky top-0 bg-base-100 whitespace-nowrap px-3 py-2">
 			{ text }
-		</p>
 	</th>
 }
 
 templ Td() {
-	<td class="p-3 border-b border-gray-200 font-normal text-gray-800">
-		<div class="text-ellipsis">
-			{ children... }
-		</div>
+	<td class="whitespace-nowrap px-3 py-2">
+		{ children... }
 	</td>
+}
+
+templ TableHead() {
+	<thead class="sticky top-0 bg-base-100 z-10">
+		{ children... }
+	</thead>
 }

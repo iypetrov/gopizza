@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/common"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/dtos"
@@ -117,35 +115,13 @@ func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (hnd *Pizza) GetAllPizzasAdminOverview(w http.ResponseWriter, r *http.Request) error {
-	idParam := r.URL.Query().Get("last-id")
-	lastID, err := uuid.Parse(idParam)
-	if err != nil {
-		lastID = uuid.Nil
-	}
-
-	priceParam := r.URL.Query().Get("last-price")
-	lastPrice, err := strconv.ParseFloat(priceParam, 64)
-	if err != nil {
-		lastPrice = 0
-	}
-
-	pageSizeParam := r.URL.Query().Get("page-size")
-	pageSize, err := strconv.ParseInt(pageSizeParam, 10, 32)
-	if err != nil {
-		pageSize = 10
-	}
-
-	var p database.GetAllPizzasParams
-	p.ID = lastID
-	p.Price = lastPrice
-	p.PageSize = int32(pageSize)
-	ms, err := hnd.srv.GetAllPizzas(r.Context(), p)
+	models, err := hnd.srv.GetAllPizzas(r.Context())
 	if err != nil {
 		return toasts.ErrPizzaFailedToLoad
 	}
 
 	var resps []dtos.PizzaResponse
-	for _, model := range ms {
+	for _, model := range models {
 		var dto dtos.PizzaResponse
 		common.MapFields(&dto, &model)
 		resps = append(resps, dto)

@@ -13,51 +13,22 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 		@components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string))
 	}
 	@templates.Page() {
-		<div class="flex flex-col h-full max-w-1/2">
-			<div class="flex flex-row justify-between items-center min-h-24 sticky top-0 bg-base-100 z-10">
-				<div class="flex flex-row w-full h-full justify-start items-center p-2">
-					<form>
-						<button>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-sliders-horizontal"
-							>
-								<line x1="21" x2="14" y1="4" y2="4"></line>
-								<line x1="10" x2="3" y1="4" y2="4"></line>
-								<line x1="21" x2="12" y1="12" y2="12"></line>
-								<line x1="8" x2="3" y1="12" y2="12"></line>
-								<line x1="21" x2="16" y1="20" y2="20"></line>
-								<line x1="12" x2="3" y1="20" y2="20"></line>
-								<line x1="14" x2="14" y1="2" y2="6"></line>
-								<line x1="8" x2="8" y1="10" y2="14"></line>
-								<line x1="16" x2="16" y1="18" y2="22"></line>
-							</svg>
-						</button>
-					</form>
-					<div class="flex flex-row justify-start items-center w-full h-full"></div>
-				</div>
+		<div class="flex flex-col h-full">
+			<div class="flex flex-row justify-between items-center mb-4">
 				<button
 					@click="modal.showModal()"
-					class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
+					class="text-base-100 bg-secondary hover:bg-secondary/80 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
 				>
 					@templates.Spinner() {
 						<span>Add Pizza</span>
 					}
 				</button>
 			</div>
-			<div class="overflow-auto flex-grow w-full">
+			<div class="flex-grow overflow-hidden">
 				@templates.Table() {
-					<thead class="sticky top-0 bg-base-100">
+					@templates.TableHead() {
 						<tr>
-							@templates.Th("")
+							@templates.Th("Image View")
 							@templates.Th("ID")
 							@templates.Th("Name")
 							@templates.Th("Tomatoes")
@@ -83,102 +54,92 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 							@templates.Th("Price")
 							@templates.Th("UpdatedAt")
 						</tr>
-					</thead>
+					}
 					<tbody>
 						for _, val := range resps {
 							<tr>
 								@templates.Td() {
-									<img src={ val.ImageUrl } alt="view" class="w-16 h-16">
+									<img
+										src={ val.ImageUrl }
+										alt="view"
+										class="object-cover h-12 w-12"
+									/>
 								}
 								@templates.Td() {
-									<p>{ val.ID.String() } </p>
+									{ val.ID.String() }
 								}
 								@templates.Td() {
-									<p>{ val.Name } </p>
+									{ val.Name }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Tomatoes) } </p>
+									{ strconv.FormatBool(val.Tomatoes) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Garlic) } </p>
+									{ strconv.FormatBool(val.Garlic) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Onion) } </p>
+									{ strconv.FormatBool(val.Onion) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Parmesan) } </p>
+									{ strconv.FormatBool(val.Parmesan) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Cheddar) } </p>
+									{ strconv.FormatBool(val.Cheddar) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Pepperoni) } </p>
+									{ strconv.FormatBool(val.Pepperoni) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Sausage) } </p>
+									{ strconv.FormatBool(val.Sausage) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Ham) } </p>
+									{ strconv.FormatBool(val.Ham) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Bacon) } </p>
+									{ strconv.FormatBool(val.Bacon) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Chicken) } </p>
+									{ strconv.FormatBool(val.Chicken) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Salami) } </p>
+									{ strconv.FormatBool(val.Salami) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.GroundBeef) } </p>
+									{ strconv.FormatBool(val.GroundBeef) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Mushrooms) } </p>
+									{ strconv.FormatBool(val.Mushrooms) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Olives) } </p>
+									{ strconv.FormatBool(val.Olives) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Spinach) } </p>
+									{ strconv.FormatBool(val.Spinach) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Pineapple) } </p>
+									{ strconv.FormatBool(val.Pineapple) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Arugula) } </p>
+									{ strconv.FormatBool(val.Arugula) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Anchovies) } </p>
+									{ strconv.FormatBool(val.Anchovies) }
 								}
 								@templates.Td() {
-									<p>{ strconv.FormatBool(val.Capers) } </p>
+									{ strconv.FormatBool(val.Capers) }
 								}
 								@templates.Td() {
-									<p>{ val.ImageUrl } </p>
+									{ val.ImageUrl }
 								}
 								@templates.Td() {
-									<p>{ fmt.Sprintf("%.2f", val.Price) } </p>
+									{ fmt.Sprintf("%.2f", val.Price) }
 								}
 								@templates.Td() {
-									<p>{ val.UpdatedAt.Format("2006-01-02 15:04:05") } </p>
+									{ val.UpdatedAt.Format("2006-01-02 15:04:05") }
 								}
 							</tr>
 						}
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="24" class="p-4 text-center border-t border-slate-300">
-								<div class="flex justify-center items-center">
-									<div class="join">
-										<button class="join-item btn">1</button>
-										<button class="join-item btn btn-active">2</button>
-										<button class="join-item btn">3</button>
-										<button class="join-item btn">4</button>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</tfoot>
 				}
 			</div>
 		</div>

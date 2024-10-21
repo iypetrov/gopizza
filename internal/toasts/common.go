@@ -10,7 +10,7 @@ var (
 	ErrImageIsRequired             = fmt.Errorf("image url is required")
 	ErrPriceShouldBePositiveNumber = fmt.Errorf("price should be positive number")
 	ErrNotValidUUID                = fmt.Errorf("not valid uuid")
-	ErrImageNotFound			   = fmt.Errorf("image not found")
+	ErrImageNotFound               = fmt.Errorf("image not found")
 )
 
 func ErrorFailedRender() Toast {

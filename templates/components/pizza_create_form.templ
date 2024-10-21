@@ -13,7 +13,7 @@ templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 		hx-target="this"
 		hx-swap="outerHTML"
 		hx-encoding="multipart/form-data"
-		hx-on::after-request="modal.close()"
+		@htmx:after-request="modal.close()"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>
 		<div class="flex flex-col w-full">

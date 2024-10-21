@@ -62,16 +62,7 @@ SELECT
     price,
     updated_at
 FROM
-    pizzas
-WHERE ((@price = 0
-        AND @id = '00000000-0000-0000-0000-000000000000')
-    OR (price,
-        id) >= (@price::double precision,
-        @id::uuid))
-ORDER BY
-    price ASC,
-    id ASC
-LIMIT @page_size::int;
+    pizzas;
 
 -- name: UpdatePizza :one
 UPDATE
