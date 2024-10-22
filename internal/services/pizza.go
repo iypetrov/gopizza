@@ -24,25 +24,43 @@ func NewPizza(db *sql.DB, queries *database.Queries) Pizza {
 	}
 }
 
-func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams) (database.Pizza, error) {
+func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams) ([]database.Pizza, error) {
 	p.ID = uuid.New()
 	p.UpdatedAt = time.Now()
 
-	m, err := srv.queries.CreatePizza(ctx, p)
+	tx, err := srv.db.Begin()
+	if err != nil {
+		return nil, toasts.ErrDatabaseTransactionFailed
+	}
+	defer tx.Rollback()
+
+	qtx := srv.queries.WithTx(tx)
+
+	_, err = qtx.CreatePizza(ctx, p)
 	if err != nil {
 		var pgErr *pq.Error
 
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23505" {
-				return database.Pizza{}, toasts.ErrPizzasAlreadyExists
+				return nil, toasts.ErrPizzasAlreadyExists
 			}
 		}
 
-		return database.Pizza{}, toasts.ErrPizzaCreation
+		return nil, toasts.ErrPizzaCreation
 	}
 
-	return m, nil
+	ms, err := qtx.GetAllPizzas(ctx)
+	if err != nil {
+		return nil, toasts.ErrPizzaFailedToLoad
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, toasts.ErrDatabaseTransactionFailed
+	}
+
+	return ms, nil
 }
 
 func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizza, error) {

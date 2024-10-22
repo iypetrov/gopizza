@@ -59,17 +59,24 @@ func (hnd *Pizza) AdminCreatePizza(w http.ResponseWriter, r *http.Request) error
 		p.ImageUrl = imageUrl
 	}
 
-	_, err = hnd.srv.CreatePizza(r.Context(), p)
+	models, err := hnd.srv.CreatePizza(r.Context(), p)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return Render(w, r, components.PizzaCreateForm(req, make(map[string]string)))
+	}
+
+	var resps []dtos.PizzaResponse
+	for _, model := range models {
+		var dto dtos.PizzaResponse
+		common.MapFields(&dto, &model)
+		resps = append(resps, dto)
 	}
 
 	toasts.AddToast(w, toasts.Toast{
 		Message:    "pizza created successfully",
 		StatusCode: http.StatusCreated,
 	})
-	return Render(w, r, components.PizzaCreateForm(dtos.PizzaRequest{}, make(map[string]string)))
+	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
 func (hnd *Pizza) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
