@@ -1,3 +1,4 @@
+
 package components
 
 import (
@@ -7,9 +8,9 @@ import (
 	"github.com/iypetrov/gopizza/templates"
 )
 
-templ LoginForm(req dtos.LoginRequest, errs map[string]string) {
+templ RegisterForm(req dtos.RegisterRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/login", configs.Get().GetAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/register", configs.Get().GetAPIPrefix()) }
 		autocomplete="off"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>
@@ -20,6 +21,9 @@ templ LoginForm(req dtos.LoginRequest, errs map[string]string) {
 			<div class="flex flex-col w-full">
 				@templates.InputSecret(templates.InputProps{Name: "password", Value: req.Password, Error: errs["password"]})
 			</div>
+			<div class="flex flex-col w-full">
+				@templates.Input(templates.InputProps{Name: "address", Value: req.Address, Error: errs["address"]})
+			</div>
 			<div class="flex items-center justify-center w-full mt-3">
 				<button
 					type="submit"
@@ -27,7 +31,7 @@ templ LoginForm(req dtos.LoginRequest, errs map[string]string) {
 					class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
 				>
 					@templates.Spinner() {
-						<span>Login</span>
+						<span>Register</span>
 					}
 				</button>
 			</div>

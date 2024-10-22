@@ -1,3 +1,4 @@
+
 package views
 
 import (
@@ -6,14 +7,14 @@ import (
 	"github.com/iypetrov/gopizza/templates/components"
 )
 
-templ Login() {
+templ Register() {
 	@templates.Base() {
 		<div class="flex flex-col w-full h-screen">
 			<div class="flex flex-col justify-center items-center w-full h-full">
 				@templates.SmallLogo()
-				<h1 class="text-base-300 text-3xl font-bold">Login</h1>
+				<h1 class="text-base-300 text-3xl font-bold">Register</h1>
 				<div class="w-1/2">
-					@components.LoginForm(dtos.LoginRequest{}, make(map[string]string))
+					@components.RegisterForm(dtos.RegisterRequest{}, make(map[string]string))
 				</div>
 			</div>
 		</div>

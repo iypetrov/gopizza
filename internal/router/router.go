@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	cip "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -16,7 +17,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/services"
 )
 
-func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Client *s3.Client) *chi.Mux {
+func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Client *s3.Client, cognitoClient *cip.Client) *chi.Mux {
 	mux := chi.NewRouter()
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.Recoverer)
@@ -46,6 +47,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 
 		// client
 		mux.Get("/home", Make(handlers.HomeView))
+		mux.Get("/register", Make(handlers.RegisterView))
 		mux.Get("/login", Make(handlers.LoginView))
 
 		// admin

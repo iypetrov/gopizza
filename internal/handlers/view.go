@@ -10,6 +10,10 @@ func NotFoundView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.NotFound())
 }
 
+func RegisterView(w http.ResponseWriter, r *http.Request) error {
+	return Render(w, r, views.Register())
+}
+
 func LoginView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.Login())
 }
