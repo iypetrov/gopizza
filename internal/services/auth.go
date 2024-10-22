@@ -16,15 +16,15 @@ import (
 )
 
 type Auth struct {
-	db      *sql.DB
-	queries *database.Queries
+	db            *sql.DB
+	queries       *database.Queries
 	cognitoClient *cip.Client
 }
 
 func NewAuth(db *sql.DB, queries *database.Queries, cognitoClient *cip.Client) Auth {
 	return Auth{
-		db:      db,
-		queries: queries,
+		db:            db,
+		queries:       queries,
 		cognitoClient: cognitoClient,
 	}
 }
@@ -41,12 +41,12 @@ func (srv *Auth) CreateUser(ctx context.Context, email, password, address string
 
 	userID, err := uuid.Parse(*result.UserSub)
 	if err != nil {
-	    return uuid.Nil, toasts.ErrUserCreation
+		return uuid.Nil, toasts.ErrUserCreation
 	}
 	p := database.CreateUserParams{
-		ID: userID, 
-		Email:    email,
-		Address:  address,
+		ID:      userID,
+		Email:   email,
+		Address: address,
 	}
 	_, err = srv.queries.CreateUser(ctx, p)
 	if err != nil {
@@ -67,8 +67,8 @@ func (srv *Auth) CreateUser(ctx context.Context, email, password, address string
 
 func (srv *Auth) VerifyUserCode(ctx context.Context, id uuid.UUID, email, code string) error {
 	_, err := srv.cognitoClient.ConfirmSignUp(ctx, &cip.ConfirmSignUpInput{
-		ClientId: aws.String(configs.Get().AWS.CognitoClientID),
-		Username: aws.String(email),
+		ClientId:         aws.String(configs.Get().AWS.CognitoClientID),
+		Username:         aws.String(email),
 		ConfirmationCode: aws.String(code),
 	})
 	if err != nil {
@@ -78,7 +78,7 @@ func (srv *Auth) VerifyUserCode(ctx context.Context, id uuid.UUID, email, code s
 	p := database.ConfirmUserParams{
 		ID: id,
 		ConfirmedAt: sql.NullTime{
-			Time: time.Now(),	
+			Time:  time.Now(),
 			Valid: true,
 		},
 	}

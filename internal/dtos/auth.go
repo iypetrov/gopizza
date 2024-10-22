@@ -9,7 +9,7 @@ import (
 type RegisterRequest struct {
 	Email    string
 	Password string
-	Address	string
+	Address  string
 }
 
 func (req RegisterRequest) Validate() map[string]string {
@@ -45,8 +45,8 @@ func ParseToRegisterRequest(r *http.Request) (RegisterRequest, error) {
 }
 
 type RegisterVerificationRequest struct {
-	ID string
-	Email string
+	ID          string
+	Email       string
 	CodeSymbol1 string
 	CodeSymbol2 string
 	CodeSymbol3 string
@@ -58,11 +58,11 @@ type RegisterVerificationRequest struct {
 func (req *RegisterVerificationRequest) Validate() map[string]string {
 	errs := make(map[string]string)
 
-	// if len(req.CodeSymbol1) != 1 || 
-	// len(req.CodeSymbol2) != 1 || 
-	// len(req.CodeSymbol3) != 1 || 
-	// len(req.CodeSymbol4) != 1 || 
-	// len(req.CodeSymbol5) != 1 || 
+	// if len(req.CodeSymbol1) != 1 ||
+	// len(req.CodeSymbol2) != 1 ||
+	// len(req.CodeSymbol3) != 1 ||
+	// len(req.CodeSymbol4) != 1 ||
+	// len(req.CodeSymbol5) != 1 ||
 	// len(req.CodeSymbol6) != 1 {
 	// 	errs["code"] = toasts.ErrAuthVerificationCodeNotCorrectFormat.Error()
 	// }

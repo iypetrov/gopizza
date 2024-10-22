@@ -29,7 +29,7 @@ templ RegisterVerificationForm(req dtos.RegisterVerificationRequest, errs map[st
 					CodeSymbol4: req.CodeSymbol4,
 					CodeSymbol5: req.CodeSymbol5,
 					CodeSymbol6: req.CodeSymbol6,
-					Error: errs["code"],
+					Error:       errs["code"],
 				})
 			</div>
 			<div class="flex items-center justify-center w-full mt-3">

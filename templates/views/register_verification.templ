@@ -14,7 +14,7 @@ templ RegisterVerification(id, email string) {
 				@templates.SmallLogo()
 				<h1 class="text-base-300 text-3xl font-bold">Check your email and type here the verification code</h1>
 				<div class="w-1/2">
-					@components.RegisterVerificationForm(dtos.RegisterVerificationRequest{ ID: id, Email: email }, make(map[string]string))
+					@components.RegisterVerificationForm(dtos.RegisterVerificationRequest{ID: id, Email: email}, make(map[string]string))
 				</div>
 			</div>
 		</div>

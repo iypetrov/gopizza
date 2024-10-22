@@ -5,12 +5,17 @@ RETURNING
     id, email, address, status, confirmed_at;
 
 -- name: ConfirmUser :one
-UPDATE 
-	users 
+UPDATE
+    users
 SET
-	status = 'confirmed',
-	confirmed_at = $2
+    status = 'confirmed',
+    confirmed_at = $2
 WHERE
-	id = $1
+    id = $1
 RETURNING
-    id, email, address, status, confirmed_at;
+    id,
+    email,
+    address,
+    status,
+    confirmed_at;
+

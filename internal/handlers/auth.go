@@ -53,7 +53,7 @@ func (hnd *Auth) VerifyRegistrationCode(w http.ResponseWriter, r *http.Request) 
 	}
 
 	emptyReq := dtos.RegisterVerificationRequest{
-		ID: req.ID,
+		ID:    req.ID,
 		Email: req.Email,
 	}
 

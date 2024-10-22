@@ -31,10 +31,10 @@ type Config struct {
 	}
 
 	AWS struct {
-		Region         string
-		AccessKeyID    string
-		SecretAcessKey string
-		S3BucketName   string
+		Region          string
+		AccessKeyID     string
+		SecretAcessKey  string
+		S3BucketName    string
 		CognitoClientID string
 	}
 }
