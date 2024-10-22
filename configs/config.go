@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	DevEnv = "dev"
-	cfg    *Config
+	DevLocal = "local"
+	cfg      *Config
 )
 
 type Config struct {
@@ -46,7 +46,7 @@ func Init() {
 	}
 
 	cfg = &Config{}
-	cfg.App.Environment = getEnv("APP_ENV", DevEnv)
+	cfg.App.Environment = getEnv("APP_ENV", DevLocal)
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
 	cfg.App.Port = getEnv("APP_PORT", "8080")
@@ -78,9 +78,9 @@ func getEnv(key string, defaultValue string) string {
 
 func (c *Config) GetBaseWebUrl() string {
 	protocol := "https://"
-	basePath := fmt.Sprintf("%s", c.App.Addr)
+	basePath := c.App.Addr
 
-	if c.App.Environment == DevEnv {
+	if c.App.Environment == DevLocal {
 		protocol = "http://"
 		basePath = fmt.Sprintf("%s:%s", c.App.Addr, c.App.Port)
 	}
@@ -88,10 +88,14 @@ func (c *Config) GetBaseWebUrl() string {
 	return fmt.Sprintf("%s%s", protocol, basePath)
 }
 
-func (c *Config) GetAPIPrefix() string {
+func (c *Config) GetAdminPrefix() string {
+	return "/admin"
+}
+
+func (c *Config) GetClientAPIPrefix() string {
 	return fmt.Sprintf("/api/v%s", c.App.Version)
 }
 
-func (c *Config) GetAdminPrefix() string {
-	return "/admin"
+func (c *Config) GetAdminAPIPrefix() string {
+	return fmt.Sprintf("/admin/v%s", c.App.Version)
 }

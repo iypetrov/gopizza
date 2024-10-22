@@ -141,7 +141,7 @@ templ AdminPizzasOverview(resps []dtos.PizzaResponse) {
 								}
 								@templates.Td() {
 									<button
-										hx-delete={ fmt.Sprintf("%s/pizzas/admin/%s", configs.Get().GetAPIPrefix(), val.ID.String()) }
+										hx-delete={ fmt.Sprintf("%s/pizzas/%s", configs.Get().GetAdminAPIPrefix(), val.ID.String()) }
 										hx-target="#adminHomeContent"
 										hx-swap="innerHTML"
 										hx-confirm="Are you sure you wish to delete your account?"

@@ -57,17 +57,22 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 			mux.Get("/home", Make(handlers.AdminHomeView))
 		})
 
-		// api
-		mux.Route(configs.Get().GetAPIPrefix(), func(mux chi.Router) {
+		// client api
+		mux.Route(configs.Get().GetClientAPIPrefix(), func(mux chi.Router) {
 			mux.Group(func(r chi.Router) {
 				r.Post("/register", Make(authHnd.Register))
 				r.Post("/verification-code", Make(authHnd.VerifyRegistrationCode))
 				r.Post("/login", Make(authHnd.Login))
+			})
+		})
+
+		// admin api
+		mux.Route(configs.Get().GetAdminAPIPrefix(), func(mux chi.Router) {
+			mux.Group(func(r chi.Router) {
 				r.Route("/pizzas", func(r chi.Router) {
-					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))
-					r.Post("/admin", Make(pizzaHnd.AdminCreatePizza))
-					r.Get("/admin", Make(pizzaHnd.AdminGetAllPizzas))
-					r.With(middlewares.UUIDFormat).Delete("/admin/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
+					r.Post("/", Make(pizzaHnd.AdminCreatePizza))
+					r.Get("/", Make(pizzaHnd.AdminGetAllPizzas))
+					r.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
 				})
 			})
 		})

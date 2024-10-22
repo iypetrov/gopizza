@@ -9,7 +9,6 @@ func MapFields(dp interface{}, sp interface{}) error {
 	dv := reflect.ValueOf(dp)
 	sv := reflect.ValueOf(sp)
 
-	// Check if inputs are pointers
 	if dv.Kind() != reflect.Ptr || sv.Kind() != reflect.Ptr {
 		return fmt.Errorf("both dp and sp must be pointers")
 	}
@@ -17,7 +16,6 @@ func MapFields(dp interface{}, sp interface{}) error {
 	dv = dv.Elem()
 	sv = sv.Elem()
 
-	// Check if the elements are structs
 	if dv.Kind() != reflect.Struct || sv.Kind() != reflect.Struct {
 		return fmt.Errorf("both dp and sp must point to structs")
 	}

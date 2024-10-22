@@ -42,7 +42,7 @@ templ homeSideBar() {
 			<ul class="space-y-4">
 				<li class="group relative">
 					<a
-						hx-get={ fmt.Sprintf("%s/pizzas/overview", configs.Get().GetAPIPrefix()) }
+						hx-get={ fmt.Sprintf("%s/pizzas/overview", configs.Get().GetClientAPIPrefix()) }
 						hx-target="#homeContent"
 						hx-swap="outerHTML"
 						@htmx:after-request="sidebarOpen = false"

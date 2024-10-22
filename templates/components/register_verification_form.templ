@@ -9,7 +9,7 @@ import (
 
 templ RegisterVerificationForm(req dtos.RegisterVerificationRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/verification-code", configs.Get().GetAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/verification-code", configs.Get().GetClientAPIPrefix()) }
 		autocomplete="off"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>

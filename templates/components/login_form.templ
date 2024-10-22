@@ -9,7 +9,7 @@ import (
 
 templ LoginForm(req dtos.LoginRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/login", configs.Get().GetAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/login", configs.Get().GetClientAPIPrefix()) }
 		autocomplete="off"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>

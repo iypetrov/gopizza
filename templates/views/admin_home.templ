@@ -42,7 +42,7 @@ templ adminHomeSideBar() {
 			<ul class="space-y-4">
 				<li class="group relative">
 					<a
-						hx-get={ fmt.Sprintf("%s/pizzas/admin", configs.Get().GetAPIPrefix()) }
+						hx-get={ fmt.Sprintf("%s/pizzas", configs.Get().GetAdminAPIPrefix()) }
 						hx-target="#adminHomeContent"
 						hx-swap="innerHTML"
 						@htmx:after-request="sidebarOpen = false"

@@ -79,50 +79,6 @@ func (hnd *Pizza) AdminCreatePizza(w http.ResponseWriter, r *http.Request) error
 	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
-func (hnd *Pizza) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
-	//id, _ := r.Context().Value(middleware.UUIDKey).(uuid.UUID)
-	//m, err := hnd.srv.GetPizzaByID(r.Context(), id)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//return util.Render(w, r, component.PizzaCard(mapper.PizzaModelToResponse(m)))
-	return nil
-}
-
-func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
-	//idParam := r.URL.Query().Get("last-id")
-	//lastID, err := uuid.Parse(idParam)
-	//if err != nil {
-	//	lastID = uuid.Nil
-	//}
-	//
-	//priceParam := r.URL.Query().Get("last-price")
-	//lastPrice, err := strconv.ParseFloat(priceParam, 64)
-	//if err != nil {
-	//	lastPrice = 0
-	//}
-	//
-	//pageSizeParam := r.URL.Query().Get("page-size")
-	//pageSize, err := strconv.ParseInt(pageSizeParam, 10, 32)
-	//if err != nil {
-	//	pageSize = 10
-	//}
-	//
-	//ms, err := hnd.srv.GetAllPizzas(r.Context(), lastID, lastPrice, int32(pageSize))
-	//if err != nil {
-	//	return toast.ErrorInternalServerError(err)
-	//}
-	//
-	//var resp []dto.PizzaResponse
-	//for _, model := range ms {
-	//	resp = append(resp, mapper.PizzaModelToResponse(model))
-	//}
-	//
-	//return util.Render(w, r, component.PizzasOverview(resp))
-	return nil
-}
-
 func (hnd *Pizza) AdminGetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	models, err := hnd.srv.GetAllPizzas(r.Context())
 	if err != nil {

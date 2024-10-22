@@ -9,7 +9,7 @@ import (
 
 templ PizzaCreateForm(req dtos.PizzaRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/pizzas/admin", configs.Get().GetAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/pizzas", configs.Get().GetAdminAPIPrefix()) }
 		hx-target="#adminHomeContent"
 		hx-swap="innerHTML"
 		hx-encoding="multipart/form-data"
