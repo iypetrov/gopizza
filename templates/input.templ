@@ -73,3 +73,48 @@ templ InputSecret(props InputProps) {
 	}
 }
 
+templ inputVerificationCodeBox(props InputProps) {
+		<input
+			id={ props.Name }
+			type="text"
+			name={ props.Name }
+			value={ props.Value }
+			class="flex h-16 w-12 text-center rounded-md border border-input bg-transparent px-3 py-1 text-lg font-bold shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+			maxlength="1"
+		/>
+}
+
+type InputVerificationCodeProps struct {
+	Email  string
+	CodeSymbol1 string
+	CodeSymbol2 string
+	CodeSymbol3 string
+	CodeSymbol4 string
+	CodeSymbol5 string
+	CodeSymbol6 string
+	Error string
+}
+
+templ InputVerificationCode(props InputVerificationCodeProps) {
+	<div class="w-full flex flex-row justify-center items-center">
+		<label
+			for="email"
+			class="label primary-content font-bold text-lg"
+		>
+			Your email: { fmt.Sprintf("%s", props.Email) }
+		</label>
+	</div>
+	<div class="flex flex-row w-full justify-center items-center space-x-2">
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol1", Value: props.CodeSymbol1, Error: ""})
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol2", Value: props.CodeSymbol2, Error: ""})
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol3", Value: props.CodeSymbol3, Error: ""})
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol4", Value: props.CodeSymbol4, Error: ""})
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol5", Value: props.CodeSymbol5, Error: ""})
+		@inputVerificationCodeBox(InputProps{Name: "codeSymbol6", Value: props.CodeSymbol6, Error: ""})
+	</div>
+	if props.Error != "" {
+		<p class="text-error w-full flex flex-row justify-center items-center">
+			{ props.Error }
+		</p>
+	}
+}

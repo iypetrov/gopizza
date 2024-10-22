@@ -1,0 +1,48 @@
+package components
+
+import (
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
+)
+
+templ RegisterVerificationForm(req dtos.RegisterVerificationRequest, errs map[string]string) {
+	<form
+		hx-post={ fmt.Sprintf("%s/verification-code", configs.Get().GetAPIPrefix()) }
+		autocomplete="off"
+		class="flex flex-col items-center justify-center w-full bg-base-100"
+	>
+		<div class="w-full h-auto">
+			<div class="flex flex-col w-full hidden">
+				@templates.Input(templates.InputProps{Name: "id", Value: req.ID, Error: errs["id"]})
+			</div>
+			<div class="flex flex-col w-full hidden">
+				@templates.Input(templates.InputProps{Name: "email", Value: req.Email, Error: errs["email"]})
+			</div>
+			<div class="flex flex-col w-full">
+				@templates.InputVerificationCode(templates.InputVerificationCodeProps{
+					Email:       req.Email,
+					CodeSymbol1: req.CodeSymbol1,
+					CodeSymbol2: req.CodeSymbol2,
+					CodeSymbol3: req.CodeSymbol3,
+					CodeSymbol4: req.CodeSymbol4,
+					CodeSymbol5: req.CodeSymbol5,
+					CodeSymbol6: req.CodeSymbol6,
+					Error: errs["code"],
+				})
+			</div>
+			<div class="flex items-center justify-center w-full mt-3">
+				<button
+					type="submit"
+					hx-disabled-elt="this"
+					class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
+				>
+					@templates.Spinner() {
+						<span>Send verification code</span>
+					}
+				</button>
+			</div>
+		</div>
+	</form>
+}

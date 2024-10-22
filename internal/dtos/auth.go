@@ -6,38 +6,6 @@ import (
 	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
-type LoginRequest struct {
-	Email    string
-	Password string
-}
-
-func (req *LoginRequest) Validate() map[string]string {
-	errs := make(map[string]string)
-
-	if len(req.Email) == 0 {
-		errs["email"] = toasts.ErrAuthEmailRequired.Error()
-	}
-
-	if len(req.Password) == 0 {
-		errs["password"] = toasts.ErrAuthPasswordRequired.Error()
-	}
-
-	return errs
-}
-
-func ParseToLoginRequest(r *http.Request) (LoginRequest, error) {
-	err := r.ParseForm()
-	if err != nil {
-		return LoginRequest{}, err
-	}
-
-	var req LoginRequest
-	req.Email = parseString(r, "email")
-	req.Password = parseString(r, "password")
-
-	return req, nil
-}
-
 type RegisterRequest struct {
 	Email    string
 	Password string
@@ -72,6 +40,83 @@ func ParseToRegisterRequest(r *http.Request) (RegisterRequest, error) {
 	req.Email = parseString(r, "email")
 	req.Password = parseString(r, "password")
 	req.Address = parseString(r, "address")
+
+	return req, nil
+}
+
+type RegisterVerificationRequest struct {
+	ID string
+	Email string
+	CodeSymbol1 string
+	CodeSymbol2 string
+	CodeSymbol3 string
+	CodeSymbol4 string
+	CodeSymbol5 string
+	CodeSymbol6 string
+}
+
+func (req *RegisterVerificationRequest) Validate() map[string]string {
+	errs := make(map[string]string)
+
+	// if len(req.CodeSymbol1) != 1 || 
+	// len(req.CodeSymbol2) != 1 || 
+	// len(req.CodeSymbol3) != 1 || 
+	// len(req.CodeSymbol4) != 1 || 
+	// len(req.CodeSymbol5) != 1 || 
+	// len(req.CodeSymbol6) != 1 {
+	// 	errs["code"] = toasts.ErrAuthVerificationCodeNotCorrectFormat.Error()
+	// }
+
+	return errs
+}
+
+func ParseToRegisterVerificationRequest(r *http.Request) (RegisterVerificationRequest, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return RegisterVerificationRequest{}, err
+	}
+
+	var req RegisterVerificationRequest
+	req.ID = parseString(r, "id")
+	req.Email = parseString(r, "email")
+	req.CodeSymbol1 = parseString(r, "codeSymbol1")
+	req.CodeSymbol2 = parseString(r, "codeSymbol2")
+	req.CodeSymbol3 = parseString(r, "codeSymbol3")
+	req.CodeSymbol4 = parseString(r, "codeSymbol4")
+	req.CodeSymbol5 = parseString(r, "codeSymbol5")
+	req.CodeSymbol6 = parseString(r, "codeSymbol6")
+
+	return req, nil
+}
+
+type LoginRequest struct {
+	Email    string
+	Password string
+}
+
+func (req *LoginRequest) Validate() map[string]string {
+	errs := make(map[string]string)
+
+	if len(req.Email) == 0 {
+		errs["email"] = toasts.ErrAuthEmailRequired.Error()
+	}
+
+	if len(req.Password) == 0 {
+		errs["password"] = toasts.ErrAuthPasswordRequired.Error()
+	}
+
+	return errs
+}
+
+func ParseToLoginRequest(r *http.Request) (LoginRequest, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return LoginRequest{}, err
+	}
+
+	var req LoginRequest
+	req.Email = parseString(r, "email")
+	req.Password = parseString(r, "password")
 
 	return req, nil
 }

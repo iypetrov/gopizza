@@ -35,6 +35,7 @@ type Config struct {
 		AccessKeyID    string
 		SecretAcessKey string
 		S3BucketName   string
+		CognitoClientID string
 	}
 }
 
@@ -59,6 +60,7 @@ func Init() {
 	cfg.AWS.AccessKeyID = getEnv("AWS_ACCESS_KEY_ID", "default")
 	cfg.AWS.SecretAcessKey = getEnv("AWS_SECRET_ACCESS_KEY", "default")
 	cfg.AWS.S3BucketName = getEnv("S3_BUCKET_NAME", "default")
+	cfg.AWS.CognitoClientID = getEnv("COGNITO_CLIENT_ID", "default")
 }
 
 func Get() *Config {

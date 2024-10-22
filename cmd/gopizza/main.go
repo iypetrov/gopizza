@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,8 +11,8 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	cip "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/router"
 )
@@ -21,16 +22,16 @@ func main() {
 	configs.Init()
 	db, err := configs.CreateDatabaseConnection()
 	if err != nil {
-		fmt.Printf("cannot connect to database %s", err.Error())
+		log.Fatalf("cannot connect to database %s", err.Error())
 	}
 	queries := configs.NewDatabase(db)
 	if err := configs.RunSchemaMigration(db); err != nil {
-		fmt.Printf("cannot run schema migration %s", err.Error())
+		log.Fatalf("cannot run schema migration %s", err.Error())
 	}
 
 	awsCfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
-		fmt.Printf("cannot load aws config %s", err.Error())
+		log.Fatalf("cannot load aws config %s", err.Error())
 	}
 
 	s3Client := s3.NewFromConfig(awsCfg)
@@ -44,9 +45,9 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	fmt.Printf("server started on %s\n", configs.Get().App.Port)
+	log.Printf("server started on %s\n", configs.Get().App.Port)
 	if err := s.ListenAndServe(); err != nil {
-		fmt.Printf("cannot start server: %s", err.Error())
+		log.Fatalf("cannot start server: %s", err.Error())
 	}
 
 	<-setupGracefulShutdown(cancel)
@@ -58,12 +59,12 @@ func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan
 
 	shutdownFunc := func() {
 		if !isFirstShutdownSignal {
-			fmt.Printf("caught another exit signal, now hard dying")
+			log.Printf("caught another exit signal, now hard dying")
 			os.Exit(1)
 		}
 
 		isFirstShutdownSignal = false
-		fmt.Printf("starting graceful shutdown")
+		log.Printf("starting graceful shutdown")
 
 		cancel()
 
@@ -75,7 +76,7 @@ func setupGracefulShutdown(cancel context.CancelFunc) (shutdownCompleteChan chan
 		signal.Notify(sigint, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 		for {
-			fmt.Print("caught exit signal", "signal", <-sigint)
+			log.Printf("caught exit signal", "signal", <-sigint)
 			go shutdownFunc()
 		}
 	}(shutdownFunc)

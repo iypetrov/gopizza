@@ -14,6 +14,12 @@ func RegisterView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.Register())
 }
 
+func RegisterVerificationView(w http.ResponseWriter, r *http.Request) error {
+	id := r.URL.Query().Get("id")
+	email := r.URL.Query().Get("email")
+	return Render(w, r, views.RegisterVerification(id, email))
+}
+
 func LoginView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.Login())
 }

@@ -21,15 +21,16 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 	mux := chi.NewRouter()
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.Recoverer)
-	mux.Use(middleware.Logger)
+	// mux.Use(middleware.Logger)
 
 	// services
 	imageSrv := services.NewImage(s3Client)
+	authSrv := services.NewAuth(db, queries, cognitoClient)
 	pizzaSrv := services.NewPizza(db, queries)
 
 	// handlers
 	imageHnd := handlers.NewImage(imageSrv)
-	authHnd := handlers.NewAuth()
+	authHnd := handlers.NewAuth(authSrv)
 	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
 
 	mux.Route("/", func(mux chi.Router) {
@@ -48,6 +49,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 		// client
 		mux.Get("/home", Make(handlers.HomeView))
 		mux.Get("/register", Make(handlers.RegisterView))
+		mux.Get("/verification-code", Make(handlers.RegisterVerificationView))
 		mux.Get("/login", Make(handlers.LoginView))
 
 		// admin
@@ -58,6 +60,8 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 		// api
 		mux.Route(configs.Get().GetAPIPrefix(), func(mux chi.Router) {
 			mux.Group(func(r chi.Router) {
+				r.Post("/register", Make(authHnd.Register))
+				r.Post("/verification-code", Make(authHnd.VerifyRegistrationCode))
 				r.Post("/login", Make(authHnd.Login))
 				r.Route("/pizzas", func(r chi.Router) {
 					r.Get("/{id}", Make(pizzaHnd.GetPizzaByID))

@@ -1,7 +1,6 @@
 package dtos
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -13,7 +12,6 @@ func parseString(r *http.Request, key string) string {
 func parseBool(r *http.Request, key string) bool {
 	val, err := strconv.ParseBool(r.FormValue(key))
 	if err != nil {
-		fmt.Println(err)
 		val = false
 	}
 	return val
