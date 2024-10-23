@@ -45,8 +45,6 @@ func ParseToRegisterRequest(r *http.Request) (RegisterRequest, error) {
 }
 
 type RegisterVerificationRequest struct {
-	ID          string
-	Email       string
 	CodeSymbol1 string
 	CodeSymbol2 string
 	CodeSymbol3 string
@@ -77,8 +75,6 @@ func ParseToRegisterVerificationRequest(r *http.Request) (RegisterVerificationRe
 	}
 
 	var req RegisterVerificationRequest
-	req.ID = parseString(r, "id")
-	req.Email = parseString(r, "email")
 	req.CodeSymbol1 = parseString(r, "codeSymbol1")
 	req.CodeSymbol2 = parseString(r, "codeSymbol2")
 	req.CodeSymbol3 = parseString(r, "codeSymbol3")

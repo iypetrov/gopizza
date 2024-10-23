@@ -5,24 +5,21 @@ import (
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/templates"
+	"net/http"
 )
 
-templ RegisterVerificationForm(req dtos.RegisterVerificationRequest, errs map[string]string) {
+templ RegisterVerificationForm(r http.Request, req dtos.RegisterVerificationRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/verification-code", configs.Get().GetClientAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/verification-code?id=%s&email=%s", configs.Get().GetClientAPIPrefix(), r.URL.Query().Get("id"), r.URL.Query().Get("email")) }
 		autocomplete="off"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>
 		<div class="w-full h-auto">
-			<div class="flex flex-col w-full hidden">
-				@templates.Input(templates.InputProps{Name: "id", Value: req.ID, Error: errs["id"]})
-			</div>
-			<div class="flex flex-col w-full hidden">
-				@templates.Input(templates.InputProps{Name: "email", Value: req.Email, Error: errs["email"]})
-			</div>
+		 	<h1>{ r.URL.Query().Get("id") }</h1>
+		 	<h1>{ r.URL.Query().Get("email") }</h1>
 			<div class="flex flex-col w-full">
 				@templates.InputVerificationCode(templates.InputVerificationCodeProps{
-					Email:       req.Email,
+					Email:       r.URL.Query().Get("email"),
 					CodeSymbol1: req.CodeSymbol1,
 					CodeSymbol2: req.CodeSymbol2,
 					CodeSymbol3: req.CodeSymbol3,

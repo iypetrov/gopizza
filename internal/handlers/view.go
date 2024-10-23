@@ -15,9 +15,7 @@ func RegisterView(w http.ResponseWriter, r *http.Request) error {
 }
 
 func RegisterVerificationView(w http.ResponseWriter, r *http.Request) error {
-	id := r.URL.Query().Get("id")
-	email := r.URL.Query().Get("email")
-	return Render(w, r, views.RegisterVerification(id, email))
+	return Render(w, r, views.RegisterVerification(*r))
 }
 
 func LoginView(w http.ResponseWriter, r *http.Request) error {

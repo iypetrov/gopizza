@@ -49,22 +49,17 @@ func (hnd *Auth) VerifyRegistrationCode(w http.ResponseWriter, r *http.Request) 
 	req, err := dtos.ParseToRegisterVerificationRequest(r)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
-		return Render(w, r, components.RegisterVerificationForm(req, make(map[string]string)))
-	}
-
-	emptyReq := dtos.RegisterVerificationRequest{
-		ID:    req.ID,
-		Email: req.Email,
+		return Render(w, r, components.RegisterVerificationForm(*r, req, make(map[string]string)))
 	}
 
 	errs := req.Validate()
 	if len(errs) > 0 {
-		return Render(w, r, components.RegisterVerificationForm(emptyReq, errs))
+		return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, errs))
 	}
 
-	id, err := uuid.Parse(req.ID)
+	id, err := uuid.Parse(r.URL.Query().Get("id"))
 	if err != nil {
-		return Render(w, r, components.RegisterVerificationForm(emptyReq, errs))
+		return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, errs))
 	}
 
 	code := strings.Join([]string{
@@ -81,16 +76,16 @@ func (hnd *Auth) VerifyRegistrationCode(w http.ResponseWriter, r *http.Request) 
 	err = hnd.srv.VerifyUserCode(
 		r.Context(),
 		id,
-		req.Email,
+		r.URL.Query().Get("email"),
 		code,
 	)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
-		return Render(w, r, components.RegisterVerificationForm(emptyReq, make(map[string]string)))
+		return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, errs))
 	}
 
 	hxRedirect(w, "/login")
-	return Render(w, r, components.RegisterVerificationForm(dtos.RegisterVerificationRequest{}, make(map[string]string)))
+	return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, make(map[string]string)))
 }
 
 func (hnd *Auth) Login(w http.ResponseWriter, r *http.Request) error {
