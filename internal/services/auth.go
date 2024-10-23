@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/database"
+	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/toasts"
 	"github.com/lib/pq"
 )
@@ -90,6 +91,26 @@ func (srv *Auth) VerifyUserCode(ctx context.Context, id uuid.UUID, email, code s
 	return nil
 }
 
-func (srv *Auth) VerifyUser(ctx context.Context, email, password string) (string, string, string, error) {
-	return "", "", "", nil
+func (srv *Auth) VerifyUser(ctx context.Context, email, password string) (dtos.UserCookie, error) {
+	result, err := srv.cognitoClient.InitiateAuth(ctx, &cip.InitiateAuthInput{
+		ClientId:       aws.String(configs.Get().AWS.CognitoClientID),
+		AuthFlow:       "USER_PASSWORD_AUTH",
+		AuthParameters: map[string]string{"USERNAME": email, "PASSWORD": password},
+	})
+	if err != nil {
+		return dtos.UserCookie{}, toasts.GetAWSError(err)
+	}
+
+	user, err := srv.queries.GetUserByEmail(ctx, email)
+	if err != nil {
+		return dtos.UserCookie{}, toasts.ErrUserNotFound
+	}
+
+	cookie := dtos.UserCookie{
+		ID:           user.ID.String(),
+		Email:        email,
+		AccessToken:  *result.AuthenticationResult.AccessToken,
+		RefreshToken: *result.AuthenticationResult.RefreshToken,
+	}
+	return cookie, nil
 }

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/iypetrov/gopizza/internal/common"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
@@ -98,6 +99,18 @@ func (hnd *Auth) Login(w http.ResponseWriter, r *http.Request) error {
 	errs := req.Validate()
 	if len(errs) > 0 {
 		return Render(w, r, components.LoginForm(req, errs))
+	}
+
+	cookie, err := hnd.srv.VerifyUser(r.Context(), req.Email, req.Password)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return Render(w, r, components.LoginForm(req, make(map[string]string)))
+	}
+
+	err = common.WriteCookie(w, cookie)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return Render(w, r, components.LoginForm(req, make(map[string]string)))
 	}
 
 	hxRedirect(w, "/home")

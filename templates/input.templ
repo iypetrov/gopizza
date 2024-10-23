@@ -96,14 +96,6 @@ type InputVerificationCodeProps struct {
 }
 
 templ InputVerificationCode(props InputVerificationCodeProps) {
-	<div class="w-full flex flex-row justify-center items-center">
-		<label
-			for="email"
-			class="label primary-content font-bold text-lg"
-		>
-			Your email: { fmt.Sprintf("%s", props.Email) }
-		</label>
-	</div>
 	<div class="flex flex-row w-full justify-center items-center space-x-2">
 		@inputVerificationCodeBox(InputProps{Name: "codeSymbol1", Value: props.CodeSymbol1, Error: ""})
 		@inputVerificationCodeBox(InputProps{Name: "codeSymbol2", Value: props.CodeSymbol2, Error: ""})

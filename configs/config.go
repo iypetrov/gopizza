@@ -19,6 +19,7 @@ type Config struct {
 		Version     string
 		Addr        string
 		Port        string
+		Secret      string
 	}
 
 	Database struct {
@@ -50,6 +51,7 @@ func Init() {
 	cfg.App.Version = getEnv("APP_VERSION", "0")
 	cfg.App.Addr = getEnv("APP_ADDR", "localhost")
 	cfg.App.Port = getEnv("APP_PORT", "8080")
+	cfg.App.Secret = getEnv("APP_SECRET", "default")
 	cfg.Database.Name = getEnv("APP_DB_NAME", "gopizza")
 	cfg.Database.Username = getEnv("APP_DB_USERNAME", "user")
 	cfg.Database.Password = getEnv("APP_DB_PASSWORD", "pass")
