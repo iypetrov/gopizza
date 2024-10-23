@@ -26,7 +26,7 @@ func NewPizza(db *sql.DB, queries *database.Queries) Pizza {
 
 func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams) ([]database.Pizza, error) {
 	p.ID = uuid.New()
-	p.UpdatedAt = time.Now()
+	p.UpdatedAt = time.Now().UTC()
 
 	tx, err := srv.db.Begin()
 	if err != nil {

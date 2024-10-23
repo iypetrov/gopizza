@@ -15,8 +15,6 @@ templ RegisterVerificationForm(r http.Request, req dtos.RegisterVerificationRequ
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>
 		<div class="w-full h-auto">
-		 	<h1>{ r.URL.Query().Get("id") }</h1>
-		 	<h1>{ r.URL.Query().Get("email") }</h1>
 			<div class="flex flex-col w-full">
 				@templates.InputVerificationCode(templates.InputVerificationCodeProps{
 					Email:       r.URL.Query().Get("email"),

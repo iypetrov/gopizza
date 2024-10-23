@@ -78,7 +78,7 @@ func (srv *Auth) VerifyUserCode(ctx context.Context, id uuid.UUID, email, code s
 	p := database.ConfirmUserParams{
 		ID: id,
 		ConfirmedAt: sql.NullTime{
-			Time:  time.Now(),
+			Time:  time.Now().UTC(),
 			Valid: true,
 		},
 	}
