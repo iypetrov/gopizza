@@ -2,17 +2,11 @@ package common
 
 import (
 	"bytes"
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
 	"encoding/base64"
 	"encoding/gob"
-	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
-	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/toasts"
 )
@@ -37,11 +31,11 @@ func WriteCookie(w http.ResponseWriter, value dtos.UserCookie) error {
 		SameSite: http.SameSiteLaxMode,
 	}
 
-	return writeEncrypted(w, cookie, []byte(configs.Get().App.Secret))
+	return write(w, cookie)
 }
 
 func ReadCookie(r *http.Request) (dtos.UserCookie, error) {
-	value, err := readEncrypted(r, CookieName, []byte(configs.Get().App.Secret))
+	value, err := read(r, CookieName)
 	if err != nil {
 		return dtos.UserCookie{}, err
 	}
@@ -80,72 +74,4 @@ func read(r *http.Request, name string) (string, error) {
 	}
 
 	return string(value), nil
-}
-
-func writeEncrypted(w http.ResponseWriter, cookie http.Cookie, secretKey []byte) error {
-	block, err := aes.NewCipher(secretKey)
-	if err != nil {
-		return err
-	}
-
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		return err
-	}
-
-	nonce := make([]byte, aesGCM.NonceSize())
-	_, err = io.ReadFull(rand.Reader, nonce)
-	if err != nil {
-		return err
-	}
-
-	plaintext := fmt.Sprintf("%s:%s", cookie.Name, cookie.Value)
-
-	encryptedValue := aesGCM.Seal(nonce, nonce, []byte(plaintext), nil)
-
-	cookie.Value = string(encryptedValue)
-
-	return write(w, cookie)
-}
-
-func readEncrypted(r *http.Request, name string, secretKey []byte) (string, error) {
-	encryptedValue, err := read(r, name)
-	if err != nil {
-		return "", err
-	}
-
-	block, err := aes.NewCipher(secretKey)
-	if err != nil {
-		return "", err
-	}
-
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		return "", err
-	}
-
-	nonceSize := aesGCM.NonceSize()
-
-	if len(encryptedValue) < nonceSize {
-		return "", toasts.ErrCookieInvalidValue
-	}
-
-	nonce := encryptedValue[:nonceSize]
-	ciphertext := encryptedValue[nonceSize:]
-
-	plaintext, err := aesGCM.Open(nil, []byte(nonce), []byte(ciphertext), nil)
-	if err != nil {
-		return "", toasts.ErrCookieInvalidValue
-	}
-
-	expectedName, value, ok := strings.Cut(string(plaintext), ":")
-	if !ok {
-		return "", toasts.ErrCookieInvalidValue
-	}
-
-	if expectedName != name {
-		return "", toasts.ErrCookieInvalidValue
-	}
-
-	return value, nil
 }
