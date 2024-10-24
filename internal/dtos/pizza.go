@@ -191,8 +191,7 @@ func (req *PizzaResponse) Description() string {
 
 	description := strings.Join(ingredients, ", ")
 	if len(description) == 0 {
-        return description
-    }
+		return description
+	}
 	return strings.ToUpper(string(description[0])) + description[1:]
 }
-

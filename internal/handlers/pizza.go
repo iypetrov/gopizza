@@ -79,7 +79,6 @@ func (hnd *Pizza) AdminCreatePizza(w http.ResponseWriter, r *http.Request) error
 	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
-
 func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	models, err := hnd.srv.GetAllPizzas(r.Context())
 	if err != nil {

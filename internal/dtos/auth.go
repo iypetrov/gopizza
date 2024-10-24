@@ -93,7 +93,7 @@ type UserCookie struct {
 }
 
 func (cookie *UserCookie) IsAdmin() bool {
-	return cookie.Email == "ilia.yavorov.petrov@gmail.com" 
+	return cookie.Email == "ilia.yavorov.petrov@gmail.com"
 }
 
 type LoginRequest struct {
