@@ -51,6 +51,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 		mux.Get("/register", Make(handlers.RegisterView))
 		mux.Get("/verification-code", Make(handlers.RegisterVerificationView))
 		mux.Get("/login", Make(handlers.LoginView))
+		mux.With(middlewares.UUIDFormat).Get("/pizzas/{id}", Make(handlers.PizzaDetailsView))
 
 		// admin
 		mux.Route(configs.Get().GetAdminPrefix(), func(mux chi.Router) {

@@ -1,0 +1,30 @@
+package components
+
+import (
+	"github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ PizzaDetailsForm(resp dtos.PizzaResponse) {
+	<div class="card card-side bg-base-100 w-1/2 shadow-xl">
+		<figure>
+			<img
+				src={ resp.ImageUrl }
+				alt={ resp.Name }
+			/>
+		</figure>
+		<div class="card-body flex flex-col justify-center items-center">
+			<h2 class="card-title">{ resp.Name }</h2>
+			<p class="overflow-hidden">
+				{ resp.Description() }
+			</p>
+			<div class="card-actions justify-center">
+				<button
+					hx-post="/something"
+					class="btn btn-primary text-base-100"
+				>
+					Add to cart
+				</button>
+			</div>
+		</div>
+	</div>
+}

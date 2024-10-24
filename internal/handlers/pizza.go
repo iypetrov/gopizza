@@ -112,7 +112,21 @@ func (hnd *Pizza) AdminGetAllPizzas(w http.ResponseWriter, r *http.Request) erro
 }
 
 func (hnd *Pizza) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrNotValidUUID
+	}
+	model, err := hnd.srv.GetPizzaByID(r.Context(), id)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return toasts.ErrPizzaFailedToLoad
+	}
+
+	var dto dtos.PizzaResponse
+	common.MapFields(&dto, &model)
+
+	return Render(w, r, components.PizzaDetailsForm(dto))
 }
 
 func (hnd *Pizza) AdminDeletePizzaByID(w http.ResponseWriter, r *http.Request) error {
