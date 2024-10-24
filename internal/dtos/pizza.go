@@ -3,6 +3,7 @@ package dtos
 import (
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -126,3 +127,72 @@ type PizzaResponse struct {
 	Price      float64
 	UpdatedAt  time.Time
 }
+
+func (req *PizzaResponse) Description() string {
+	var ingredients []string
+
+	if req.Tomatoes {
+		ingredients = append(ingredients, "tomatoes")
+	}
+	if req.Garlic {
+		ingredients = append(ingredients, "garlic")
+	}
+	if req.Onion {
+		ingredients = append(ingredients, "onion")
+	}
+	if req.Parmesan {
+		ingredients = append(ingredients, "parmesan")
+	}
+	if req.Cheddar {
+		ingredients = append(ingredients, "cheddar")
+	}
+	if req.Pepperoni {
+		ingredients = append(ingredients, "pepperoni")
+	}
+	if req.Sausage {
+		ingredients = append(ingredients, "sausage")
+	}
+	if req.Ham {
+		ingredients = append(ingredients, "ham")
+	}
+	if req.Bacon {
+		ingredients = append(ingredients, "bacon")
+	}
+	if req.Chicken {
+		ingredients = append(ingredients, "chicken")
+	}
+	if req.Salami {
+		ingredients = append(ingredients, "salami")
+	}
+	if req.GroundBeef {
+		ingredients = append(ingredients, "ground beef")
+	}
+	if req.Mushrooms {
+		ingredients = append(ingredients, "mushrooms")
+	}
+	if req.Olives {
+		ingredients = append(ingredients, "olives")
+	}
+	if req.Spinach {
+		ingredients = append(ingredients, "spinach")
+	}
+	if req.Pineapple {
+		ingredients = append(ingredients, "pineapple")
+	}
+	if req.Arugula {
+		ingredients = append(ingredients, "arugula")
+	}
+	if req.Anchovies {
+		ingredients = append(ingredients, "anchovies")
+	}
+	if req.Capers {
+		ingredients = append(ingredients, "capers")
+	}
+
+	description := strings.Join(ingredients, ", ")
+	if len(description) == 0 {
+        return description
+    }
+	return strings.ToUpper(string(description[0])) + description[1:]
+}
+

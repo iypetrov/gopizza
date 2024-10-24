@@ -79,6 +79,23 @@ func (hnd *Pizza) AdminCreatePizza(w http.ResponseWriter, r *http.Request) error
 	return Render(w, r, views.AdminPizzasOverview(resps))
 }
 
+
+func (hnd *Pizza) GetAllPizzas(w http.ResponseWriter, r *http.Request) error {
+	models, err := hnd.srv.GetAllPizzas(r.Context())
+	if err != nil {
+		return toasts.ErrPizzaFailedToLoad
+	}
+
+	var resps []dtos.PizzaResponse
+	for _, model := range models {
+		var dto dtos.PizzaResponse
+		common.MapFields(&dto, &model)
+		resps = append(resps, dto)
+	}
+
+	return Render(w, r, views.PizzasOverview(resps))
+}
+
 func (hnd *Pizza) AdminGetAllPizzas(w http.ResponseWriter, r *http.Request) error {
 	models, err := hnd.srv.GetAllPizzas(r.Context())
 	if err != nil {
@@ -93,6 +110,10 @@ func (hnd *Pizza) AdminGetAllPizzas(w http.ResponseWriter, r *http.Request) erro
 	}
 
 	return Render(w, r, views.AdminPizzasOverview(resps))
+}
+
+func (hnd *Pizza) GetPizzaByID(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }
 
 func (hnd *Pizza) AdminDeletePizzaByID(w http.ResponseWriter, r *http.Request) error {

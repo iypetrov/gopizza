@@ -1,0 +1,15 @@
+package templates
+
+type LinkProps struct {
+	Text  string
+	Path string
+}
+
+templ Link(props LinkProps) {
+	<a 
+		href={ templ.SafeURL(props.Path) } 
+		class="link link-secondary"
+	>
+		{ props.Text }
+	</a>
+}

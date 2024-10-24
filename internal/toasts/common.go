@@ -34,3 +34,17 @@ func ErrorInternalServerError(err error) Toast {
 		StatusCode: http.StatusInternalServerError,
 	}
 }
+
+func ErrorStatusUnauthorized(err error) Toast {
+	return Toast{
+		Message:    err.Error(),
+		StatusCode: http.StatusUnauthorized,
+	}
+}
+
+func ErrorStatusForbidden(err error) Toast {
+	return Toast{
+		Message:    err.Error(),
+		StatusCode: http.StatusForbidden,
+	}
+}

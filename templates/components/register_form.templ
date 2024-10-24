@@ -24,6 +24,9 @@ templ RegisterForm(req dtos.RegisterRequest, errs map[string]string) {
 			<div class="flex flex-col w-full">
 				@templates.Input(templates.InputProps{Name: "address", Value: req.Address, Error: errs["address"]})
 			</div>
+			<div class="flex flex-col w-full justify-center items-center">
+				@templates.Link(templates.LinkProps{Text: "Already have an account? Sign in now!", Path: "/login"})
+			</div>
 			<div class="flex items-center justify-center w-full mt-3">
 				<button
 					type="submit"

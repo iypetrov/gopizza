@@ -92,6 +92,10 @@ type UserCookie struct {
 	RefreshToken string
 }
 
+func (cookie *UserCookie) IsAdmin() bool {
+	return cookie.Email == "ilia.yavorov.petrov@gmail.com" 
+}
+
 type LoginRequest struct {
 	Email    string
 	Password string

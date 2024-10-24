@@ -42,7 +42,7 @@ func (hnd *Auth) Register(w http.ResponseWriter, r *http.Request) error {
 		return Render(w, r, components.RegisterForm(req, make(map[string]string)))
 	}
 
-	hxRedirect(w, fmt.Sprintf("/verification-code?id=%s&email=%s", id, req.Email))
+	common.HxRedirect(w, fmt.Sprintf("/verification-code?id=%s&email=%s", id, req.Email))
 	return Render(w, r, components.RegisterForm(dtos.RegisterRequest{}, make(map[string]string)))
 }
 
@@ -85,7 +85,7 @@ func (hnd *Auth) VerifyRegistrationCode(w http.ResponseWriter, r *http.Request) 
 		return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, errs))
 	}
 
-	hxRedirect(w, "/login")
+	common.HxRedirect(w, "/login")
 	return Render(w, r, components.RegisterVerificationForm(*r, dtos.RegisterVerificationRequest{}, make(map[string]string)))
 }
 
@@ -113,6 +113,11 @@ func (hnd *Auth) Login(w http.ResponseWriter, r *http.Request) error {
 		return Render(w, r, components.LoginForm(req, make(map[string]string)))
 	}
 
-	hxRedirect(w, "/home")
+	if cookie.IsAdmin() {
+		common.HxRedirect(w, "/admin/home")
+	} else {
+		common.HxRedirect(w, "/home")
+	}
+
 	return Render(w, r, components.LoginForm(dtos.LoginRequest{}, make(map[string]string)))
 }

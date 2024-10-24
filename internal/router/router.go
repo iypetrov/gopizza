@@ -64,15 +64,19 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 				r.Post("/verification-code", Make(authHnd.VerifyRegistrationCode))
 				r.Post("/login", Make(authHnd.Login))
 			})
+			mux.With(middlewares.AuthClient).Route("/pizzas", func(mux chi.Router) {
+				mux.Get("/", Make(pizzaHnd.GetAllPizzas))
+				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
+			})
 		})
 
 		// admin api
-		mux.Route(configs.Get().GetAdminAPIPrefix(), func(mux chi.Router) {
-			mux.Group(func(r chi.Router) {
-				r.Route("/pizzas", func(r chi.Router) {
-					r.Post("/", Make(pizzaHnd.AdminCreatePizza))
-					r.Get("/", Make(pizzaHnd.AdminGetAllPizzas))
-					r.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
+		mux.With(middlewares.AuthAdmin).Route(configs.Get().GetAdminAPIPrefix(), func(mux chi.Router) {
+			mux.Group(func(mux chi.Router) {
+				mux.Route("/pizzas", func(mux chi.Router) {
+					mux.Post("/", Make(pizzaHnd.AdminCreatePizza))
+					mux.Get("/", Make(pizzaHnd.AdminGetAllPizzas))
+					mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
 				})
 			})
 		})
