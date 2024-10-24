@@ -18,7 +18,9 @@ templ PizzaCard(resp dtos.PizzaResponse) {
 		</a>
 		<div class="card-body">
 			<h2 class="card-title">{ resp.Name }</h2>
-			<p>{ resp.Description() }</p>
+			<p class="overflow-hidden whitespace-nowrap truncate">
+				{ resp.Description() }
+			</p>
 			<div class="card-actions justify-center">
 				<button
 					hx-post="/something"
