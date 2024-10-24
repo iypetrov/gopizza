@@ -41,6 +41,9 @@ func AuthClient(next http.Handler) http.Handler {
 		if err != nil {
 			common.HxRedirect(w, "/login")
 		}
+		if len(userCookie.Email) == 0 {
+			common.HxRedirect(w, "/login")
+		}
 		ctx := context.WithValue(r.Context(), CookieName, userCookie)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
@@ -53,8 +56,11 @@ func AuthAdmin(next http.Handler) http.Handler {
 			common.HxRedirect(w, "/login")
 			return
 		}
-		if !userCookie.IsAdmin() {
+		if len(userCookie.Email) == 0 {
 			common.HxRedirect(w, "/login")
+		}
+		if !userCookie.IsAdmin() {
+			common.HxRedirect(w, "/home")
 			return
 		}
 		ctx := context.WithValue(r.Context(), CookieName, userCookie)

@@ -64,6 +64,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 				r.Post("/register", Make(authHnd.Register))
 				r.Post("/verification-code", Make(authHnd.VerifyRegistrationCode))
 				r.Post("/login", Make(authHnd.Login))
+				r.Post("/logout", Make(authHnd.Logout))
 			})
 			mux.With(middlewares.AuthClient).Route("/pizzas", func(mux chi.Router) {
 				mux.Get("/", Make(pizzaHnd.GetAllPizzas))

@@ -121,3 +121,9 @@ func (hnd *Auth) Login(w http.ResponseWriter, r *http.Request) error {
 
 	return Render(w, r, components.LoginForm(dtos.LoginRequest{}, make(map[string]string)))
 }
+
+func (hnd *Auth) Logout(w http.ResponseWriter, r *http.Request) error {
+	_ = common.WriteCookie(w, dtos.UserCookie{})
+	common.HxRedirect(w, "/login")
+	return nil
+}
