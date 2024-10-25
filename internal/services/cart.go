@@ -50,6 +50,32 @@ func (srv *Cart) GetCartByUserID(ctx context.Context, userID uuid.UUID) ([]datab
 	return ms, nil
 }
 
+func (srv *Cart) RemoveItemFromCart(ctx context.Context, id uuid.UUID, userID uuid.UUID) ([]database.GetCartByUserIDRow, error) {
+	tx, err := srv.db.Begin()
+	if err != nil {
+		return []database.GetCartByUserIDRow{}, toasts.ErrDatabaseTransactionFailed
+	}
+	defer tx.Rollback()
+
+	qtx := srv.queries.WithTx(tx)
+	err = qtx.RemoveItemFromCart(ctx, id)
+	if err != nil {
+		return []database.GetCartByUserIDRow{}, toasts.ErrCartDoesNotExist
+	}
+
+	ms, err := qtx.GetCartByUserID(ctx, userID)
+	if err != nil {
+		return []database.GetCartByUserIDRow{}, toasts.ErrCartDoesNotExist
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return []database.GetCartByUserIDRow{}, toasts.ErrDatabaseTransactionFailed
+	}
+
+	return ms, nil
+}
+
 func (srv *Cart) EmptyCartByUserID(ctx context.Context, userID uuid.UUID) error {
 	_, err := srv.queries.EmptyCartByUserID(ctx, userID)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
+	"github.com/iypetrov/gopizza/templates/components"
 )
 
 type Cart struct {
@@ -54,38 +55,60 @@ func (hnd *Cart) AddPizzaToCart(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (hnd *Cart) GetCartByUserID(w http.ResponseWriter, r *http.Request) error {
-	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
-	if !ok {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
-		return toasts.ErrNotValidUUID
-	}
-
 	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
 	if !ok {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
 		return toasts.ErrNotValidCookie
 	}
 
-	if !IsOwnAccount(id, cookie) {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount))
-		return toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount)
+	id, err := uuid.Parse(cookie.ID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
 	}
 
-	model, err := hnd.srv.GetCartByUserID(r.Context(), id)
+	models, err := hnd.srv.GetCartByUserID(r.Context(), id)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return toasts.ErrorInternalServerError(err)
 	}
 
-	var dto dtos.CartPizzaRequest
-	common.MapFields(&dto, &model)
+	var total float64 = 0
+	var resps []dtos.CartResponse
+	for _, model := range models {
+		var dto dtos.CartResponse
+		common.MapFields(&dto, &model)
+		dto.CartID = model.CartID.String()
+		resps = append(resps, dto)
+		total += dto.ProductPrice
+	}
 
-	// TODO: return component
-
-	return nil
+	return Render(w, r, components.CartItems(resps, total))
 }
 
 func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error {
+	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
+		return toasts.ErrNotValidCookie
+	}
+
+	id, err := uuid.Parse(cookie.ID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
+	}
+
+	err = hnd.srv.EmptyCartByUserID(r.Context(), id)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return toasts.ErrorInternalServerError(err)
+	}
+
+	return Render(w, r, components.CartItems([]dtos.CartResponse{}, 0))
+}
+
+func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) error {
 	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
 	if !ok {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
@@ -98,18 +121,32 @@ func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error
 		return toasts.ErrNotValidCookie
 	}
 
-	if !IsOwnAccount(id, cookie) {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount))
-		return toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount)
+	// if !IsOwnAccount(id, cookie) {
+	// 	toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount))
+	// 	return toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount)
+	// }
+
+	userID, err := uuid.Parse(cookie.ID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
 	}
 
-	err := hnd.srv.EmptyCartByUserID(r.Context(), id)
+	models, err := hnd.srv.RemoveItemFromCart(r.Context(), id, userID)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return toasts.ErrorInternalServerError(err)
 	}
 
-	// TODO: return component
+	var total float64 = 0
+	var resps []dtos.CartResponse
+	for _, model := range models {
+		var dto dtos.CartResponse
+		common.MapFields(&dto, &model)
+		dto.CartID = model.CartID.String()
+		resps = append(resps, dto)
+		total += dto.ProductPrice
+	}
 
-	return nil
+	return Render(w, r, components.CartItems(resps, total))
 }

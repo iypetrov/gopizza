@@ -13,9 +13,13 @@ SELECT
 FROM
     carts c
 LEFT JOIN
-    pizzas ON c.pizza_id = pizza.id
+    pizzas ON c.pizza_id = pizzas.id
 WHERE
     c.user_id = $1;
+
+-- name: RemoveItemFromCart :exec
+DELETE FROM carts
+WHERE id = $1;
 
 -- name: EmptyCartByUserID :one
 DELETE FROM carts

@@ -21,7 +21,7 @@ templ PizzaDetailsForm(resp dtos.PizzaResponse) {
 			</p>
 			<div class="card-actions justify-center">
 				<button
-					hx-post={ fmt.Sprintf("%s/cart/pizzas/%s", configs.Get().GetClientAPIPrefix(), resp.ID.String()) }
+					hx-post={ fmt.Sprintf("%s/carts/pizzas/%s", configs.Get().GetClientAPIPrefix(), resp.ID.String()) }
 					hx-swap="none"
 					class="btn btn-primary text-base-100"
 				>
