@@ -6,23 +6,22 @@ import (
 )
 
 templ CartItems(resps []dtos.CartResponse, total float64) {
-	<div 
-		id="cartItems" 
-		class="flex flex-row justify-between gap-4 w-full h-full"
+	<div
+		id="cartItems"
+		class="flex flex-row justify-between gap-4 w-full h-full overflow-hidden"
 	>
-		<div 
-			
-			class="w-1/2 flex flex-col justify-center items-center"
-		>
-			for _, val := range resps {
-				@CartItem(val)
-			}
+		<div class="w-1/2 flex flex-col">
+			<div class="w-full flex flex-col justify-center items-center max-h-[80vh] overflow-y-auto">
+				for _, val := range resps {
+					@CartItem(val)
+				}
+			</div>
 			if len(resps) != 0 {
-				<h1 class="text-right font-bold">
+				<h1 class="flex flex-col w-full justify-center items-center text-right font-bold">
 					{ fmt.Sprintf("Total: $%.2f", total) }
 				</h1>
 			}
-		</div>
+			</div>
 		<div class="w-1/2 flex flex-col justify-center items-center">
 			<h2 class="text-xl font-semibold mb-4">Payment Details</h2>
 			<form>
@@ -31,4 +30,3 @@ templ CartItems(resps []dtos.CartResponse, total float64) {
 		</div>
 	</div>
 }
-
