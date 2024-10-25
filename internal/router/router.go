@@ -27,11 +27,13 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 	imageSrv := services.NewImage(s3Client)
 	authSrv := services.NewAuth(db, queries, cognitoClient)
 	pizzaSrv := services.NewPizza(db, queries)
+	cartSrv := services.NewCart(db, queries)
 
 	// handlers
 	imageHnd := handlers.NewImage(imageSrv)
 	authHnd := handlers.NewAuth(authSrv)
 	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
+	cartHnd := handlers.NewCart(cartSrv)
 
 	mux.Route("/", func(mux chi.Router) {
 		// common
@@ -69,6 +71,11 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 			mux.With(middlewares.AuthClient).Route("/pizzas", func(mux chi.Router) {
 				mux.Get("/", Make(pizzaHnd.GetAllPizzas))
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
+			})
+			mux.With(middlewares.AuthClient).Route("/cart", func(mux chi.Router) {
+				mux.With(middlewares.UUIDFormat).Post("/{id}/pizza/{pizzaID}", Make(cartHnd.AddPizzaToCart))
+				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(cartHnd.GetCartByUserID))
+				mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(cartHnd.EmptyCartByUserID))
 			})
 		})
 

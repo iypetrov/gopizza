@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/google/uuid"
+	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
@@ -16,4 +18,8 @@ func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
 	}
 
 	return nil
+}
+
+func IsOwnAccount(userID uuid.UUID, cookie dtos.UserCookie) bool {
+	return userID.String() == cookie.ID
 }

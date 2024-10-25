@@ -31,7 +31,7 @@ func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams)
 
 	tx, err := srv.db.Begin()
 	if err != nil {
-		return nil, toasts.ErrDatabaseTransactionFailed
+		return []database.Pizza{}, toasts.ErrDatabaseTransactionFailed
 	}
 	defer tx.Rollback()
 
@@ -44,7 +44,7 @@ func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams)
 		ok := errors.As(err, &pgErr)
 		if ok {
 			if pgErr.Code == "23505" {
-				return nil, toasts.ErrPizzasAlreadyExists
+				return []database.Pizza{}, toasts.ErrPizzasAlreadyExists
 			}
 		}
 
@@ -53,12 +53,12 @@ func (srv *Pizza) CreatePizza(ctx context.Context, p database.CreatePizzaParams)
 
 	ms, err := qtx.GetAllPizzas(ctx)
 	if err != nil {
-		return nil, toasts.ErrPizzaFailedToLoad
+		return []database.Pizza{}, toasts.ErrPizzaFailedToLoad
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		return nil, toasts.ErrDatabaseTransactionFailed
+		return []database.Pizza{}, toasts.ErrDatabaseTransactionFailed
 	}
 
 	return ms, nil
@@ -76,7 +76,7 @@ func (srv *Pizza) GetPizzaByID(ctx context.Context, id uuid.UUID) (database.Pizz
 func (srv *Pizza) GetAllPizzas(ctx context.Context) ([]database.Pizza, error) {
 	ms, err := srv.queries.GetAllPizzas(ctx)
 	if err != nil {
-		return nil, toasts.ErrPizzaFailedToLoad
+		return []database.Pizza{}, toasts.ErrPizzaFailedToLoad
 	}
 
 	return ms, nil
@@ -127,7 +127,7 @@ func (srv *Pizza) DeletePizzaByID(ctx context.Context, id uuid.UUID) ([]database
 
 	ms, err := qtx.GetAllPizzas(ctx)
 	if err != nil {
-		return nil, toasts.ErrPizzaFailedToLoad
+		return []database.Pizza{}, toasts.ErrPizzaFailedToLoad
 	}
 
 	err = tx.Commit()
