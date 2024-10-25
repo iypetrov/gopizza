@@ -23,13 +23,9 @@ CREATE TABLE IF NOT EXISTS pizzas (
     capers boolean NOT NULL,
     image_url text NOT NULL,
     price double precision NOT NULL,
-    updated_at timestamp NOT NULL
+    updated_at timestamp NOT NULL,
+    created_at timestamp NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_pizzas_price ON pizzas (price);
-
 -- +goose Down
-DROP INDEX IF EXISTS idx_pizzas_price;
-
 DROP TABLE pizzas;
-

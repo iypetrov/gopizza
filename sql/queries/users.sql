@@ -1,8 +1,8 @@
 -- name: CreateUser :one
-INSERT INTO users (id, email, address, status, confirmed_at)
-    VALUES ($1, $2, $3, 'pending', NULL)
+INSERT INTO users (id, email, address, status, confirmed_at, created_at)
+    VALUES ($1, $2, $3, 'pending', NULL, $4)
 RETURNING
-    id, email, address, status, confirmed_at;
+    id, email, address, status, confirmed_at, created_at;
 
 -- name: ConfirmUser :one
 UPDATE
@@ -17,7 +17,8 @@ RETURNING
     email,
     address,
     status,
-    confirmed_at;
+    confirmed_at,
+    created_at;
 
 -- name: GetUserByEmail :one
 SELECT
@@ -25,9 +26,9 @@ SELECT
     email,
     address,
     status,
-    confirmed_at
+    confirmed_at,
+    created_at
 FROM
     users
 WHERE
     email = $1;
-

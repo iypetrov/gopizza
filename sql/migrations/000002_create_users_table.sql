@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
     email text NOT NULL UNIQUE,
     address text NOT NULL,
     status status NOT NULL,
-    confirmed_at timestamp
+    confirmed_at timestamp,
+    created_at timestamp NOT NULL
 );
 
 -- +goose Down
 DROP TABLE users;
-

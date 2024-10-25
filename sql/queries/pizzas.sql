@@ -1,8 +1,8 @@
 -- name: CreatePizza :one
-INSERT INTO pizzas (id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+INSERT INTO pizzas (id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
 RETURNING
-    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at;
+    id, name, tomatoes, garlic, onion, parmesan, cheddar, pepperoni, sausage, ham, bacon, chicken, salami, ground_beef, mushrooms, olives, spinach, pineapple, arugula, anchovies, capers, image_url, price, updated_at, created_at;
 
 -- name: GetPizzaByID :one
 SELECT
@@ -29,7 +29,8 @@ SELECT
     capers,
     image_url,
     price,
-    updated_at
+    updated_at,
+    created_at
 FROM
     pizzas
 WHERE
@@ -60,7 +61,8 @@ SELECT
     capers,
     image_url,
     price,
-    updated_at
+    updated_at,
+    created_at
 FROM
     pizzas;
 
@@ -90,7 +92,8 @@ SET
     capers = $21,
     image_url = $22,
     price = $23,
-    updated_at = $24
+    updated_at = $24,
+    created_at = $25
 WHERE
     id = $1
 RETURNING
@@ -117,7 +120,8 @@ RETURNING
     capers,
     image_url,
     price,
-    updated_at;
+    updated_at,
+    created_at;
 
 -- name: DeletePizzaByID :one
 DELETE FROM pizzas
@@ -146,5 +150,5 @@ RETURNING
     capers,
     image_url,
     price,
-    updated_at;
-
+    updated_at,
+    created_at;
