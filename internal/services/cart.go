@@ -22,7 +22,7 @@ func NewCart(db *sql.DB, queries *database.Queries) Cart {
 	}
 }
 
-func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) ([]database.GetCartByUserIDRow, error) {
+func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) error {
 	p := database.AddPizzaToCartParams{
 		ID:        uuid.New(),
 		UserID:    userID,
@@ -33,30 +33,12 @@ func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) 
 		CreatedAt: time.Now().UTC(),
 	}
 
-	tx, err := srv.db.Begin()
+	_, err := srv.queries.AddPizzaToCart(ctx, p)
 	if err != nil {
-		return []database.GetCartByUserIDRow{}, toasts.ErrDatabaseTransactionFailed
-	}
-	defer tx.Rollback()
-
-	qtx := srv.queries.WithTx(tx)
-
-	_, err = qtx.AddPizzaToCart(ctx, p)
-	if err != nil {
-		return []database.GetCartByUserIDRow{}, toasts.ErrCartItemCreation
+		return toasts.ErrCartItemCreation
 	}
 
-	ms, err := qtx.GetCartByUserID(ctx, p.UserID)
-	if err != nil {
-		return nil, toasts.ErrCartDoesNotExist
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return nil, toasts.ErrDatabaseTransactionFailed
-	}
-
-	return ms, nil
+	return nil
 }
 
 func (srv *Cart) GetCartByUserID(ctx context.Context, userID uuid.UUID) ([]database.GetCartByUserIDRow, error) {

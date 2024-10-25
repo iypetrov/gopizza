@@ -49,10 +49,11 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 		})
 
 		// client
-		mux.Get("/home", Make(handlers.HomeView))
 		mux.Get("/register", Make(handlers.RegisterView))
 		mux.Get("/verification-code", Make(handlers.RegisterVerificationView))
 		mux.Get("/login", Make(handlers.LoginView))
+		mux.Get("/home", Make(handlers.HomeView))
+		mux.Get("/checkout", Make(handlers.CheckoutView))
 		mux.With(middlewares.UUIDFormat).Get("/pizzas/{id}", Make(handlers.PizzaDetailsView))
 
 		// admin
@@ -73,7 +74,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
 			})
 			mux.With(middlewares.AuthClient).Route("/cart", func(mux chi.Router) {
-				mux.With(middlewares.UUIDFormat).Post("/{id}/pizza/{pizzaID}", Make(cartHnd.AddPizzaToCart))
+				mux.With(middlewares.UUIDFormat).Post("/pizzas/{id}", Make(cartHnd.AddPizzaToCart))
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(cartHnd.GetCartByUserID))
 				mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(cartHnd.EmptyCartByUserID))
 			})

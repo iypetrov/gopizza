@@ -22,7 +22,7 @@ func NewCart(srv services.Cart) Cart {
 }
 
 func (hnd *Cart) AddPizzaToCart(w http.ResponseWriter, r *http.Request) error {
-	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+	pizzaID, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
 	if !ok {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
 		return toasts.ErrNotValidUUID
@@ -34,28 +34,22 @@ func (hnd *Cart) AddPizzaToCart(w http.ResponseWriter, r *http.Request) error {
 		return toasts.ErrNotValidCookie
 	}
 
-	if !IsOwnAccount(id, cookie) {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount))
-		return toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount)
-	}
-
-	pizzaID, err := uuid.Parse(r.URL.Query().Get("pizzaID"))
+	userID, err := uuid.Parse(cookie.ID)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
 		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
 	}
 
-	model, err := hnd.srv.AddPizzaToCart(r.Context(), id, pizzaID)
+	err = hnd.srv.AddPizzaToCart(r.Context(), userID, pizzaID)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return toasts.ErrorInternalServerError(err)
 	}
 
-	var dto dtos.CartPizzaRequest
-	common.MapFields(&dto, &model)
-
-	// TODO: return component
-
+	toasts.AddToast(w, toasts.Toast{
+		Message:    "item was added to your cart",
+		StatusCode: http.StatusNoContent,
+	})
 	return nil
 }
 

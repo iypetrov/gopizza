@@ -1,6 +1,10 @@
 package components
 
-import "github.com/iypetrov/gopizza/internal/dtos"
+import (
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+)
 
 templ PizzaDetailsForm(resp dtos.PizzaResponse) {
 	<div class="card card-side bg-base-100 w-1/2 shadow-xl">
@@ -17,7 +21,8 @@ templ PizzaDetailsForm(resp dtos.PizzaResponse) {
 			</p>
 			<div class="card-actions justify-center">
 				<button
-					hx-post="/something"
+					hx-post={ fmt.Sprintf("%s/cart/pizzas/%s", configs.Get().GetClientAPIPrefix(), resp.ID.String()) }
+					hx-swap="none"
 					class="btn btn-primary text-base-100"
 				>
 					Add to cart
