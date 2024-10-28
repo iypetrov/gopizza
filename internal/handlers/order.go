@@ -42,12 +42,14 @@ func (hnd *Order) CreateOrder(w http.ResponseWriter, r *http.Request) error {
 
 	total, err := strconv.ParseFloat(req.Total, 64)
 	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return err
 	}
 
 	_, err = hnd.srv.CreateOrder(r.Context(), req.IntentID, userID, total)
 	if err != nil {
-		return err
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrOrderCreation))
+		return toasts.ErrOrderCreation
 	}
 
 	return nil
