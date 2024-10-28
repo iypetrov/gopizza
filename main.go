@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/router"
+	"github.com/stripe/stripe-go/v80"
 )
 
 func main() {
@@ -36,6 +37,8 @@ func main() {
 
 	s3Client := s3.NewFromConfig(awsCfg)
 	cognitoClient := cip.NewFromConfig(awsCfg)
+
+	stripe.Key = configs.Get().Stripe.SecretKey
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),

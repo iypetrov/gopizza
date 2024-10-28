@@ -8,7 +8,6 @@ import (
 	cip "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/database"
@@ -19,21 +18,20 @@ import (
 
 func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *database.Queries, s3Client *s3.Client, cognitoClient *cip.Client) *chi.Mux {
 	mux := chi.NewRouter()
-	mux.Use(middleware.RequestID)
-	mux.Use(middleware.Recoverer)
-	// mux.Use(middleware.Logger)
 
 	// services
 	imageSrv := services.NewImage(s3Client)
 	authSrv := services.NewAuth(db, queries, cognitoClient)
 	pizzaSrv := services.NewPizza(db, queries)
 	cartSrv := services.NewCart(db, queries)
+	paymentSrv := services.NewPayment(db, queries)
 
 	// handlers
 	imageHnd := handlers.NewImage(imageSrv)
 	authHnd := handlers.NewAuth(authSrv)
 	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
 	cartHnd := handlers.NewCart(cartSrv)
+	paymentHnd := handlers.NewPayment(paymentSrv)
 
 	mux.Route("/", func(mux chi.Router) {
 		// common
@@ -54,6 +52,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 		mux.Get("/login", Make(handlers.LoginView))
 		mux.Get("/home", Make(handlers.HomeView))
 		mux.Get("/checkout", Make(handlers.CheckoutView))
+		mux.Get("/checkout/tracking", Make(handlers.TrackingView))
 		mux.With(middlewares.UUIDFormat).Get("/pizzas/{id}", Make(handlers.PizzaDetailsView))
 
 		// admin
@@ -77,11 +76,16 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 				mux.Get("/", Make(pizzaHnd.GetAllPizzas))
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
 			})
-			mux.With(middlewares.AuthClient).Route("/carts", func(mux chi.Router) {
+			mux.Route("/carts", func(mux chi.Router) {
 				mux.With(middlewares.UUIDFormat).Post("/pizzas/{id}", Make(cartHnd.AddPizzaToCart))
 				mux.Get("/", Make(cartHnd.GetCartByUserID))
 				mux.Delete("/", Make(cartHnd.EmptyCartByUserID))
 				mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(cartHnd.RemoveItemFromCart))
+			})
+			mux.Route("/payments", func(mux chi.Router) {
+				mux.Get("/config", Make(paymentHnd.GetPublishableKey))
+				mux.Post("/intent", Make(paymentHnd.CreateIntent))
+				mux.Post("/webhook", Make(paymentHnd.HandleWebhookEvent))
 			})
 		})
 

@@ -2,12 +2,20 @@ package components
 
 import (
 	"fmt"
+	"github.com/iypetrov/gopizza/configs"
 	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
 )
 
-templ CartItems(resps []dtos.CartResponse, total float64) {
+templ CartItems(resps []dtos.CartResponse, total string) {
 	<div
 		id="cartItems"
+		x-data="paymentHandler"
+		hx-get={ fmt.Sprintf("%s/payments/config", configs.Get().ClientAPIPrefix()) }
+		hx-trigger="load"
+		hx-swap="none"
+		alert-data={ total }
+		@htmx:after-request="initPayment($event)"
 		class="flex flex-row justify-between gap-4 w-full h-full overflow-hidden"
 	>
 		<div class="w-1/2 flex flex-col">
@@ -18,15 +26,22 @@ templ CartItems(resps []dtos.CartResponse, total float64) {
 			</div>
 			if len(resps) != 0 {
 				<h1 class="flex flex-col w-full justify-center items-center text-right font-bold">
-					{ fmt.Sprintf("Total: $%.2f", total) }
+					{ total }
 				</h1>
 			}
 		</div>
 		<div class="w-1/2 flex flex-col justify-center items-center">
-			<h2 class="text-xl font-semibold mb-4">Payment Details</h2>
-			<form>
-				<h1>payments form</h1>
-			</form>
+			@templates.BigLogo()
+			<div id="paymentForm">
+				<div id="paymentElement"></div>
+				<br class="flex-none"/>
+				<button 
+					@click="confirmPayment"
+					class="btn btn-sm btn-square btn-error rounded-md text-base-100 w-full"
+				>
+					Pay
+				</button>
+			</div>
 		</div>
 	</div>
 }

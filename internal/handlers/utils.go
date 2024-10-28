@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -18,6 +19,12 @@ func Render(w http.ResponseWriter, r *http.Request, c templ.Component) error {
 	}
 
 	return nil
+}
+
+func WriteJson(w http.ResponseWriter, status int, v any) error {
+	w.WriteHeader(status)
+	w.Header().Set("Content-Type", "application/json")
+	return json.NewEncoder(w).Encode(v)
 }
 
 func IsOwnAccount(userID uuid.UUID, cookie dtos.UserCookie) bool {

@@ -37,6 +37,10 @@ func CheckoutView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.Checkout())
 }
 
+func TrackingView(w http.ResponseWriter, r *http.Request) error {
+	return Render(w, r, views.Tracking())
+}
+
 func PizzaDetailsView(w http.ResponseWriter, r *http.Request) error {
 	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
 	if !ok {

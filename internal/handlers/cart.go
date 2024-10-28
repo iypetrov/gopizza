@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -83,7 +84,7 @@ func (hnd *Cart) GetCartByUserID(w http.ResponseWriter, r *http.Request) error {
 		total += dto.ProductPrice
 	}
 
-	return Render(w, r, components.CartItems(resps, total))
+	return Render(w, r, components.CartItems(resps, fmt.Sprintf("%.2f", total)))
 }
 
 func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error {
@@ -105,7 +106,7 @@ func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error
 		return toasts.ErrorInternalServerError(err)
 	}
 
-	return Render(w, r, components.CartItems([]dtos.CartResponse{}, 0))
+	return Render(w, r, components.CartItems([]dtos.CartResponse{}, "0.00"))
 }
 
 func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) error {
@@ -148,5 +149,5 @@ func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) erro
 		total += dto.ProductPrice
 	}
 
-	return Render(w, r, components.CartItems(resps, total))
+	return Render(w, r, components.CartItems(resps, fmt.Sprintf("%.2f", total)))
 }
