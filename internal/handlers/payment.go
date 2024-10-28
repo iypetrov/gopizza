@@ -6,8 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
+	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
 type Payment struct {
@@ -28,8 +31,20 @@ func (hnd *Payment) GetPublishableKey(w http.ResponseWriter, r *http.Request) er
 }
 
 func (hnd *Payment) CreateIntent(w http.ResponseWriter, r *http.Request) error {
+	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
+		return toasts.ErrNotValidCookie
+	}
+
+	userID, err := uuid.Parse(cookie.ID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
+	}
+
 	var req dtos.PaymentIntentRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		return err
 	}
@@ -39,7 +54,7 @@ func (hnd *Payment) CreateIntent(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	clientSecret, err := hnd.srv.CreateIntent(r.Context(), total)
+	clientSecret, err := hnd.srv.CreateIntent(r.Context(), userID, total)
 	if err != nil {
 		return err
 	}

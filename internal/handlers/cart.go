@@ -84,7 +84,7 @@ func (hnd *Cart) GetCartByUserID(w http.ResponseWriter, r *http.Request) error {
 		total += dto.ProductPrice
 	}
 
-	return Render(w, r, components.CartItems(resps, fmt.Sprintf("%.2f", total)))
+	return Render(w, r, components.CartItems(resps, cookie.Email, fmt.Sprintf("%.2f", total)))
 }
 
 func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error {
@@ -94,19 +94,19 @@ func (hnd *Cart) EmptyCartByUserID(w http.ResponseWriter, r *http.Request) error
 		return toasts.ErrNotValidCookie
 	}
 
-	id, err := uuid.Parse(cookie.ID)
+	userID, err := uuid.Parse(cookie.ID)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
 		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
 	}
 
-	err = hnd.srv.EmptyCartByUserID(r.Context(), id)
+	err = hnd.srv.EmptyCartByUserID(r.Context(), userID)
 	if err != nil {
 		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
 		return toasts.ErrorInternalServerError(err)
 	}
 
-	return Render(w, r, components.CartItems([]dtos.CartResponse{}, "0.00"))
+	return Render(w, r, components.CartItems([]dtos.CartResponse{}, cookie.Email, "0.00"))
 }
 
 func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) error {
@@ -121,11 +121,6 @@ func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) erro
 		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
 		return toasts.ErrNotValidCookie
 	}
-
-	// if !IsOwnAccount(id, cookie) {
-	// 	toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount))
-	// 	return toasts.ErrorInternalServerError(toasts.ErrNotOwnAccount)
-	// }
 
 	userID, err := uuid.Parse(cookie.ID)
 	if err != nil {
@@ -149,5 +144,5 @@ func (hnd *Cart) RemoveItemFromCart(w http.ResponseWriter, r *http.Request) erro
 		total += dto.ProductPrice
 	}
 
-	return Render(w, r, components.CartItems(resps, fmt.Sprintf("%.2f", total)))
+	return Render(w, r, components.CartItems(resps, cookie.Email, fmt.Sprintf("%.2f", total)))
 }

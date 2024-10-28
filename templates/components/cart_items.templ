@@ -7,14 +7,15 @@ import (
 	"github.com/iypetrov/gopizza/templates"
 )
 
-templ CartItems(resps []dtos.CartResponse, total string) {
+templ CartItems(resps []dtos.CartResponse, email, total string) {
 	<div
 		id="cartItems"
 		x-data="paymentHandler"
 		hx-get={ fmt.Sprintf("%s/payments/config", configs.Get().ClientAPIPrefix()) }
 		hx-trigger="load"
 		hx-swap="none"
-		alert-data={ total }
+		alert-email={ email }
+		alert-total={ total }
 		@htmx:after-request="initPayment($event)"
 		class="flex flex-row justify-between gap-4 w-full h-full overflow-hidden"
 	>

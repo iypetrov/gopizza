@@ -11,7 +11,8 @@ document.addEventListener('alpine:init', () => {
 					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({
-					total: document.getElementById('cartItems').getAttribute('alert-data'),
+					email: document.getElementById('cartItems').getAttribute('alert-email'),
+					total: document.getElementById('cartItems').getAttribute('alert-total'),
 				}),
 			}).then(r => r.json())
 		

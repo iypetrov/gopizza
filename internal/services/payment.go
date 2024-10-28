@@ -33,7 +33,7 @@ func (srv *Payment) GetPublishableKey() string {
 	return configs.Get().Stripe.PublishableKey
 }
 
-func (srv *Payment) CreateIntent(ctx context.Context, total float64) (ClientSecret, error) {
+func (srv *Payment) CreateIntent(ctx context.Context, userID uuid.UUID, total float64) (ClientSecret, error) {
 	paramsStripe := &stripe.PaymentIntentParams{
 		Amount:   stripe.Int64(int64(total * 100)),
 		Currency: stripe.String(string(stripe.CurrencyUSD)),
@@ -47,10 +47,14 @@ func (srv *Payment) CreateIntent(ctx context.Context, total float64) (ClientSecr
 	}
 
 	paramsDB := database.InitOrderParams{
-		ID: uuid.New(),
-		IntentID: intent.ID,
-		Amount: total,
-		CreatedAt: time.Now().UTC(),	
+		ID:        uuid.New(),
+		IntentID:  intent.ID,
+		UserID:    uuid.NullUUID{
+			UUID:  userID,
+			Valid: true,
+		},
+		Amount:    total,
+		CreatedAt: time.Now().UTC(),
 	}
 	_, err = srv.queries.InitOrder(ctx, paramsDB)
 	if err != nil {
@@ -72,7 +76,7 @@ func (srv *Payment) ProcessWebhookEvent(ctx context.Context, stripeSignature str
 
 	switch event.Type {
 	case "payment_intent.succeeded":
-		intentID := event.Data.Object["id"].(string) 
+		intentID := event.Data.Object["id"].(string)
 
 		tx, err := srv.db.Begin()
 		if err != nil {
@@ -83,8 +87,8 @@ func (srv *Payment) ProcessWebhookEvent(ctx context.Context, stripeSignature str
 		qtx := srv.queries.WithTx(tx)
 		order, err := qtx.GetOrderByIntentID(ctx, intentID)
 		if err != nil {
-			return err 
-		} 
+			return err
+		}
 
 		params := database.ChargeOrderParams{
 			ID: order.ID,
@@ -98,18 +102,20 @@ func (srv *Payment) ProcessWebhookEvent(ctx context.Context, stripeSignature str
 			return err
 		}
 
+		log.Println("order id " + order.ID.String() + " was charged")
 		if order.UserID.Valid {
+			log.Println("user id " + order.UserID.UUID.String() + " was charged")
 			_, err = qtx.EmptyCartByUserID(ctx, uuid.NullUUID{
-				UUID: order.UserID.UUID,
+				UUID:  order.UserID.UUID,
 				Valid: true,
 			})
 		}
-		
+
 		err = tx.Commit()
 		if err != nil {
 			return toasts.ErrDatabaseTransactionFailed
 		}
-		
+
 		log.Println("order was charged")
 		return nil
 	}
