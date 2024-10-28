@@ -5,10 +5,12 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
+	"github.com/iypetrov/gopizza/internal/common"
 	"github.com/iypetrov/gopizza/internal/dtos"
 	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
 	"github.com/iypetrov/gopizza/internal/toasts"
+	"github.com/iypetrov/gopizza/templates/components"
 )
 
 type Order struct {
@@ -53,4 +55,21 @@ func (hnd *Order) CreateOrder(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return nil
+}
+
+func (hnd *Order) GetOrderByIntentID(w http.ResponseWriter, r *http.Request) error {
+	intentID := r.URL.Query().Get("intent_id")
+
+	model, err := hnd.srv.GetOrderByIntentID(r.Context(), intentID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrOrderNotFound))
+		return toasts.ErrOrderNotFound
+	}
+
+	var dto dtos.OrderResponse
+	common.MapFields(&dto, &model)
+	dto.Currency = string(model.Currency)
+	dto.OrderStatus = string(model.OrderStatus)
+
+	return Render(w, r, components.TrackingData(dto))
 }

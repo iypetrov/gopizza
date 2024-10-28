@@ -86,6 +86,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 			})
 			mux.Route("/orders", func(mux chi.Router) {
 				mux.Post("/", Make(orderHnd.CreateOrder))
+				mux.Get("/", Make(orderHnd.GetOrderByIntentID))
 			})
 			mux.Route("/payments", func(mux chi.Router) {
 				mux.Get("/config", Make(paymentHnd.GetPublishableKey))

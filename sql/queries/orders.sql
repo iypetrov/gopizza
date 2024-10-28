@@ -6,9 +6,18 @@ RETURNING
 
 -- name: GetOrderByIntentID :one
 SELECT
-    id, intent_id, user_id, amount, currency, order_status, updated_at, created_at
-FROM orders
-WHERE intent_id = $1;
+    o.id,
+    o.intent_id,
+    o.user_id,
+    o.amount,
+    o.currency,
+    o.order_status,
+    o.updated_at,
+    o.created_at,
+    u.address
+FROM orders o
+JOIN users u ON o.user_id = u.id
+WHERE o.intent_id = $1;
 
 -- name: ChargeOrder :one
 UPDATE orders

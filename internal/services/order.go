@@ -9,8 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/database"
 	"github.com/iypetrov/gopizza/internal/toasts"
-	"github.com/stripe/stripe-go/v80"
-	"github.com/stripe/stripe-go/v80/paymentintent"
 )
 
 type Order struct {
@@ -44,20 +42,12 @@ func (srv *Order) CreateOrder(ctx context.Context, intentID string, userID uuid.
 	return model, nil
 }
 
-func (srv *Order) GetClientSecret(ctx context.Context, total float64) (ClientSecret, error) {
-	param := &stripe.PaymentIntentParams{
-		Amount:   stripe.Int64(int64(total * 100)),
-		Currency: stripe.String(string(stripe.CurrencyUSD)),
-		AutomaticPaymentMethods: &stripe.PaymentIntentAutomaticPaymentMethodsParams{
-			Enabled: stripe.Bool(true),
-		},
-	}
-	intent, err := paymentintent.New(param)
+func (srv *Order) GetOrderByIntentID(ctx context.Context, intentID string) (database.GetOrderByIntentIDRow, error) {
+	model, err := srv.queries.GetOrderByIntentID(ctx, intentID)
 	if err != nil {
-		return "", err
+		return database.GetOrderByIntentIDRow{}, err
 	}
-
-	return ClientSecret(intent.ClientSecret), nil
+	return model, nil
 }
 
 func (srv *Order) ChargeOrder(ctx context.Context, intentID string) (database.Order, error) {

@@ -1,12 +1,43 @@
 package views
 
-import "github.com/iypetrov/gopizza/templates"
+import (
+	"github.com/iypetrov/gopizza/templates"
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+)
 
-templ Tracking() {
+templ Tracking(intentID string) {
 	@templates.Base() {
-		<div class="flex flex-col w-full h-screen">
-			<div class="flex flex-col justify-center items-center w-full h-full">
-				<h1>tnx for you order</h1>
+		<div class="flex flex-col w-screen min-h-screen">
+			<div class="flex flex-row w-full h-32 justify-between items-center px-4 py-2">
+				<a
+					href="/checkout"
+					class="text-base-300"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="32"
+						height="32"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-circle-arrow-left"
+					>
+						<circle cx="12" cy="12" r="10"></circle>
+						<path d="M16 12H8"></path>
+						<path d="m12 8-4 4 4 4"></path>
+					</svg>
+				</a>
+			</div>
+			<div 
+				hx-get={ fmt.Sprintf("%s/orders?intent_id=%s", configs.Get().ClientAPIPrefix(), intentID) }
+				hx-target="this"
+				hx-trigger="load"
+				hx-swap="innerHTML"
+			>
 			</div>
 		</div>
 	}

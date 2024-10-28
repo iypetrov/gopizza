@@ -38,7 +38,8 @@ func CheckoutView(w http.ResponseWriter, r *http.Request) error {
 }
 
 func TrackingView(w http.ResponseWriter, r *http.Request) error {
-	return Render(w, r, views.Tracking())
+	intentID := r.URL.Query().Get("payment_intent")
+	return Render(w, r, views.Tracking(intentID))
 }
 
 func PizzaDetailsView(w http.ResponseWriter, r *http.Request) error {
