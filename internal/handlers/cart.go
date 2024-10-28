@@ -55,6 +55,38 @@ func (hnd *Cart) AddPizzaToCart(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func (hnd *Cart) AddSaladToCart(w http.ResponseWriter, r *http.Request) error {
+	saladID, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrNotValidUUID
+	}
+
+	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
+		return toasts.ErrNotValidCookie
+	}
+
+	userID, err := uuid.Parse(cookie.ID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
+	}
+
+	err = hnd.srv.AddSaladToCart(r.Context(), userID, saladID)
+	if err != nil {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(err))
+		return toasts.ErrorInternalServerError(err)
+	}
+
+	toasts.AddToast(w, toasts.Toast{
+		Message:    "item was added to your cart",
+		StatusCode: http.StatusNoContent,
+	})
+	return nil
+}
+
 func (hnd *Cart) GetCartByUserID(w http.ResponseWriter, r *http.Request) error {
 	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
 	if !ok {

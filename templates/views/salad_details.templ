@@ -1,0 +1,43 @@
+package views
+
+import (
+	"fmt"
+	"github.com/google/uuid"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/templates"
+)
+
+templ SaladDetails(id uuid.UUID) {
+	@templates.Base() {
+		<div class="relative w-screen min-h-screen">
+			<a
+				href="/home"
+				class="fixed top-4 left-4 text-base-300 px-4 py-2"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="32"
+					height="32"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-circle-arrow-left"
+				>
+					<circle cx="12" cy="12" r="10"></circle>
+					<path d="M16 12H8"></path>
+					<path d="m12 8-4 4 4 4"></path>
+				</svg>
+			</a>
+			<div
+				hx-get={ fmt.Sprintf("%s/salads/%s", configs.Get().ClientAPIPrefix(), id) }
+				hx-target="this"
+				hx-swap="innerHTML"
+				hx-trigger="load"
+				class="flex flex-1 justify-center items-center w-full h-full"
+			></div>
+		</div>
+	}
+}

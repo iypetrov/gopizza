@@ -1,0 +1,58 @@
+package components
+
+import (
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
+)
+
+templ SaladCreateForm(req dtos.SaladRequest, errs map[string]string) {
+	<form
+		hx-post={ fmt.Sprintf("%s/salads§", configs.Get().AdminAPIPrefix()) }
+		hx-target="#adminHomeContent"
+		hx-swap="innerHTML"
+		hx-encoding="multipart/form-data"
+		@htmx:after-request="modal.close()"
+		class="flex flex-col items-center justify-center w-full bg-base-100"
+	>
+		<div class="flex flex-col w-full">
+			@templates.Input(templates.InputProps{Name: "name", Value: req.Name, Error: errs["name"]})
+		</div>
+		<div class="divider"></div>
+		<div class="flex flex-col w-full">
+			if (req.Price == 0) {
+				@templates.Input(templates.InputProps{Name: "price", Value: "", Error: errs["price"]})
+			} else {
+				@templates.Input(templates.InputProps{Name: "price", Value: fmt.Sprintf("%.2f", req.Price), Error: errs["price"]})
+			}
+		</div>
+		<div class="divider"></div>
+		<div class="flex flex-row w-full">
+			@templates.ImageUploader(templates.ImageUploaderProps{Name: "image", Error: errs["image"]})
+		</div>
+		<div class="divider"></div>
+		<div class="flex flex-col space-y-2 w-full">
+			<label class="label primary-content font-bold text-lg">
+				Ingredients
+			</label>
+			<div class="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-x-4 gap-y-2">
+				@templates.Checkbox(templates.CheckboxProps{Name: "tomatoes", Value: req.Tomatoes})
+				@templates.Checkbox(templates.CheckboxProps{Name: "garlic", Value: req.Garlic})
+				@templates.Checkbox(templates.CheckboxProps{Name: "onion", Value: req.Onion})
+				@templates.Checkbox(templates.CheckboxProps{Name: "parmesan", Value: req.Parmesan})
+				@templates.Checkbox(templates.CheckboxProps{Name: "chicken", Value: req.Chicken})
+			</div>
+		</div>
+		<div class="flex justify-center w-full mt-3">
+			<button
+				type="submit"
+				class="text-base-100 bg-secondary hover:bg-secondary/80 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md min-w-32"
+			>
+				@templates.Spinner() {
+					<span>Submit</span>
+				}
+			</button>
+		</div>
+	</form>
+}

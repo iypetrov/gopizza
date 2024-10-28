@@ -44,6 +44,28 @@ func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) 
 	return nil
 }
 
+func (srv *Cart) AddSaladToCart(ctx context.Context, userID, saladID uuid.UUID) error {
+	p := database.AddSaladToCartParams{
+		ID: uuid.New(),
+		UserID: uuid.NullUUID{
+			UUID:  userID,
+			Valid: true,
+		},
+		SaladID: uuid.NullUUID{
+			UUID:  saladID,
+			Valid: true,
+		},
+		CreatedAt: time.Now().UTC(),
+	}
+
+	_, err := srv.queries.AddSaladToCart(ctx, p)
+	if err != nil {
+		return toasts.ErrCartItemCreation
+	}
+
+	return nil
+}
+
 func (srv *Cart) GetCartByUserID(ctx context.Context, userID uuid.UUID) ([]database.GetCartByUserIDRow, error) {
 	ms, err := srv.queries.GetCartByUserID(ctx, uuid.NullUUID{
 		UUID:  userID,

@@ -1,0 +1,121 @@
+package views
+
+import (
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/dtos"
+	"github.com/iypetrov/gopizza/templates"
+	"github.com/iypetrov/gopizza/templates/components"
+	"strconv"
+)
+
+templ AdminSaladsOverview(resps []dtos.SaladResponse) {
+	@templates.Modal() {
+		@components.SaladCreateForm(dtos.SaladRequest{}, make(map[string]string))
+	}
+	@templates.Page() {
+		<div class="flex flex-col h-full">
+			<div class="flex flex-row justify-between items-center mb-4">
+				<button
+					@click="modal.showModal()"
+					class="text-base-100 bg-secondary hover:bg-secondary/80 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
+				>
+					@templates.Spinner() {
+						<span>Add Salad</span>
+					}
+				</button>
+			</div>
+			<div class="flex-grow">
+				@templates.Table() {
+					@templates.TableHead() {
+						<tr>
+							@templates.Th("Image View")
+							@templates.Th("ID")
+							@templates.Th("Name")
+							@templates.Th("Tomatoes")
+							@templates.Th("Garlic")
+							@templates.Th("Onion")
+							@templates.Th("Parmesan")
+							@templates.Th("Chicken")
+							@templates.Th("ImageUrl")
+							@templates.Th("Price")
+							@templates.Th("UpdatedAt")
+							@templates.Th("Delete")
+						</tr>
+					}
+					<tbody>
+						for _, val := range resps {
+							<tr>
+								@templates.Td() {
+									<img
+										src={ val.ImageUrl }
+										alt="view"
+										class="object-cover h-12 w-12"
+									/>
+								}
+								@templates.Td() {
+									{ val.ID.String() }
+								}
+								@templates.Td() {
+									{ val.Name }
+								}
+								@templates.Td() {
+									{ strconv.FormatBool(val.Tomatoes) }
+								}
+								@templates.Td() {
+									{ strconv.FormatBool(val.Garlic) }
+								}
+								@templates.Td() {
+									{ strconv.FormatBool(val.Onion) }
+								}
+								@templates.Td() {
+									{ strconv.FormatBool(val.Parmesan) }
+								}
+								@templates.Td() {
+									{ strconv.FormatBool(val.Chicken) }
+								}
+								@templates.Td() {
+									{ val.ImageUrl }
+								}
+								@templates.Td() {
+									{ fmt.Sprintf("%.2f", val.Price) }
+								}
+								@templates.Td() {
+									{ val.UpdatedAt.Format("2006-01-02 15:04:05") }
+								}
+								@templates.Td() {
+									<button
+										hx-delete={ fmt.Sprintf("%s/salads/%s", configs.Get().AdminAPIPrefix(), val.ID.String()) }
+										hx-target="#adminHomeContent"
+										hx-swap="innerHTML"
+										hx-confirm="Are you sure you wish to delete your account?"
+										class="btn btn-square btn-error rounded-md text-base-100"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width=""
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											class="lucide lucide-trash-2"
+										>
+											<path d="M3 6h18"></path>
+											<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+											<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+											<line x1="10" x2="10" y1="11" y2="17"></line>
+											<line x1="14" x2="14" y1="11" y2="17"></line>
+										</svg>
+									</button>
+								}
+							</tr>
+						}
+					</tbody>
+				}
+			</div>
+		</div>
+	}
+}

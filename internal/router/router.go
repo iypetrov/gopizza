@@ -23,6 +23,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 	imageSrv := services.NewImage(s3Client)
 	authSrv := services.NewAuth(db, queries, cognitoClient)
 	pizzaSrv := services.NewPizza(db, queries)
+	saladSrv := services.NewSalad(db, queries)
 	cartSrv := services.NewCart(db, queries)
 	orderSrv := services.NewOrder(db, queries)
 	paymentSrv := services.NewPayment(orderSrv)
@@ -31,6 +32,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 	imageHnd := handlers.NewImage(imageSrv)
 	authHnd := handlers.NewAuth(authSrv)
 	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
+	saladHnd := handlers.NewSalad(saladSrv, imageSrv)
 	cartHnd := handlers.NewCart(cartSrv)
 	orderHnd := handlers.NewOrder(orderSrv)
 	paymentHnd := handlers.NewPayment(paymentSrv)
@@ -56,6 +58,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 		mux.Get("/checkout", Make(handlers.CheckoutView))
 		mux.Get("/checkout/tracking", Make(handlers.TrackingView))
 		mux.With(middlewares.UUIDFormat).Get("/pizzas/{id}", Make(handlers.PizzaDetailsView))
+		mux.With(middlewares.UUIDFormat).Get("/salads/{id}", Make(handlers.SaladDetailsView))
 
 		// admin
 		mux.Route(configs.Get().AdminPrefix(), func(mux chi.Router) {
@@ -78,8 +81,13 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 				mux.Get("/", Make(pizzaHnd.GetAllPizzas))
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
 			})
+			mux.Route("/salads", func(mux chi.Router) {
+				mux.Get("/", Make(saladHnd.GetAllSalads))
+				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(saladHnd.GetSaladByID))
+			})
 			mux.Route("/carts", func(mux chi.Router) {
 				mux.With(middlewares.UUIDFormat).Post("/pizzas/{id}", Make(cartHnd.AddPizzaToCart))
+				mux.With(middlewares.UUIDFormat).Post("/salads/{id}", Make(cartHnd.AddSaladToCart))
 				mux.Get("/", Make(cartHnd.GetCartByUserID))
 				mux.Delete("/", Make(cartHnd.EmptyCartByUserID))
 				mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(cartHnd.RemoveItemFromCart))
@@ -102,6 +110,11 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 					mux.Post("/", Make(pizzaHnd.AdminCreatePizza))
 					mux.Get("/", Make(pizzaHnd.AdminGetAllPizzas))
 					mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(pizzaHnd.AdminDeletePizzaByID))
+				})
+				mux.Route("/salads", func(mux chi.Router) {
+					mux.Post("/", Make(saladHnd.AdminCreateSalad))
+					mux.Get("/", Make(saladHnd.AdminGetAllSalads))
+					mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(saladHnd.AdminDeleteSaladByID))
 				})
 			})
 		})

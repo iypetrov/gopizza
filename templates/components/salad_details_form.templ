@@ -1,0 +1,33 @@
+package components
+
+import (
+	"fmt"
+	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/internal/dtos"
+)
+
+templ SaladDetailsForm(resp dtos.SaladResponse) {
+	<div class="card card-side bg-base-100 w-1/2 shadow-xl">
+		<figure>
+			<img
+				src={ resp.ImageUrl }
+				alt={ resp.Name }
+			/>
+		</figure>
+		<div class="card-body flex flex-col justify-center items-center">
+			<h2 class="card-title">{ resp.Name }</h2>
+			<p class="overflow-hidden">
+				{ resp.Description() }
+			</p>
+			<div class="card-actions justify-center">
+				<button
+					hx-post={ fmt.Sprintf("%s/carts/salads/%s", configs.Get().ClientAPIPrefix(), resp.ID.String()) }
+					hx-swap="none"
+					class="btn btn-primary text-base-100"
+				>
+					Add to cart
+				</button>
+			</div>
+		</div>
+	</div>
+}

@@ -50,3 +50,13 @@ func PizzaDetailsView(w http.ResponseWriter, r *http.Request) error {
 	}
 	return Render(w, r, views.PizzaDetails(id))
 }
+
+
+func SaladDetailsView(w http.ResponseWriter, r *http.Request) error {
+	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
+	if !ok {
+		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
+		return toasts.ErrNotValidUUID
+	}
+	return Render(w, r, views.SaladDetails(id))
+}
