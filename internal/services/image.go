@@ -40,7 +40,7 @@ func (srv *Image) UploadImage(ctx context.Context, file io.Reader) (string, erro
 		return "", err
 	}
 
-	return fmt.Sprintf("%s/image/%s", configs.Get().GetBaseWebUrl(), getImageKey(id)), nil
+	return fmt.Sprintf("%s/image/%s", configs.Get().BaseWebUrl(), getImageKey(id)), nil
 }
 
 func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.ReadCloser, error) {

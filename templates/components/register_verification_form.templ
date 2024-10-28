@@ -10,7 +10,7 @@ import (
 
 templ RegisterVerificationForm(r http.Request, req dtos.RegisterVerificationRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/verification-code?id=%s&email=%s", configs.Get().GetClientAPIPrefix(), r.URL.Query().Get("id"), r.URL.Query().Get("email")) }
+		hx-post={ fmt.Sprintf("%s/verification-code?id=%s&email=%s", configs.Get().PublicAPIPrefix(), r.URL.Query().Get("id"), r.URL.Query().Get("email")) }
 		autocomplete="off"
 		class="flex flex-col items-center justify-center w-full bg-base-100"
 	>

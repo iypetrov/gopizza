@@ -12,8 +12,7 @@ SELECT
     COALESCE(pizzas.price) AS product_price
 FROM
     carts c
-LEFT JOIN
-    pizzas ON c.pizza_id = pizzas.id
+    LEFT JOIN pizzas ON c.pizza_id = pizzas.id
 WHERE
     c.user_id = $1;
 
@@ -29,4 +28,4 @@ RETURNING
     user_id,
     pizza_id,
     created_at;
- 
+

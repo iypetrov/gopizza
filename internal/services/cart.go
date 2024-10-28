@@ -11,22 +11,22 @@ import (
 )
 
 type Cart struct {
-	db            *sql.DB
-	queries       *database.Queries
+	db      *sql.DB
+	queries *database.Queries
 }
 
 func NewCart(db *sql.DB, queries *database.Queries) Cart {
 	return Cart{
-		db:            db,
-		queries:       queries,
+		db:      db,
+		queries: queries,
 	}
 }
 
 func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) error {
 	p := database.AddPizzaToCartParams{
-		ID:        uuid.New(),
-		UserID:    userID,
-		PizzaID:   uuid.NullUUID{
+		ID:     uuid.New(),
+		UserID: userID,
+		PizzaID: uuid.NullUUID{
 			UUID:  pizzaID,
 			Valid: true,
 		},
@@ -83,4 +83,4 @@ func (srv *Cart) EmptyCartByUserID(ctx context.Context, userID uuid.UUID) error 
 	}
 
 	return nil
-}	
+}

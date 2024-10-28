@@ -1,4 +1,4 @@
-//go:build prod 
+//go:build prod
 // +build prod
 
 package configs
@@ -15,9 +15,9 @@ var cfg *Config
 type Config struct {
 	App struct {
 		Profile string
-		Version     string
-		Addr        string
-		Port        string
+		Version string
+		Addr    string
+		Port    string
 	}
 
 	Database struct {
@@ -51,7 +51,7 @@ func Init() {
 	}
 
 	cfg = &Config{}
-	cfg.App.Profile = string(Prod) 
+	cfg.App.Profile = string(Prod)
 	cfg.App.Version = os.Getenv("APP_VERSION")
 	cfg.App.Addr = os.Getenv("APP_ADDR")
 	cfg.App.Port = os.Getenv("APP_PORT")
@@ -75,7 +75,7 @@ func Get() *Config {
 	return cfg
 }
 
-func (c *Config) GetBaseWebUrl() string {
+func (c *Config) BaseWebUrl() string {
 	protocol := "https://"
 	basePath := c.App.Addr
 
@@ -87,14 +87,18 @@ func (c *Config) GetBaseWebUrl() string {
 	return fmt.Sprintf("%s%s", protocol, basePath)
 }
 
-func (c *Config) GetAdminPrefix() string {
+func (c *Config) AdminPrefix() string {
 	return "/admin"
 }
 
-func (c *Config) GetClientAPIPrefix() string {
+func (c *Config) PublicAPIPrefix() string {
+	return fmt.Sprintf("/public/v%s", c.App.Version)
+}
+
+func (c *Config) ClientAPIPrefix() string {
 	return fmt.Sprintf("/api/v%s", c.App.Version)
 }
 
-func (c *Config) GetAdminAPIPrefix() string {
+func (c *Config) AdminAPIPrefix() string {
 	return fmt.Sprintf("/admin/v%s", c.App.Version)
 }

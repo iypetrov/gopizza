@@ -8,5 +8,5 @@ import (
 )
 
 func HxRedirect(w http.ResponseWriter, path string) {
-	w.Header().Set("HX-Redirect", fmt.Sprintf("%s%s", configs.Get().GetBaseWebUrl(), path))
+	w.Header().Set("HX-Redirect", fmt.Sprintf("%s%s", configs.Get().BaseWebUrl(), path))
 }

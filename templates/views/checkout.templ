@@ -1,9 +1,9 @@
 package views
 
 import (
-	"github.com/iypetrov/gopizza/templates"
 	"fmt"
 	"github.com/iypetrov/gopizza/configs"
+	"github.com/iypetrov/gopizza/templates"
 )
 
 templ Checkout() {
@@ -32,7 +32,7 @@ templ Checkout() {
 					</svg>
 				</a>
 				<button
-					hx-delete={ fmt.Sprintf("%s/carts", configs.Get().GetClientAPIPrefix()) }
+					hx-delete={ fmt.Sprintf("%s/carts", configs.Get().ClientAPIPrefix()) }
 					hx-target="#cartItems"
 					class="text-base-100 bg-secondary hover:bg-secondary/80 mt-3 inline-flex items-center justify-center px-4 py-2 font-medium text-sm rounded-md"
 				>
@@ -42,12 +42,11 @@ templ Checkout() {
 				</button>
 			</div>
 			<div
-				hx-get={ fmt.Sprintf("%s/carts", configs.Get().GetClientAPIPrefix()) }
+				hx-get={ fmt.Sprintf("%s/carts", configs.Get().ClientAPIPrefix()) }
 				hx-target="this"
 				hx-swap="outerHTML"
 				hx-trigger="load"
-			>
-			</div>
+			></div>
 		</div>
 	}
 }

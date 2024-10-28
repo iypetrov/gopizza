@@ -45,9 +45,9 @@ func (srv *Auth) CreateUser(ctx context.Context, email, password, address string
 		return uuid.Nil, toasts.ErrUserCreation
 	}
 	p := database.CreateUserParams{
-		ID:      userID,
-		Email:   email,
-		Address: address,
+		ID:        userID,
+		Email:     email,
+		Address:   address,
 		CreatedAt: time.Now().UTC(),
 	}
 	_, err = srv.queries.CreateUser(ctx, p)

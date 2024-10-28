@@ -57,19 +57,23 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 		mux.With(middlewares.UUIDFormat).Get("/pizzas/{id}", Make(handlers.PizzaDetailsView))
 
 		// admin
-		mux.Route(configs.Get().GetAdminPrefix(), func(mux chi.Router) {
+		mux.Route(configs.Get().AdminPrefix(), func(mux chi.Router) {
 			mux.Get("/home", Make(handlers.AdminHomeView))
 		})
 
-		// client api
-		mux.Route(configs.Get().GetClientAPIPrefix(), func(mux chi.Router) {
+		// public api
+		mux.Route(configs.Get().PublicAPIPrefix(), func(mux chi.Router) {
 			mux.Group(func(r chi.Router) {
 				r.Post("/register", Make(authHnd.Register))
 				r.Post("/verification-code", Make(authHnd.VerifyRegistrationCode))
 				r.Post("/login", Make(authHnd.Login))
 				r.Post("/logout", Make(authHnd.Logout))
 			})
-			mux.With(middlewares.AuthClient).Route("/pizzas", func(mux chi.Router) {
+		})
+
+		// client api
+		mux.With(middlewares.AuthClient).Route(configs.Get().ClientAPIPrefix(), func(mux chi.Router) {
+			mux.Route("/pizzas", func(mux chi.Router) {
 				mux.Get("/", Make(pizzaHnd.GetAllPizzas))
 				mux.With(middlewares.UUIDFormat).Get("/{id}", Make(pizzaHnd.GetPizzaByID))
 			})
@@ -82,7 +86,7 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 		})
 
 		// admin api
-		mux.With(middlewares.AuthAdmin).Route(configs.Get().GetAdminAPIPrefix(), func(mux chi.Router) {
+		mux.With(middlewares.AuthAdmin).Route(configs.Get().AdminAPIPrefix(), func(mux chi.Router) {
 			mux.Group(func(mux chi.Router) {
 				mux.Route("/pizzas", func(mux chi.Router) {
 					mux.Post("/", Make(pizzaHnd.AdminCreatePizza))

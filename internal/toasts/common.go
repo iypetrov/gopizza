@@ -12,8 +12,8 @@ var (
 	ErrNotValidUUID                = fmt.Errorf("not valid uuid")
 	ErrImageNotFound               = fmt.Errorf("image not found")
 	ErrDatabaseTransactionFailed   = fmt.Errorf("database transaction failed")
-	ErrNotOwnAccount = fmt.Errorf("not own account")
-	ErrNotValidCookie = fmt.Errorf("not valid cookie")
+	ErrNotOwnAccount               = fmt.Errorf("not own account")
+	ErrNotValidCookie              = fmt.Errorf("not valid cookie")
 )
 
 func ErrorFailedRender() Toast {

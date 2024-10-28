@@ -32,7 +32,7 @@ templ PizzaDetails(id uuid.UUID) {
 				</svg>
 			</a>
 			<div
-				hx-get={ fmt.Sprintf("%s/pizzas/%s", configs.Get().GetClientAPIPrefix(), id) }
+				hx-get={ fmt.Sprintf("%s/pizzas/%s", configs.Get().ClientAPIPrefix(), id) }
 				hx-target="this"
 				hx-swap="innerHTML"
 				hx-trigger="load"
