@@ -73,7 +73,7 @@ func (hnd *Salad) AdminCreateSalad(w http.ResponseWriter, r *http.Request) error
 	}
 
 	toasts.AddToast(w, toasts.Toast{
-		Message:    "pizza created successfully",
+		Message:    "salad created successfully",
 		StatusCode: http.StatusCreated,
 	})
 	return Render(w, r, views.AdminSaladsOverview(resps))
@@ -149,7 +149,7 @@ func (hnd *Salad) AdminDeleteSaladByID(w http.ResponseWriter, r *http.Request) e
 	}
 
 	toasts.AddToast(w, toasts.Toast{
-		Message:    "pizza deleted successfully",
+		Message:    "salad deleted successfully",
 		StatusCode: http.StatusNoContent,
 	})
 	return Render(w, r, views.AdminSaladsOverview(resps))

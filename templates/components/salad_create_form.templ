@@ -9,7 +9,7 @@ import (
 
 templ SaladCreateForm(req dtos.SaladRequest, errs map[string]string) {
 	<form
-		hx-post={ fmt.Sprintf("%s/salads§", configs.Get().AdminAPIPrefix()) }
+		hx-post={ fmt.Sprintf("%s/salads", configs.Get().AdminAPIPrefix()) }
 		hx-target="#adminHomeContent"
 		hx-swap="innerHTML"
 		hx-encoding="multipart/form-data"

@@ -64,7 +64,7 @@ templ homeSideBar() {
 					<a
 						hx-get={ fmt.Sprintf("%s/salads", configs.Get().ClientAPIPrefix()) }
 						hx-target="#homeContent"
-						hx-swap="outerHTML"
+						hx-swap="innerHTML"
 						@htmx:after-request="sidebarOpen = false"
 						class="flex flex-row justify-start items-center px-4 py-2 w-full tracking-wide transition-all duration-200 hover:font-bold hover:text-yellow-500/60 hover:bg-yellow-500/10 hover:backdrop-blur-sm"
 					>
@@ -78,7 +78,7 @@ templ homeSideBar() {
 					<a
 						hx-get={ fmt.Sprintf("%s/pizzas", configs.Get().ClientAPIPrefix()) }
 						hx-target="#homeContent"
-						hx-swap="outerHTML"
+						hx-swap="innerHTML"
 						@htmx:after-request="sidebarOpen = false"
 						class="flex flex-row justify-start items-center px-4 py-2 w-full tracking-wide transition-all duration-200 hover:font-bold hover:text-yellow-500/60 hover:bg-yellow-500/10 hover:backdrop-blur-sm"
 					>
