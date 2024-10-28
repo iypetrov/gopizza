@@ -7,5 +7,4 @@ RUN make prod
 
 FROM gcr.io/distroless/base-debian12 AS run-stage
 COPY --from=build-stage /app/bin/main /bin/main
-COPY --from=build-stage /app/web /web
 CMD ["/bin/main"]

@@ -39,7 +39,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", configs.Get().App.Port),
-		Handler:      router.NewRouter(ctx, db, queries, s3Client, cognitoClient),
+		Handler:      router.NewRouter(ctx, Public(), db, queries, s3Client, cognitoClient),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

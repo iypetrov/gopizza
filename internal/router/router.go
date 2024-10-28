@@ -17,7 +17,7 @@ import (
 	"github.com/iypetrov/gopizza/internal/services"
 )
 
-func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Client *s3.Client, cognitoClient *cip.Client) *chi.Mux {
+func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *database.Queries, s3Client *s3.Client, cognitoClient *cip.Client) *chi.Mux {
 	mux := chi.NewRouter()
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.Recoverer)
@@ -37,7 +37,7 @@ func NewRouter(ctx context.Context, db *sql.DB, queries *database.Queries, s3Cli
 
 	mux.Route("/", func(mux chi.Router) {
 		// common
-		mux.Handle("/web/*", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
+		mux.Handle("/public/*", public)
 		mux.Get("/404", Make(handlers.NotFoundView))
 		mux.With(middlewares.UUIDFormat).Get("/image/{id}", imageHnd.GetImage)
 		mux.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
