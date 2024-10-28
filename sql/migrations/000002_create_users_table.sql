@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TYPE status AS ENUM (
+CREATE TYPE user_status AS ENUM (
     'pending',
     'confirmed'
 );
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     id uuid PRIMARY KEY,
     email text NOT NULL UNIQUE,
     address text NOT NULL,
-    status status NOT NULL,
+    user_status user_status NOT NULL,
     confirmed_at timestamp,
     created_at timestamp NOT NULL
 );
@@ -16,3 +16,4 @@ CREATE TABLE IF NOT EXISTS users (
 -- +goose Down
 DROP TABLE users;
 
+DROP TYPE user_status;

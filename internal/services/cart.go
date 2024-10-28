@@ -24,8 +24,11 @@ func NewCart(db *sql.DB, queries *database.Queries) Cart {
 
 func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) error {
 	p := database.AddPizzaToCartParams{
-		ID:     uuid.New(),
-		UserID: userID,
+		ID: uuid.New(),
+		UserID: uuid.NullUUID{
+			UUID:  userID,
+			Valid: true,
+		},
 		PizzaID: uuid.NullUUID{
 			UUID:  pizzaID,
 			Valid: true,
@@ -42,7 +45,10 @@ func (srv *Cart) AddPizzaToCart(ctx context.Context, userID, pizzaID uuid.UUID) 
 }
 
 func (srv *Cart) GetCartByUserID(ctx context.Context, userID uuid.UUID) ([]database.GetCartByUserIDRow, error) {
-	ms, err := srv.queries.GetCartByUserID(ctx, userID)
+	ms, err := srv.queries.GetCartByUserID(ctx, uuid.NullUUID{
+		UUID:  userID,
+		Valid: true,
+	})
 	if err != nil {
 		return []database.GetCartByUserIDRow{}, toasts.ErrCartDoesNotExist
 	}
@@ -63,7 +69,10 @@ func (srv *Cart) RemoveItemFromCart(ctx context.Context, id uuid.UUID, userID uu
 		return []database.GetCartByUserIDRow{}, toasts.ErrCartDoesNotExist
 	}
 
-	ms, err := qtx.GetCartByUserID(ctx, userID)
+	ms, err := qtx.GetCartByUserID(ctx, uuid.NullUUID{
+		UUID:  userID,
+		Valid: true,
+	})
 	if err != nil {
 		return []database.GetCartByUserIDRow{}, toasts.ErrCartDoesNotExist
 	}
@@ -77,7 +86,10 @@ func (srv *Cart) RemoveItemFromCart(ctx context.Context, id uuid.UUID, userID uu
 }
 
 func (srv *Cart) EmptyCartByUserID(ctx context.Context, userID uuid.UUID) error {
-	_, err := srv.queries.EmptyCartByUserID(ctx, userID)
+	_, err := srv.queries.EmptyCartByUserID(ctx, uuid.NullUUID{
+		UUID:  userID,
+		Valid: true,
+	})
 	if err != nil {
 		return toasts.ErrCartDoesNotExist
 	}
