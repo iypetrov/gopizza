@@ -1,16 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
 
-	"github.com/google/uuid"
 	"github.com/iypetrov/gopizza/internal/dtos"
-	"github.com/iypetrov/gopizza/internal/middlewares"
 	"github.com/iypetrov/gopizza/internal/services"
-	"github.com/iypetrov/gopizza/internal/toasts"
 )
 
 type Payment struct {
@@ -30,21 +26,8 @@ func (hnd *Payment) GetPublishableKey(w http.ResponseWriter, r *http.Request) er
 	return WriteJson(w, http.StatusOK, resp)
 }
 
-func (hnd *Payment) CreateIntent(w http.ResponseWriter, r *http.Request) error {
-	cookie, ok := r.Context().Value(middlewares.CookieName).(dtos.UserCookie)
-	if !ok {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidCookie))
-		return toasts.ErrNotValidCookie
-	}
-
-	userID, err := uuid.Parse(cookie.ID)
-	if err != nil {
-		toasts.AddToast(w, toasts.ErrorInternalServerError(toasts.ErrNotValidUUID))
-		return toasts.ErrorInternalServerError(toasts.ErrNotValidUUID)
-	}
-
-	var req dtos.PaymentIntentRequest
-	err = json.NewDecoder(r.Body).Decode(&req)
+func (hnd *Payment) GetPaymentMetadata(w http.ResponseWriter, r *http.Request) error {
+	req, err := dtos.ParseToPaymentIntentRequest(r)
 	if err != nil {
 		return err
 	}
@@ -54,12 +37,13 @@ func (hnd *Payment) CreateIntent(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	clientSecret, err := hnd.srv.CreateIntent(r.Context(), userID, total)
+	intentID, clientSecret, err := hnd.srv.GetPaymentMetadata(r.Context(), req.Email, total)
 	if err != nil {
 		return err
 	}
 
 	resp := dtos.PaymentClientSecretResponse{
+		IntentID:     intentID,
 		ClientSecret: string(clientSecret),
 	}
 	return WriteJson(w, http.StatusOK, resp)

@@ -24,13 +24,15 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 	authSrv := services.NewAuth(db, queries, cognitoClient)
 	pizzaSrv := services.NewPizza(db, queries)
 	cartSrv := services.NewCart(db, queries)
-	paymentSrv := services.NewPayment(db, queries)
+	orderSrv := services.NewOrder(db, queries)
+	paymentSrv := services.NewPayment(orderSrv)
 
 	// handlers
 	imageHnd := handlers.NewImage(imageSrv)
 	authHnd := handlers.NewAuth(authSrv)
 	pizzaHnd := handlers.NewPizza(pizzaSrv, imageSrv)
 	cartHnd := handlers.NewCart(cartSrv)
+	orderHnd := handlers.NewOrder(orderSrv)
 	paymentHnd := handlers.NewPayment(paymentSrv)
 
 	mux.Route("/", func(mux chi.Router) {
@@ -82,9 +84,12 @@ func NewRouter(ctx context.Context, public http.Handler, db *sql.DB, queries *da
 				mux.Delete("/", Make(cartHnd.EmptyCartByUserID))
 				mux.With(middlewares.UUIDFormat).Delete("/{id}", Make(cartHnd.RemoveItemFromCart))
 			})
+			mux.Route("/orders", func(mux chi.Router) {
+				mux.Post("/", Make(orderHnd.CreateOrder))
+			})
 			mux.Route("/payments", func(mux chi.Router) {
 				mux.Get("/config", Make(paymentHnd.GetPublishableKey))
-				mux.Post("/intent", Make(paymentHnd.CreateIntent))
+				mux.Post("/metadata", Make(paymentHnd.GetPaymentMetadata))
 				mux.Post("/webhook", Make(paymentHnd.HandleWebhookEvent))
 			})
 		})

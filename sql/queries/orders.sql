@@ -1,4 +1,4 @@
--- name: InitOrder :one
+-- name: CreateOrder :one
 INSERT INTO orders (id, intent_id, user_id, amount, currency, order_status, updated_at, created_at)
     VALUES ($1, $2, $3, $4, 'usd', 'created', NULL, $5)
 RETURNING
