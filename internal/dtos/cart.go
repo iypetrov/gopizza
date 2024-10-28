@@ -35,5 +35,5 @@ type CartResponse struct {
 	ProductName     string
 	ProductImageUrl string
 	ProductPrice    float64
-	ProductType string
+	ProductType     string
 }

@@ -11,14 +11,14 @@ import (
 )
 
 type SaladRequest struct {
-	Name       string
-	Tomatoes   bool
-	Garlic     bool
-	Onion      bool
-	Parmesan   bool
-	Chicken    bool
-	Image      io.Reader
-	Price      float64
+	Name     string
+	Tomatoes bool
+	Garlic   bool
+	Onion    bool
+	Parmesan bool
+	Chicken  bool
+	Image    io.Reader
+	Price    float64
 }
 
 func (req *SaladRequest) Validate() map[string]string {
@@ -74,16 +74,16 @@ func ParseToSaladRequest(r *http.Request) (SaladRequest, error) {
 }
 
 type SaladResponse struct {
-	ID         uuid.UUID
-	Name       string
-	Tomatoes   bool
-	Garlic     bool
-	Onion      bool
-	Parmesan   bool
-	Chicken    bool
-	ImageUrl   string
-	Price      float64
-	UpdatedAt  time.Time
+	ID        uuid.UUID
+	Name      string
+	Tomatoes  bool
+	Garlic    bool
+	Onion     bool
+	Parmesan  bool
+	Chicken   bool
+	ImageUrl  string
+	Price     float64
+	UpdatedAt time.Time
 }
 
 func (req *SaladResponse) Description() string {

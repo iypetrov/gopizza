@@ -15,3 +15,4 @@ CREATE TABLE IF NOT EXISTS carts (
 DROP TABLE carts;
 
 DROP TYPE product_type;
+

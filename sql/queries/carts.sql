@@ -13,21 +13,27 @@ RETURNING
 -- name: GetCartByUserID :many
 SELECT
     c.id AS cart_id,
-    CASE
-        WHEN c.product_type = 'pizza' THEN pizzas.name::text
-        WHEN c.product_type = 'salad' THEN salads.name::text
-        ELSE NULL::text
+    CASE WHEN c.product_type = 'pizza' THEN
+        pizzas.name::text
+    WHEN c.product_type = 'salad' THEN
+        salads.name::text
+    ELSE
+        NULL::text
     END AS product_name,
-    CASE
-        WHEN c.product_type = 'pizza' THEN pizzas.image_url::text
-        WHEN c.product_type = 'salad' THEN salads.image_url::text
-        ELSE NULL::text
+    CASE WHEN c.product_type = 'pizza' THEN
+        pizzas.image_url::text
+    WHEN c.product_type = 'salad' THEN
+        salads.image_url::text
+    ELSE
+        NULL::text
     END AS product_image_url,
     c.product_type::text AS product_type,
-    CASE
-        WHEN c.product_type = 'pizza' THEN pizzas.price::float8
-        WHEN c.product_type = 'salad' THEN salads.price::float8
-        ELSE NULL::float8
+    CASE WHEN c.product_type = 'pizza' THEN
+        pizzas.price::float8
+    WHEN c.product_type = 'salad' THEN
+        salads.price::float8
+    ELSE
+        NULL::float8
     END AS product_price
 FROM
     carts c
@@ -49,3 +55,4 @@ RETURNING
     pizza_id,
     product_type,
     created_at;
+

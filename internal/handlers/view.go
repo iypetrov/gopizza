@@ -51,7 +51,6 @@ func PizzaDetailsView(w http.ResponseWriter, r *http.Request) error {
 	return Render(w, r, views.PizzaDetails(id))
 }
 
-
 func SaladDetailsView(w http.ResponseWriter, r *http.Request) error {
 	id, ok := r.Context().Value(middlewares.UUIDKey).(uuid.UUID)
 	if !ok {

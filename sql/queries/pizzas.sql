@@ -152,3 +152,4 @@ RETURNING
     price,
     updated_at,
     created_at;
+

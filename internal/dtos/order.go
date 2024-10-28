@@ -21,7 +21,7 @@ func ParseToOrderRequest(r *http.Request) (OrderRequest, error) {
 }
 
 type OrderResponse struct {
-	Address       string 
+	Address     string
 	Amount      float64
 	Currency    string
 	OrderStatus string

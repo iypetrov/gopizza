@@ -29,3 +29,4 @@ CREATE TABLE IF NOT EXISTS pizzas (
 
 -- +goose Down
 DROP TABLE pizzas;
+
