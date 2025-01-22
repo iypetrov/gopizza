@@ -1,0 +1,16 @@
+---
+services:
+  gopizza_db:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: gopizza
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+volumes:
+  gopizza_data:
+
