@@ -54,7 +54,6 @@ func (srv *Image) GetImage(ctx context.Context, id uuid.UUID) (io.ReadCloser, er
 	if resp == nil || resp.Body == nil {
 		return nil, fmt.Errorf("image not found")
 	}
-	defer resp.Body.Close()
 
 	if *resp.ContentLength == 0 {
 		return nil, fmt.Errorf("image is empty")

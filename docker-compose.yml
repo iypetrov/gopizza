@@ -8,8 +8,6 @@ services:
       POSTGRES_DB: gopizza
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-    volumes:
-      - ./data:/var/lib/postgresql/data
 
 volumes:
   gopizza_data:
